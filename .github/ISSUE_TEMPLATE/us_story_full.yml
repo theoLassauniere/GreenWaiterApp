@@ -1,0 +1,61 @@
+name: "✨ User Story"
+description: "Créer une nouvelle User Story"
+title: "[US] "
+labels: ["user-story"]
+assignees: []
+
+body:
+  - type: input
+    id: title
+    attributes:
+      label: "⭐ Title"
+      placeholder: "Enter a title here"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "⭐ Description"
+      description: "User story format"
+      value: "As a [role], I want [reason] so that [goal]"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "🌟 Priority"
+      options:
+        - Must
+        - Should
+        - Could
+        - Won't
+    validations:
+      required: true
+
+  - type: dropdown
+    id: estimate
+    attributes:
+      label: "🌟 Estimate"
+      options:
+        - Tiny
+        - Short
+        - Medium
+        - Long
+    validations:
+      required: false
+
+  - type: textarea
+    id: business-rules
+    attributes:
+      label: "✨ Business rules"
+      description: "Décrire ici les règles de gestion"
+      placeholder: "Describe here the business rules"
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "🌟 Acceptance criteria"
+      description: "Définir un scénario fonctionnellement testable"
+      placeholder: "Scénario:\n1. ..."
