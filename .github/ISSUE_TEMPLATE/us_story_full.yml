@@ -10,7 +10,7 @@ body:
     attributes:
       label: "⭐ Description"
       description: "User story format"
-      value: "As a [role], I want [reason] so that [goal]"
+      value: "En tant que [role], je veux [reason] afin que [goal]"
     validations:
       required: true
 
