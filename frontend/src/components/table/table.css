@@ -1,0 +1,29 @@
+.table-card {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0.5rem;
+    width: 200px;
+}
+
+.table-card.occupied {
+    background-color: #d92f2f;
+}
+
+.table-card.free {
+    background-color: #DCDFDA;
+}
+
+.pay-btn {
+    margin-top: 0.5rem;
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.command-actions button {
+    margin-right: 0.5rem;
+}
