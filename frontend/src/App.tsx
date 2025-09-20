@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import Table from "./components/table/table";
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the  and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <div className="app">
+            <h1>Nom du restaurant</h1>
+            <div className="tables">
+                <Table
+                    id={1}
+                    capacity={4}
+                    occupied={true}
+                    isCommandesPage={true}
+                    commandState="preparing-in-kitchen"
+                    commandPreparationPlace="bar"
+                />
+                <Table
+                    id={2}
+                    capacity={2}
+                    occupied={false}
+                    isCommandesPage={false}
+                />
+                <Table
+                    id={3}
+                    capacity={2}
+                    occupied={true}
+                    isCommandesPage={true}
+                    commandState="awaiting-service"
+                    commandPreparationPlace="bar"
+                />
+                <Table
+                    id={4}
+                    capacity={6}
+                    occupied={true}
+                    isCommandesPage={true}
+                    commandState="served"
+                    commandPreparationPlace="cuisine"
+                />
+            </div>
+        </div>
+    );
 }
 
-export default App
+export default App;
