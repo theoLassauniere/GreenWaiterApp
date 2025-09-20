@@ -1,5 +1,5 @@
-import { CommandState } from "../constants/CommandState";
-import { PreparationPlace } from "../constants/PreparationPlace";
+import { CommandState } from "../models/CommandState";
+import { PreparationPlace } from "../models/PreparationPlace";
 
 export type TableProps = {
     readonly id: number;
