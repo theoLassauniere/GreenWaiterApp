@@ -1,35 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import type { Item } from './model/Item.ts';
+import MenuItem from './components/menu/MenuItem.tsx';
+import './components/menu/MenuItem.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const item: Item = {
+    id: 1,
+    name: 'Item 1',
+    description: 'This is item 1',
+    price: 10.0,
+    imageUrl: 'src/assets/coca-33cl.jpg',
+    allergens: ['gluten', 'nuts'],
+  };
 
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <MenuItem item={item} onClick={() => console.log(`clicked on ${item.name}`)} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the  and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
