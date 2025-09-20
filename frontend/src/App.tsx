@@ -4,7 +4,7 @@ import Table from "./components/table/table";
 function App() {
     return (
         <div className="app">
-            <h1>Mes Tables</h1>
+            <h1>Nom du restaurant</h1>
             <div className="tables">
                 <Table
                     id={1}

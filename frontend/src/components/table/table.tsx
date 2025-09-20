@@ -14,11 +14,9 @@ export default function Table({
         <div className={`table-card ${occupied ? "occupied" : "free"}`}>
             <h3>Table {id}</h3>
             <p>Capacité : {capacity}</p>
-            <p>{occupied ? "Occupé" : "Libre"}</p>
-
-            {hasBeenServed && (
-                <button className="pay-btn">Paiement</button>
-            )}
+            <p>
+                <strong>{occupied ? "Occupé" : "Libre"}</strong>
+            </p>
 
             {isCommandesPage && (
                 <div className="command-actions">
@@ -27,14 +25,18 @@ export default function Table({
                     {commandState !== "served" && (
                         <button>Servi</button>
                     )}
-
-                    {commandPreparationPlace && (
-                        <p>
-                            Commande pour :{" "}
-                            <strong>{commandPreparationPlace === "bar" ? "Bar" : "Kitchen"}</strong>
-                        </p>
-                    )}
                 </div>
+            )}
+
+            {hasBeenServed && (
+                <button className="pay-btn">Paiement</button>
+            )}
+
+            {commandPreparationPlace && (
+                <p>
+                    Commande pour :{" "}
+                    <strong>{commandPreparationPlace === "bar" ? "Bar" : "Kitchen"}</strong>
+                </p>
             )}
         </div>
     );
