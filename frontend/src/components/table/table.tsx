@@ -1,11 +1,11 @@
 import "./table.css";
-import type {TableProps} from "../../types/table";
+import { CommandState } from "../../models/CommandState";
+import { PreparationPlace } from "../../models/PreparationPlace";
 
 export default function Table({
                                   id,
                                   capacity,
                                   occupied,
-                                  hasBeenServed,
                                   isCommandesPage = false,
                                   commandState,
                                   commandPreparationPlace,
@@ -22,22 +22,31 @@ export default function Table({
                 <div className="command-actions">
                     <button>Nouvelle commande</button>
 
-                    {commandState !== "served" && (
+                    {commandState === "awaiting-service" && (
                         <button>Servi</button>
                     )}
                 </div>
             )}
 
-            {hasBeenServed && (
+            {commandState === "served" && (
                 <button className="pay-btn">Paiement</button>
             )}
 
             {commandPreparationPlace && (
                 <p>
                     Commande pour :{" "}
-                    <strong>{commandPreparationPlace === "bar" ? "Bar" : "Kitchen"}</strong>
+                    <strong>{commandPreparationPlace === "bar" ? "Bar" : "Cuisine"}</strong>
                 </p>
             )}
         </div>
     );
+}
+
+export type TableProps = {
+    readonly id: number;
+    readonly capacity: number;
+    readonly occupied: boolean;
+    readonly isCommandesPage?: boolean; // L'affichage du composant table n'est pas le même selon la page "Commandes" ou la page "Tables" d'où ce flag
+    readonly commandState?: CommandState;
+    readonly commandPreparationPlace?: PreparationPlace;
 }

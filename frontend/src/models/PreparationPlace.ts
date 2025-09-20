@@ -1,5 +1,5 @@
 export const PreparationPlace = {
-    Kitchen: "kitchen",
+    Cuisine: "cuisine",
     Bar: "bar",
 } as const;
 

@@ -1,6 +1,6 @@
 export const CommandState = {
-    Pending: "pending",
-    InProgress: "in-progress",
+    PreparingInKitchen: "preparing-in-kitchen",
+    AwaitingService: "awaiting-service",
     Served: "served",
 } as const;
 
