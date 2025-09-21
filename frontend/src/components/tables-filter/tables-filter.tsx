@@ -1,3 +1,4 @@
+import "./tables-filter.css"
 import { useMemo } from "react";
 
 type TableFilterProps = {
