@@ -1,9 +1,9 @@
-import type { Item } from '../../model/Item.ts';
+import type { Item } from '../../../model/Item.ts';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import './MenuItem.css';
-import IconButton from '../commons/IconButton.tsx';
-import AllergenPopup from './AllergenPopup.tsx';
+import IconButton from '../../common/IconButton/IconButton.tsx';
+import AllergenPopup from '../AllergenPopup/AllergenPopup.tsx';
 
 type MenuItemProps = {
   item: Item;

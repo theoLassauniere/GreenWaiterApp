@@ -1,4 +1,4 @@
-import Popup from '../commons/Popup.tsx';
+import Popup from '../../common/Popup/Popup.tsx';
 import './AllergenPopup.css';
 
 type AllergenPopupProps = {

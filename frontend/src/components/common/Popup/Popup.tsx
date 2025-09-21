@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect } from 'react';
 import './Popup.css';
-import IconButton from './IconButton.tsx';
+import IconButton from '../IconButton/IconButton.tsx';
 
 export interface PopupProps {
   isOpen: boolean;
@@ -34,8 +34,8 @@ export default function Popup({ isOpen, onClose, title, children, className = ''
     >
       <div className="popup-content">
         <div className="popup-header">
-          <IconButton className="popup-close" icon="close" onClick={onClose} />
           <div className="popup-title">{title}</div>
+          <IconButton className="popup-close" icon="close" onClick={onClose} />
         </div>
         <div className="popup-body">{children}</div>
       </div>

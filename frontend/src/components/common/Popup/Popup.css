@@ -22,7 +22,7 @@
             font-size: 1.5em;
             margin-bottom: 10px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
@@ -34,6 +34,9 @@
 
             & .popup-close {
                 margin-left: auto;
+                position: relative;
+                bottom: 14px;
+                left: 10px;
                 & .IconButton {
                     align-self: flex-end;
                     background: none;
@@ -50,6 +53,5 @@
                 }
             }
         }
-
     }
 }

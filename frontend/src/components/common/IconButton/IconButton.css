@@ -13,7 +13,7 @@
     & .material-icons {
         width: 100%;
         height: 100%;
-        font-size: 32px; /* Taille de l'icône */
-        color: red /* should be something like : var(--grayx);  Couleur de l'icône */
+        font-size: 32px;
+        color: var(--gray)
     }
 }
