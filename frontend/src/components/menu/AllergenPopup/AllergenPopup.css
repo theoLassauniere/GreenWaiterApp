@@ -1,22 +1,22 @@
-.allergen-list{
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    height: 90%;
+.allergen-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  height: 90%;
 
-    & .allergen-item{
-        color: black;
-        font-size: 1em;
-        margin: 5px 10px;
-        display: flex;
-        align-items: center;
-        width: 100%;
-        justify-content: flex-start;
-    }
+  & .allergen-item {
+    color: black;
+    font-size: 1em;
+    margin: 5px 10px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
