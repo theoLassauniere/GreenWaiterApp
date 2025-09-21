@@ -3,3 +3,7 @@
     flex-wrap: wrap;
     gap: 1rem;
 }
+
+.item{
+    background-color: white;
+}
