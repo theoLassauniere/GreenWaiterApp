@@ -18,10 +18,13 @@
             width: 100%;
         }
         .tables {
-            grid-column: 2;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
+          grid-column: 2;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+        .item {
+            background-color: white;
         }
     }
 }

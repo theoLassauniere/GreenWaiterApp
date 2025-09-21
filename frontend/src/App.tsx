@@ -1,8 +1,8 @@
-import './App.css';
+import './App.scss';
 import Table from './components/table/table';
 import Sidebar from "./components/sidebar/sidebar.tsx";
 import MenuItem from './components/menu/MenuItem/MenuItem.tsx';
-import type { Item } from './model/Item.ts';
+import type { Item } from './models/Item.ts';
 
 const item: Item = {
   id: 1,
