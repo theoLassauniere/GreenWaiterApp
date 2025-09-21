@@ -39,6 +39,7 @@ export default function Tables({ tables }: Readonly<TablesProps>) {
                         id={t.id}
                         capacity={t.capacity}
                         occupied={t.occupied}
+                        isCommandesPage={t.isCommandesPage}
                         commandState={t.commandState}
                         commandPreparationPlace={t.commandPreparationPlace}
                     />
