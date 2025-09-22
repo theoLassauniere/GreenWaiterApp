@@ -3,26 +3,55 @@ import Tables from './components/tables/tables';
 import { mockTables } from './mocks/tables';
 import Sidebar from './components/sidebar/sidebar.tsx';
 import MenuItem from './components/menu/MenuItem/MenuItem.tsx';
-import type { Item } from './models/Item.ts';
 import { mockMenuItems } from './mocks/menu-items.ts';
 import { useState } from 'react';
+import FoodCategory from './components/food-category/food-category.tsx';
+import { mockFoodCategories } from './mocks/food-categories.ts';
 
 function App() {
   const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const handleSelectPage = (newPage: typeof page) => {
+    setPage(newPage);
+    if (newPage === 'menu') {
+      setSelectedCategory(null);
+    }
+  };
+  const handleCategoryClick = (id: number) => {
+    setSelectedCategory(id);
+  };
 
   return (
     <div className="app">
       <div className="sidebar">
-        <Sidebar onSelect={setPage} />
+        <Sidebar onSelect={handleSelectPage} />
       </div>
       <main>
         {page === 'tables' && <Tables tables={mockTables} />}
         {page === 'menu' && (
-          <div className="menu-grid">
-            {mockMenuItems.map((item: Item) => (
-              <MenuItem key={item.id} item={item} />
-            ))}
-          </div>
+          <>
+            {selectedCategory === null ? (
+              <div className="categories-grid">
+                {mockFoodCategories.map((cat) => (
+                  <FoodCategory
+                    key={cat.id}
+                    id={cat.id}
+                    title={cat.title}
+                    imageUrl={cat.imageUrl}
+                    onClick={handleCategoryClick}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="menu-grid">
+                {mockMenuItems
+                  .filter((item) => item.categoryId === selectedCategory)
+                  .map((item) => (
+                    <MenuItem key={item.id} item={item} />
+                  ))}
+              </div>
+            )}
+          </>
         )}
         {page === 'commandes' && <h2>Commandes (à implémenter)</h2>}
         {page === 'paiement' && <h2>Paiement (à implémenter)</h2>}

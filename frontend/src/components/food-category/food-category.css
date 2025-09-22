@@ -1,0 +1,33 @@
+.food-category-card {
+  width: 18rem;
+  height: 16rem;
+  border-radius: 1rem;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  border: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .food-category-overlay {
+    width: 90%;
+    height: 35%;
+    padding: 0.5rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 1rem;
+
+    h3 {
+      margin: 0;
+      font-size: 4rem;
+    }
+  }
+}
