@@ -11,6 +11,9 @@ import { mockFoodCategories } from './mocks/food-categories.ts';
 
 function App() {
   const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
+  const handleCategoryClick = (id: number) => {
+    console.log('Catégorie cliquée :', id);
+  };
 
   return (
     <div className="app">
@@ -21,23 +24,23 @@ function App() {
         {page === 'tables' && <Tables tables={mockTables} />}
         {page === 'menu' && (
           <>
-          <div className="menu-grid">
-            {mockMenuItems.map((item: Item) => (
-              <MenuItem key={item.id} item={item} />
-            ))}
-          </div>
-          <div className="categories-grid">
-        {mockFoodCategories.map((cat) => (
-          <FoodCategory
-          key={cat.id}
-        id={cat.id}
-        title={cat.title}
-        imageUrl={cat.imageUrl}
-        onClick={handleCategoryClick}
-      />
+            <div className="menu-grid">
+              {mockMenuItems.map((item: Item) => (
+                <MenuItem key={item.id} item={item} />
+              ))}
+            </div>
+            <div className="categories-grid">
+              {mockFoodCategories.map((cat) => (
+                <FoodCategory
+                  key={cat.id}
+                  id={cat.id}
+                  title={cat.title}
+                  imageUrl={cat.imageUrl}
+                  onClick={handleCategoryClick}
+                />
+              ))}
+            </div>
           </>
-      ))}
-    </div>
         )}
         {page === 'commandes' && <h2>Commandes (à implémenter)</h2>}
         {page === 'paiement' && <h2>Paiement (à implémenter)</h2>}
