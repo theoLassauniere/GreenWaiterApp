@@ -23,8 +23,10 @@
           flex-wrap: wrap;
           gap: 1rem;
         }
-        .item {
-            background-color: white;
+        .menu-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+          gap: 1rem;
         }
     }
 }
