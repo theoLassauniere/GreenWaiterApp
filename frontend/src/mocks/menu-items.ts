@@ -8,6 +8,7 @@ export const mockMenuItems: Item[] = [
     price: 3.0,
     imageUrl: 'src/assets/coca-33cl.jpg',
     allergens: [],
+    categoryId: 1,
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ export const mockMenuItems: Item[] = [
     price: 9.5,
     imageUrl: 'src/assets/pizza-margherita.jpg',
     allergens: ['gluten', 'lactose'],
+    categoryId: 3,
   },
   {
     id: 3,
@@ -24,5 +26,6 @@ export const mockMenuItems: Item[] = [
     price: 5.5,
     imageUrl: 'src/assets/cheesecake.jpg',
     allergens: ['lactose', 'gluten'],
+    categoryId: 4,
   },
 ];
