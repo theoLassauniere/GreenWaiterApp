@@ -4,20 +4,26 @@ import { mockTables } from "./mocks/tables";
 import Sidebar from "./components/sidebar/sidebar.tsx";
 import MenuItemSelection from './pages/MenuItemSelection.tsx';
 import mockData from './components/mockData.ts';
+import { useState } from "react";
+
 
 function App() {
+    const [page, setPage] = useState<"tables" | "menu" | "commandes" | "paiement">("tables");
+
     return (
         <div className="app">
             <div className="sidebar">
-                <Sidebar/>
+                <Sidebar onSelect={setPage} />
             </div>
             <main>
-                <div className="tables">
-                    <Tables tables={mockTables} />
-                </div>
-                <div className="item">
-                  <MenuItemSelection listItems={mockData} />
-                </div>
+                {page === "tables" && <Tables tables={mockTables} />}
+                {page === "menu" && (
+                    <div className="menu-grid">
+                      <MenuItemSelection listItems={mockData} />
+                    </div>
+                )}
+                {page === "commandes" && <h2>Commandes (à implémenter)</h2>}
+                {page === "paiement" && <h2>Paiement (à implémenter)</h2>}
             </main>
         </div>
     );
