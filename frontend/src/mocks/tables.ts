@@ -57,4 +57,16 @@ export const mockTables: readonly TableProps[] = [
         occupied: false,
         isCommandesPage: false,
     },
+    {
+        id: 9,
+        capacity: 2,
+        occupied: false,
+        isCommandesPage: false,
+    },
+    {
+        id: 10,
+        capacity: 4,
+        occupied: false,
+        isCommandesPage: false,
+    },
 ];

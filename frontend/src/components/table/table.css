@@ -4,7 +4,7 @@
     padding-right: 1rem;
     border-radius: 0.5rem;
     width: 12rem;
-    height: 13.2rem;
+    height: 13.5rem;
 
     &.occupied {
         background-color: #b62e2e;
