@@ -1,61 +1,31 @@
 import './App.scss';
-import Table from './components/table/table';
+import Tables from "./components/tables/tables";
+import { mockTables } from "./mocks/tables";
 import Sidebar from "./components/sidebar/sidebar.tsx";
 import MenuItem from './components/menu/MenuItem/MenuItem.tsx';
 import type { Item } from './models/Item.ts';
-
-const item: Item = {
-  id: 1,
-  name: 'Item 1',
-  description: 'This is item 1',
-  price: 10.0,
-  imageUrl: 'src/assets/coca-33cl.jpg',
-  allergens: ['gluten', 'nuts'],
-};
+import { mockMenuItems } from "./mocks/menu-items.ts";
+import { useState } from "react";
 
 function App() {
+    const [page, setPage] = useState<"tables" | "menu" | "commandes" | "paiement">("tables");
+
     return (
         <div className="app">
             <div className="sidebar">
-                <Sidebar/>
+                <Sidebar onSelect={setPage} />
             </div>
             <main>
-                <div className="tables">
-                    <h1>Nom du restaurant</h1>
-                    <Table
-                        id={1}
-                        capacity={4}
-                        occupied={true}
-                        isCommandesPage={true}
-                        commandState="preparing-in-kitchen"
-                        commandPreparationPlace="bar"
-                    />
-                    <Table
-                        id={2}
-                        capacity={2}
-                        occupied={false}
-                        isCommandesPage={false}
-                    />
-                    <Table
-                        id={3}
-                        capacity={2}
-                        occupied={true}
-                        isCommandesPage={true}
-                        commandState="awaiting-service"
-                        commandPreparationPlace="bar"
-                    />
-                    <Table
-                        id={4}
-                        capacity={6}
-                        occupied={true}
-                        isCommandesPage={true}
-                        commandState="served"
-                        commandPreparationPlace="cuisine"
-                    />
-                </div>
-                <div className="item">
-                  <MenuItem item={item} />
-                </div>
+                {page === "tables" && <Tables tables={mockTables} />}
+                {page === "menu" && (
+                    <div className="menu-grid">
+                        {mockMenuItems.map((item: Item) => (
+                            <MenuItem key={item.id} item={item} />
+                        ))}
+                    </div>
+                )}
+                {page === "commandes" && <h2>Commandes (à implémenter)</h2>}
+                {page === "paiement" && <h2>Paiement (à implémenter)</h2>}
             </main>
         </div>
     );

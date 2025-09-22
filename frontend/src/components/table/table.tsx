@@ -13,7 +13,9 @@ export default function Table({
     return (
         <div className={`table-card ${occupied ? "occupied" : "free"}`}>
             <h3>Table {id}</h3>
-            <p>Capacité : {capacity}</p>
+            <p>Capacité :
+                <strong> {capacity}</strong>
+            </p>
             <p>
                 <strong>{occupied ? "Occupé" : "Libre"}</strong>
             </p>

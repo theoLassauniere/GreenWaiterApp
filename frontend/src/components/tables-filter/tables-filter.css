@@ -1,0 +1,37 @@
+.table-filter {
+    margin: 0.5rem 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+
+    label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        select {
+            font-size: 1.2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 0.1rem solid #000000;
+            background-color: #b9dcae;
+            color: #000000;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+                filter: brightness(0.95);
+            }
+
+            &:focus {
+                outline: none;
+                border-color: #646cff;
+                box-shadow: 0 0 0.3rem #646cff;
+            }
+
+            option {
+                font-size: 1.25rem;
+            }
+        }
+    }
+}
