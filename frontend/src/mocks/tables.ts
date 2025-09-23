@@ -69,4 +69,12 @@ export const mockTables: readonly TableProps[] = [
     occupied: false,
     isCommandesPage: false,
   },
+  {
+    id: 11,
+    capacity: 2,
+    occupied: true,
+    isCommandesPage: true,
+    commandState: 'awaiting-service',
+    commandPreparationPlace: 'cuisine',
+  },
 ];
