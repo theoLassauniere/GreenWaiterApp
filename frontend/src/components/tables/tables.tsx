@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './tables.css';
 import Table, { type TableProps } from '../table/table';
 import TableFilter from '../tables-filter/tables-filter';
-import OccupiedTablesCheckbox from '../occupied-tables-checkbox/occupied-tables-checkbox';
+import SelectItemsCheckbox from '../select-items-checkbox/select-items-checkbox.tsx';
 
 type TablesProps = {
   readonly tables: readonly TableProps[];
@@ -22,7 +22,11 @@ export default function Tables({ tables }: Readonly<TablesProps>) {
     <div className="tables-container">
       <div className="tables-filters">
         <TableFilter tables={tables} minCapacity={minCapacity} onChange={setMinCapacity} />
-        <OccupiedTablesCheckbox showOccupied={showOccupied} onChange={setShowOccupied} />
+        <SelectItemsCheckbox
+          label="Afficher seulement les tables occupées"
+          checked={showOccupied}
+          onChange={setShowOccupied}
+        />
       </div>
 
       <div className="tables-grid">
