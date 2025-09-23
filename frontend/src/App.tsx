@@ -1,16 +1,8 @@
 import './App.css';
 import Table from './components/table/table';
-import MenuItem from './components/menu/MenuItem/MenuItem.tsx';
-import type { Item } from './model/Item.ts';
+import MenuItemSelection from './pages/MenuItemSelection.tsx';
+import mockData from './components/mockData.ts';
 
-const item: Item = {
-  id: 1,
-  name: 'Item 1',
-  description: 'This is item 1',
-  price: 10.0,
-  imageUrl: 'src/assets/coca-33cl.jpg',
-  allergens: ['gluten', 'nuts'],
-};
 function App() {
   return (
     <div className="app">
@@ -44,7 +36,7 @@ function App() {
       </div>
 
       <div className="item">
-        <MenuItem item={item} />
+        <MenuItemSelection listItems={mockData} />
       </div>
     </div>
   );

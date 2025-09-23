@@ -71,11 +71,12 @@ button:focus-visible {
 }
 
 .material-icons {
-    font-family: 'Material Icons';
+    font-family: 'Material Icons', serif;
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;  /* Preferred icon size */
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     line-height: 1;
     text-transform: none;
     letter-spacing: normal;

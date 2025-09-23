@@ -1,0 +1,44 @@
+/* Conteneur global */
+.SearchBarContainer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 4px 8px;
+    width: 100%;
+    max-width: 400px;
+
+    & .SearchBar {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        padding: 6px 8px;
+        background: transparent;
+        color:black;
+
+        & .material-icons {
+            font-size: 20px;
+            color:black;
+        }
+    }
+
+
+    & .IconButton {
+        width: 32px;
+        height: 32px;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+
+}
+
+
