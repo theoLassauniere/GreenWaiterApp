@@ -1,12 +1,13 @@
+import './App.css';
 import './App.scss';
 import Tables from './components/tables/tables';
 import { mockTables } from './mocks/tables';
-import Sidebar from './components/sidebar/sidebar.tsx';
-import MenuItem from './components/menu/MenuItem/MenuItem.tsx';
-import { mockMenuItems } from './mocks/menu-items.ts';
 import { useState } from 'react';
 import FoodCategory from './components/food-category/food-category.tsx';
 import { mockFoodCategories } from './mocks/food-categories.ts';
+import Sidebar from './components/sidebar/sidebar.tsx';
+import MenuItemSelection from './pages/MenuItemSelection.tsx';
+import mockData from './components/mockData.ts';
 
 function App() {
   const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
@@ -43,12 +44,8 @@ function App() {
                 ))}
               </div>
             ) : (
-              <div className="menu-grid">
-                {mockMenuItems
-                  .filter((item) => item.categoryId === selectedCategory)
-                  .map((item) => (
-                    <MenuItem key={item.id} item={item} />
-                  ))}
+              <div className="item">
+                <MenuItemSelection listItems={mockData} />
               </div>
             )}
           </>
