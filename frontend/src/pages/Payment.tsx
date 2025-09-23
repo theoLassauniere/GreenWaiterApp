@@ -19,7 +19,7 @@ export function Payment(props: PaymentProps) {
   const handleSelectAll = (checked: boolean) => {
     const newSelected = Object.fromEntries(mockCommandItems.map((item) => [item.id, checked]));
     const newSelectedQuantity = Object.fromEntries(
-      mockCommandItems.map((item) => [item.id, checked ? 1 : 0])
+      mockCommandItems.map((item) => [item.id, checked ? item.quantity : 0])
     );
     setSelected(newSelected);
     setSelectedQuantity(newSelectedQuantity);
