@@ -54,7 +54,7 @@ export function Payment(props: PaymentProps) {
       <h1>Table {props.tableNumber}</h1>
       <SelectItemsCheckbox
         label="Sélectionner tout"
-        checked={Object.values(selected).every(Boolean)}
+        checked={mockCommandItems.every((item) => selectedQuantity[item.id] === item.quantity)}
         onChange={handleSelectAll}
       />
       {mockFoodCategories.map((category) => (
