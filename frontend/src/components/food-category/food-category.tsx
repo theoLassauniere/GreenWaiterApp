@@ -1,4 +1,4 @@
-import './food-category.css';
+import './food-category.scss';
 
 type FoodCategoryProps = {
   id: number;

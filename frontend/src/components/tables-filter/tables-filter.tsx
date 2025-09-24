@@ -1,4 +1,4 @@
-import './tables-filter.css';
+import './tables-filter.scss';
 import { useMemo } from 'react';
 
 type TableFilterProps = {

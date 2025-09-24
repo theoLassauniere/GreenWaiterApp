@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './tables.css';
+import './tables.scss';
 import Table, { type TableProps } from '../table/table';
 import TableFilter from '../tables-filter/tables-filter';
 import OccupiedTablesCheckbox from '../occupied-tables-checkbox/occupied-tables-checkbox';

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import './ready-notification.css';
+import './ready-notification.scss';
 
 type ReadyNotificationProps = {
   message: string;
