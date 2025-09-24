@@ -4,14 +4,16 @@ import { mockTables } from './mocks/tables';
 import Sidebar from './components/sidebar/sidebar.tsx';
 import MenuItem from './components/menu/MenuItem/MenuItem.tsx';
 import { mockMenuItems } from './mocks/menu-items.ts';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FoodCategory from './components/food-category/food-category.tsx';
 import { mockFoodCategories } from './mocks/food-categories.ts';
+import ReadyNotification from './components/ready-notification/ready-notification.tsx';
 import OrdersList from './components/orders-list/orders-list.tsx';
 
 function App() {
   const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [readyNotification, setNotification] = useState<string | null>(null);
   const handleSelectPage = (newPage: typeof page) => {
     setPage(newPage);
     if (newPage === 'menu') {
@@ -21,6 +23,10 @@ function App() {
   const handleCategoryClick = (id: number) => {
     setSelectedCategory(id);
   };
+
+  useEffect(() => {
+    setNotification('Table 3 est prête à être servie !');
+  }, []);
 
   return (
     <div className="app">
@@ -57,6 +63,9 @@ function App() {
         {page === 'commandes' && <OrdersList tables={mockTables} />}
         {page === 'paiement' && <h2>Paiement (à implémenter)</h2>}
       </main>
+      {readyNotification && (
+        <ReadyNotification message={readyNotification} onClose={() => setNotification(null)} />
+      )}
     </div>
   );
 }

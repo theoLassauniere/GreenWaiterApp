@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect } from 'react';
-import './Popup.css';
+import './Popup.scss';
 import IconButton from '../IconButton/IconButton.tsx';
 
 export interface PopupProps {
