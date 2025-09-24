@@ -7,6 +7,7 @@ import { mockMenuItems } from './mocks/menu-items.ts';
 import { useState } from 'react';
 import FoodCategory from './components/food-category/food-category.tsx';
 import { mockFoodCategories } from './mocks/food-categories.ts';
+import OrdersList from './components/orders-list/orders-list.tsx';
 
 function App() {
   const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
@@ -53,7 +54,7 @@ function App() {
             )}
           </>
         )}
-        {page === 'commandes' && <h2>Commandes (à implémenter)</h2>}
+        {page === 'commandes' && <OrdersList tables={mockTables} />}
         {page === 'paiement' && <h2>Paiement (à implémenter)</h2>}
       </main>
     </div>
