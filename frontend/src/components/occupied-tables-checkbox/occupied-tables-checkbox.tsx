@@ -1,4 +1,4 @@
-import './occupied-tables-checkbox.css';
+import './occupied-tables-checkbox.scss';
 
 type OccupiedTablesCheckboxProps = {
   readonly showOccupied: boolean;
