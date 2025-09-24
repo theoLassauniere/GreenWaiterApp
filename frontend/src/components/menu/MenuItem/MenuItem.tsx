@@ -1,7 +1,7 @@
 import type { Item } from '../../../models/Item.ts';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import './MenuItem.css';
+import './MenuItem.scss';
 import IconButton from '../../common/IconButton/IconButton.tsx';
 import AllergenPopup from '../AllergenPopup/AllergenPopup.tsx';
 

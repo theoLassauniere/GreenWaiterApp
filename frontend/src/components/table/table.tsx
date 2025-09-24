@@ -1,4 +1,4 @@
-import './table.css';
+import './table.scss';
 import { CommandState } from '../../models/CommandState';
 import { PreparationPlace } from '../../models/PreparationPlace';
 
