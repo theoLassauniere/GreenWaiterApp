@@ -16,7 +16,7 @@ export type TableWithOrderDto = {
 };
 
 export type StartOrderingDto = {
-  id: number;
+  tableNumber: number;
   customersCount: number;
 };
 
