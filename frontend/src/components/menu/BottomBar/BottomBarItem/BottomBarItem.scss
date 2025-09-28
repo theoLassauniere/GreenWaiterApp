@@ -1,0 +1,38 @@
+.BottomBarItem {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  margin: 4px 0;
+  background-color: #f0f0f0;
+  border-radius: 25px;
+
+  .item-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    margin-right: 12px;
+    background-color: #333;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .item-name {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 8px;
+  }
+
+  .item-close-button {
+    // Le style de l'IconButton est probablement déjà défini,
+    // mais vous pouvez ajouter des surcharges ici si nécessaire.
+    // Par exemple, pour la couleur :
+    // color: red;
+  }
+}
