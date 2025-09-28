@@ -1,4 +1,3 @@
-import './App.css';
 import './App.scss';
 import Tables from './components/tables/tables';
 import { mockTables } from './mocks/tables';
