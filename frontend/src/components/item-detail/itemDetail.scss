@@ -1,50 +1,47 @@
 .item-detail-card {
-  border: 1px solid #000000;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-bottom: 1rem;
+  border: 1px solid #000;
   border-radius: 0.5rem;
   width: 14rem;
   background-color: var(--palette-gray);
-}
+  padding: 1rem;
 
-.item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-  h1 {
+    .item-title {
+      font-size: 1.3rem;
+      margin: 0;
+    }
+
+    .item-checkbox {
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-left: 0.5rem;
+      accent-color: var(--palette-green);
+      cursor: pointer;
+    }
+  }
+
+  .item-quantity {
     font-size: 1.3rem;
-  }
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
 
-  input {
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-left: 0.5rem;
-    accent-color: var(--palette-green);
-    cursor: pointer;
-  }
-}
+    .quantity-select {
+      font-size: 1.2rem;
+      margin: 0 0.5rem;
+      padding: 0.3rem 0.25rem;
+      border-radius: 0.5rem;
+      border: 0.1rem solid #000;
+      cursor: pointer;
+      transition: all 0.2s ease;
 
-.item-quantity {
-  font-size: 1.3rem;
-  display: flex;
-  align-items: center;
-
-  select {
-    font-size: 1.2rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    padding: 0.3rem 0.25rem;
-    border-radius: 0.5rem;
-    border: 0.1rem solid #000000;
-    background-color: var();
-    color: #000000;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    option {
-      font-size: 1.25rem;
+      option {
+        font-size: 1.25rem;
+      }
     }
   }
 }

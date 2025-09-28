@@ -1,7 +1,5 @@
-export interface CommandItem {
-  id: number;
-  name: string;
+import type { Item } from './Item.ts';
+
+export interface CommandItem extends Item {
   quantity: number;
-  category: string;
-  price: number;
 }

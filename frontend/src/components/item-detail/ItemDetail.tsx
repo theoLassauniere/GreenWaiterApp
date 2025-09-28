@@ -20,8 +20,9 @@ export function ItemDetail({
   return (
     <div className="item-detail-card">
       <div className="item-header">
-        <h1>{name}</h1>
+        <h1 className="item-title">{name}</h1>
         <input
+          className="item-checkbox"
           type="checkbox"
           checked={selected}
           onChange={(e) => onSelectChange(e.target.checked)}
@@ -30,7 +31,7 @@ export function ItemDetail({
       <div className="item-quantity">
         <label htmlFor="quantity-select">Quantité :</label>
         <select
-          id="quantity-select"
+          className="quantity-select"
           value={selectedQuantity}
           onChange={(e) => onQuantityChange(Number(e.target.value))}
         >

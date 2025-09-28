@@ -3,7 +3,7 @@ import './payment.scss';
 import { mockCommandItems } from '../mocks/command-items.ts';
 import { mockFoodCategories } from '../mocks/food-categories.ts';
 import SelectItemsCheckbox from '../components/select-items-checkbox/select-items-checkbox.tsx';
-import { ItemDetail } from '../components/item-detail/itemDetail.tsx';
+import { ItemDetail } from '../components/item-detail/ItemDetail.tsx';
 
 export type PaymentProps = {
   readonly tableNumber: number;
@@ -63,7 +63,7 @@ export function Payment(props: PaymentProps) {
           <h2>{category.title}</h2>
           <div className="items-category-container">
             {mockCommandItems
-              .filter((item) => item.category == category.title)
+              .filter((item) => item.categoryId === category.id)
               .map((item) => (
                 <ItemDetail
                   key={item.id}

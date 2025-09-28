@@ -1,4 +1,4 @@
-import './select-items-checkbox.css';
+import './select-items-checkbox.scss';
 
 type SelectItemsCheckboxProps = {
   readonly label: string;
