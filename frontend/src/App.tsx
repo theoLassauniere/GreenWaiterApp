@@ -9,6 +9,7 @@ import FoodCategory from './components/food-category/food-category.tsx';
 import { mockFoodCategories } from './mocks/food-categories.ts';
 import ReadyNotification from './components/ready-notification/ready-notification.tsx';
 import OrdersList from './components/orders-list/orders-list.tsx';
+import { Payment } from './pages/payment.tsx';
 
 function App() {
   const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
@@ -61,7 +62,7 @@ function App() {
           </>
         )}
         {page === 'commandes' && <OrdersList tables={mockTables} />}
-        {page === 'paiement' && <h2>Paiement (à implémenter)</h2>}
+        {page === 'paiement' && <Payment tableNumber={12} />}
       </main>
       {readyNotification && (
         <ReadyNotification message={readyNotification} onClose={() => setNotification(null)} />
