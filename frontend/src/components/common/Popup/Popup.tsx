@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect } from 'react';
 import './Popup.css';
-import IconButton from '../IconButton/iconButton.tsx';
+import IconButton from '../IconButton/IconButton.tsx';
 
 export interface PopupProps {
   isOpen: boolean;
