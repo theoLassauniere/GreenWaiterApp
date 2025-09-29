@@ -9,30 +9,34 @@
     height: 150px;
     margin-bottom: 8px;
     border: 1px solid black;
-    & .item-img {
+    & .item-img{
       height: 100%;
       width: 100%;
     }
   }
-
-  & .icon-button-menu-item {
+  .icon-button-menu-item {
     position: relative;
-    top: 30px;
-    left: 75px;
     z-index: 1;
 
     .IconButton {
+      position: absolute;
+      bottom: -18px;
+      left: 60px;
       background: black;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-      & .material-icons {
-        width: 100%;
-        height: 100%;
+      .material-icons {
         color: var(--palette-gray);
-        border-radius: 50%;
       }
     }
   }
-  .item-text-container {
+  .item-text-container{
     color: black;
+
   }
 }

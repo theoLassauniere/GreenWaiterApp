@@ -1,4 +1,4 @@
-import './MenuItemSelection.css';
+import './MenuItemSelection.scss';
 import type { Item } from '../models/Item.ts';
 import MenuItem from '../components/menu/MenuItem/MenuItem.tsx';
 import SearchBar from '../components/common/SearchBar.tsx';
