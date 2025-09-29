@@ -1,6 +1,6 @@
 import IconButton from './IconButton/IconButton.tsx';
 import { useEffect, useRef, useState } from 'react';
-import './SearchBar.css';
+import './SearchBar.scss';
 
 type SearchBarProps = {
   placeholder?: string;
