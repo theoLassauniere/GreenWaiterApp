@@ -1,52 +1,51 @@
-.menu-item-selection{
+.menu-item-selection {
+  display: flex;
+  margin-top: 5px;
+  flex-direction: column;
+  width: 100%;
+  min-width: 900px;
+  height: 100%;
+  min-height: 700px;
+  background: white;
+  & .header {
     display: flex;
-    margin-top: 5px;
-    flex-direction: column;
-    width: 100%;
-    min-width: 900px;
-    height: 100%;
-    min-height: 700px;
-    background: white;
-    & .header{
-        display: flex;
-        align-items: center;
-        flex-direction: row;
-        justify-content: flex-start;
-        gap: 10px;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 10px;
 
-        & > .IconButton{
-            margin: 0 5px;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--gray);
-            & .material-icons{
-                color: #212121;
-                font-size: 24px;
-            }
-
-        }
-
-        & .MenuItemSearchBar {
-            margin: 10px 5px;
-            border-bottom: 1px solid #ccc;
-            color:black;
-        }
+    & > .IconButton {
+      margin: 0 5px;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gray);
+      & .material-icons {
+        color: #212121;
+        font-size: 24px;
+      }
     }
 
-    & .MenuItemSelection {
-        padding:10px;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        overflow-y: scroll;
-        overflow-x: hidden;
-
-        &  .item{
-            padding: 12px;
-        }
+    & .MenuItemSearchBar {
+      margin: 10px 5px;
+      border-bottom: 1px solid #ccc;
+      color: black;
     }
+  }
+
+  & .MenuItemSelection {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    & .item {
+      padding: 12px;
+    }
+  }
 }
