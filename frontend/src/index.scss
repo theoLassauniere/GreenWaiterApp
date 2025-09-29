@@ -36,11 +36,6 @@ body {
   min-height: 100vh;
 }
 
-html,
-body {
-  height: 100%;
-}
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -79,11 +74,12 @@ button:focus-visible {
 }
 
 .material-icons {
-  font-family: 'Material Icons';
+  font-family: 'Material Icons', serif;
   font-weight: normal;
   font-style: normal;
-  font-size: 24px; /* Preferred icon size */
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   line-height: 1;
   text-transform: none;
   letter-spacing: normal;
