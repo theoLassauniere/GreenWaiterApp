@@ -1,6 +1,6 @@
 import config from '../config';
-import { type TableProps } from '../components/table/table';
 import { mockTables } from '../mocks/tables.ts';
+import type { TableProps } from '../components/tables/table/table.tsx';
 
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '') : '/api';
 
