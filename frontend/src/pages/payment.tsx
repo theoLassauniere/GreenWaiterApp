@@ -3,7 +3,7 @@ import './payment.scss';
 import { mockCommandItems } from '../mocks/command-items.ts';
 import { mockFoodCategories } from '../mocks/food-categories.ts';
 import SelectItemsCheckbox from '../components/common/select-items-checkbox/select-items-checkbox.tsx';
-import { ItemDetail } from '../components/payment/item-detail/ItemDetail.tsx';
+import { ItemDetail } from '../components/payment/item-detail/item-detail.tsx';
 
 export type PaymentProps = {
   readonly tableNumber: number;
