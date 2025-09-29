@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import './IconButton.scss';
+import './icon-button.scss';
 
 type ButtonProps = {
   icon?: string;

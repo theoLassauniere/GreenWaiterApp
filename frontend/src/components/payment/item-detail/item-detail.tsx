@@ -1,4 +1,4 @@
-import './itemDetail.scss';
+import './item-detail.scss';
 
 export type ItemDetailProps = {
   name: string;

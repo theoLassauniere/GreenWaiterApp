@@ -1,9 +1,9 @@
 import type { Item } from '../../../models/Item.ts';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import './MenuItem.scss';
-import IconButton from '../../common/IconButton/IconButton.tsx';
-import AllergenPopup from '../AllergenPopup/AllergenPopup.tsx';
+import './menu-item.scss';
+import IconButton from '../../common/icon-button/icon-button.tsx';
+import AllergenPopup from '../allergen-popup/allergen-popup.tsx';
 
 type MenuItemProps = {
   item: Item;
@@ -11,11 +11,11 @@ type MenuItemProps = {
   className?: string;
 };
 
-export default function MenuItem({ item, onClick, className }: MenuItemProps): ReactNode {
+export default function MenuItem({ item, onClick, className }: Readonly<MenuItemProps>): ReactNode {
   const { imageUrl, name, price, allergens } = item;
-  const [isOpen, setOpen] = useState(false);
-  const open = () => setOpen(true);
-  const close = () => setOpen(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
   return (
     <>
       <div className={`menu-item ${className ?? ''}`} onClick={onClick}>
