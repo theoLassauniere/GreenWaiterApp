@@ -1,6 +1,6 @@
-import IconButton from './IconButton/IconButton.tsx';
 import { useEffect, useRef, useState } from 'react';
-import './SearchBar.scss';
+import './search-bar.scss';
+import IconButton from '../icon-button/icon-button.tsx';
 
 type SearchBarProps = {
   placeholder?: string;
@@ -12,7 +12,7 @@ type SearchBarProps = {
   handleSearch?: () => void;
 };
 
-export default function SearchBar(props: SearchBarProps) {
+export default function SearchBar(props: Readonly<SearchBarProps>) {
   const { placeholder, value: propValue, onChange, clearable = true, onClear } = props;
   const [value, setValue] = useState(propValue ?? '');
   const inputRef = useRef<HTMLInputElement>(null);

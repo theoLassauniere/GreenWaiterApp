@@ -1,6 +1,6 @@
 import './table.scss';
-import { CommandState } from '../../models/CommandState';
-import { PreparationPlace } from '../../models/PreparationPlace';
+import { CommandState } from '../../../models/CommandState.ts';
+import { PreparationPlace } from '../../../models/PreparationPlace.ts';
 
 export default function Table({
   id,

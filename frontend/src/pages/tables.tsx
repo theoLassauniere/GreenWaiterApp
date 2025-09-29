@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './tables.scss';
-import Table, { type TableProps } from '../table/table';
-import TableFilter from '../tables-filter/tables-filter';
-import SelectItemsCheckbox from '../select-items-checkbox/select-items-checkbox.tsx';
+import Table, { type TableProps } from '../components/tables/table/table.tsx';
+import TableFilter from '../components/tables/tables-filter/tables-filter.tsx';
+import SelectItemsCheckbox from '../components/common/select-items-checkbox/select-items-checkbox.tsx';
 
 type TablesProps = {
   readonly tables: readonly TableProps[];

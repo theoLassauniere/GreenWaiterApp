@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect } from 'react';
-import './Popup.scss';
-import IconButton from '../IconButton/IconButton.tsx';
+import './pop-up.scss';
+import IconButton from '../icon-button/icon-button.tsx';
 
 export interface PopupProps {
   isOpen: boolean;
@@ -10,7 +10,7 @@ export interface PopupProps {
   className?: string;
 }
 
-export default function Popup({ isOpen, onClose, title, children, className = '' }: PopupProps) {
+export function PopUp({ isOpen, onClose, title, children, className = '' }: Readonly<PopupProps>) {
   useEffect(() => {
     if (!isOpen) return;
     const prev = document.body.style.overflow;

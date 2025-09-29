@@ -2,8 +2,8 @@ import { type Dispatch, type SetStateAction, useState } from 'react';
 import './payment.scss';
 import { mockCommandItems } from '../mocks/command-items.ts';
 import { mockFoodCategories } from '../mocks/food-categories.ts';
-import SelectItemsCheckbox from '../components/select-items-checkbox/select-items-checkbox.tsx';
-import { ItemDetail } from '../components/item-detail/ItemDetail.tsx';
+import SelectItemsCheckbox from '../components/common/select-items-checkbox/select-items-checkbox.tsx';
+import { ItemDetail } from '../components/payment/item-detail/ItemDetail.tsx';
 
 export type PaymentProps = {
   readonly tableNumber: number;

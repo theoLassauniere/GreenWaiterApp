@@ -1,4 +1,4 @@
-import { type TableProps } from '../components/table/table';
+import { type TableProps } from '../components/tables/table/table';
 
 export const mockTables: readonly TableProps[] = [
   {

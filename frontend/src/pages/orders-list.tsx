@@ -1,5 +1,5 @@
 import './orders-list.scss';
-import Table, { type TableProps } from '../table/table';
+import Table, { type TableProps } from '../components/tables/table/table.tsx';
 
 type OrdersListProps = {
   readonly tables: readonly TableProps[];
