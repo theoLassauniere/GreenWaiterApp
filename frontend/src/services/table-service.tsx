@@ -1,18 +1,15 @@
 import config from '../config';
+import { type TableProps } from '../components/table/table';
+import { mockTables } from '../mocks/tables.ts';
 
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '') : '/api';
 
-export type TableDto = {
-  id: number;
-  capacity: number;
-  occupied: boolean;
-};
-
-export type TableWithOrderDto = {
-  id: number;
-  capacity: number;
-  occupied: boolean;
-  currentOrderId?: number;
+type RawTable = {
+  _id: string;
+  number: number;
+  capacity?: number;
+  taken: boolean;
+  tableOrderId?: string | null;
 };
 
 export type StartOrderingDto = {
@@ -21,22 +18,39 @@ export type StartOrderingDto = {
 };
 
 export const TableService = {
-  async listAllTables(): Promise<TableWithOrderDto[]> {
+  async listAllTables(): Promise<TableProps[]> {
     const response = await fetch(`${baseUrl}/dining/tables`);
     if (!response.ok) {
       throw new Error(`Erreur lors du fetch des tables: ${response.statusText}`);
     }
-    return response.json();
+    const rawTables: RawTable[] = await response.json();
+
+    return rawTables.map((t) => {
+      const mock = mockTables.find((m) => m.tableNumber === t.number);
+      return {
+        id: t._id,
+        tableNumber: t.number,
+        capacity: mock?.capacity ?? 2,
+        occupied: t.taken,
+        commandState: mock?.commandState ?? undefined,
+        isCommandesPage: mock?.isCommandesPage ?? undefined,
+        commandPreparationPlace: mock?.commandPreparationPlace ?? undefined,
+      };
+    });
   },
 
-  async addTable(table: { number: number; capacity: number }) {
+  async addTable(table: { tableNumber: number }) {
+    const payload = { number: table.tableNumber };
     const response = await fetch(`${baseUrl}/dining/tables`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(table),
+      body: JSON.stringify(payload),
     });
-    if (!response.ok) throw new Error(`Erreur création table: ${response.statusText}`);
-    return response.json();
+
+    if (!response.ok) {
+      throw new Error(`Erreur création table: ${response.statusText}`);
+    }
+    return await response.json();
   },
 
   async openTable(order: StartOrderingDto) {
@@ -45,7 +59,9 @@ export const TableService = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
     });
-    if (!response.ok) throw new Error(`Erreur ouverture table: ${response.statusText}`);
-    return response.json();
+    if (!response.ok) {
+      throw new Error(`Erreur ouverture table: ${response.statusText}`);
+    }
+    return await response.json();
   },
 };

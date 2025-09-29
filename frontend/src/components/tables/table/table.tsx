@@ -3,7 +3,7 @@ import { CommandState } from '../../../models/CommandState.ts';
 import { PreparationPlace } from '../../../models/PreparationPlace.ts';
 
 export default function Table({
-  id,
+  tableNumber,
   capacity,
   occupied,
   isCommandesPage = false,
@@ -12,7 +12,7 @@ export default function Table({
 }: Readonly<TableProps>) {
   return (
     <div className={`table-card ${occupied ? 'occupied' : 'free'}`}>
-      <h3>Table {id}</h3>
+      <h3>Table {tableNumber}</h3>
       <p>
         Capacité :<strong> {capacity}</strong>
       </p>
@@ -40,7 +40,8 @@ export default function Table({
 }
 
 export type TableProps = {
-  readonly id: number;
+  readonly id: string;
+  readonly tableNumber: number;
   readonly capacity: number;
   readonly occupied: boolean;
   readonly isCommandesPage?: boolean; // L'affichage du composant table n'est pas le même selon la page "Commandes" ou la page "Tables" d'où ce flag

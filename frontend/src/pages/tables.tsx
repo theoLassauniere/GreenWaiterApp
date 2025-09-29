@@ -34,6 +34,7 @@ export default function Tables({ tables }: Readonly<TablesProps>) {
           <Table
             key={t.id}
             id={t.id}
+            tableNumber={t.tableNumber}
             capacity={t.capacity}
             occupied={t.occupied}
             isCommandesPage={t.isCommandesPage}
