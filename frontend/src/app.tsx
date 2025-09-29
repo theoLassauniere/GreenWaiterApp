@@ -1,4 +1,4 @@
-import './App-changed.scss';
+import './app.scss';
 import Tables from './pages/tables.tsx';
 import { mockTables } from './mocks/tables';
 import Sidebar from './components/sidebar/sidebar.tsx';
