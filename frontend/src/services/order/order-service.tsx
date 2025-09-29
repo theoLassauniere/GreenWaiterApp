@@ -3,17 +3,10 @@ import config from '../../config';
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/kitchen') : '/api/kitchen';
 
 // Personal implementation (bff)
-export type OrderDto = {
+export type OrderDtoMine = {
     id: number;
     items: number[];
 };
-
-export type MenuItemDto = {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-}
 
 // Teacher's implementation (web-services)
 export type PreparationDto = {
@@ -24,6 +17,23 @@ export type PreparationDto = {
 export type MenuItemShortDto = {
     menuItemShortName: string;
     howMany: number;
+}
+
+export type OrderDto = {
+    id: number;
+    tableNumber: number;
+    shouldBeReadyAt: string;
+    completedAt: string;
+    takenForServiceAt: string;
+    preparedItems: PreparedItemDto[];
+}
+
+export type PreparedItemDto = {
+    id: number;
+    shortName: string;
+    shouldStartAt: string;
+    startedAt: string;
+    finishedAt: string;
 }
 
 export const OrderService = {
@@ -41,6 +51,14 @@ export const OrderService = {
             body: JSON.stringify(payload),
         });
         if (!response.ok) throw new Error(`Erreur création commande: ${response.statusText}`);
+        return response.json();
+    },
+
+    async getReadyOrders(): Promise<OrderDto[]> {
+        const response = await fetch(`${baseUrl}/preparations?state=readyToBeServed`, {
+            method: 'GET'
+        });
+        if (!response.ok) throw new Error(`Erreur récupération commandes prêtes: ${response.statusText}`);
         return response.json();
     },
 

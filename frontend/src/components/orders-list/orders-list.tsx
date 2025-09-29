@@ -1,5 +1,7 @@
 import './orders-list.scss';
 import Table, { type TableProps } from '../table/table';
+import {type OrderDto, OrderService} from "../../services/order/order-service.tsx";
+import {useEffect, useState} from "react";
 
 type OrdersListProps = {
   readonly tables: readonly TableProps[];
@@ -7,31 +9,45 @@ type OrdersListProps = {
 
 export default function OrdersList({ tables }: Readonly<OrdersListProps>) {
   const preparation = tables.filter((t) => t.commandState === 'preparing-in-kitchen');
-  const awaitingService = tables.filter((t) => t.commandState === 'awaiting-service');
   const served = tables.filter((t) => t.commandState === 'served');
 
-  return (
-    <div className="orders-list">
-      <div className="orders-column">
-        <h2>Préparation</h2>
-        {preparation.map((t) => (
-          <Table key={t.id} {...t} isCommandesPage={true} />
-        ))}
-      </div>
+  const [readyOrders, setReadyOrders] = useState<OrderDto[]>([]);
 
-      <div className="orders-column">
-        <h2>À servir</h2>
-        {awaitingService.map((t) => (
-          <Table key={t.id} {...t} isCommandesPage={true} />
-        ))}
-      </div>
+    useEffect(() => {
+        OrderService.getReadyOrders().then(setReadyOrders);
+    }, []);
 
-      <div className="orders-column">
-        <h2>Servies / En attente</h2>
-        {served.map((t) => (
-          <Table key={t.id} {...t} isCommandesPage={true} />
-        ))}
-      </div>
-    </div>
-  );
+    return (
+        <div className="orders-list">
+            <div className="orders-column">
+                <h2>Préparation</h2>
+                {preparation.map((t) => (
+                    <Table key={t.id} {...t} isCommandesPage={true}/>
+                ))}
+            </div>
+
+            <div className="orders-column">
+                <h2>À servir</h2>
+                {
+                    readyOrders.map((o) => {
+                        const table = tables.find((t) => t.id === o.tableNumber);
+                        if (!table) return null;
+                        return (
+                            <Table
+                                key={table.id}
+                                {...table}
+                            />
+                        );
+                    })
+                }
+            </div>
+
+            <div className="orders-column">
+                <h2>Servies / En attente</h2>
+                {served.map((t) => (
+                    <Table key={t.id} {...t} isCommandesPage={true}/>
+                ))}
+            </div>
+        </div>
+    );
 }
