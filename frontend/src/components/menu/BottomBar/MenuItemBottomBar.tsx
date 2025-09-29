@@ -5,7 +5,8 @@ import type { CommandItem } from '../../../models/CommandItem.ts';
 type MenuItemBottomBarProps = {
   tableNumber: number;
   items: CommandItem[]; // ici a remplacé une fois le merge de mathis
-  onClick: () => void;
+  onSend: () => void;
+  onClick: (item: CommandItem) => void;
   onRemoveItem(item: CommandItem): void;
 };
 
@@ -15,10 +16,15 @@ export default function MenuItemBottomBar(props: MenuItemBottomBarProps) {
       <div className="bottom-bar-table-number">table : {props.tableNumber}</div>
       <div className="menu-items-container">
         {props.items.map((item) => (
-          <BottomBarItem key={item.id} item={item} onClick={() => props.onRemoveItem(item)} />
+          <BottomBarItem
+            key={item.id}
+            item={item}
+            onClick={() => props.onClick(item)}
+            onRemove={() => props.onRemoveItem(item)}
+          />
         ))}
       </div>
-      <div onClick={props.onClick} className="send-button">
+      <div onClick={props.onSend} className="send-button">
         {' '}
         Envoyer
       </div>

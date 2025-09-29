@@ -1,13 +1,29 @@
 .payment-container {
   padding-left: 2%;
   padding-bottom: 120px;
-}
-
-.items-category-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: flex-start;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  & .header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #242424;
+    padding-bottom: 20px;
+  }
+
+
+  & .items-container {
+    & .items-category-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: flex-start;
+    }
+  }
 }
 
 .payment-table-separator {

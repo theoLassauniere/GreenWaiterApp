@@ -3,9 +3,7 @@
   margin-top: 5px;
   flex-direction: column;
   width: 100%;
-  min-width: 900px;
   height: 100%;
-  min-height: 700px;
   background: white;
   & .header {
     display: flex;
@@ -41,11 +39,16 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
+    flex: 1;
 
     & .item {
       padding: 12px;
     }
+  }
+
+  & .footer {
+    margin-top: auto;
   }
 }

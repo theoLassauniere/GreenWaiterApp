@@ -75,6 +75,7 @@ export function Payment(props: PaymentProps) {
   return (
     <>
       <div className="payment-container">
+        <div className="header">
         <h1>Table {props.tableNumber}</h1>
         <hr className="payment-table-separator" />
         <SelectItemsCheckbox
@@ -82,6 +83,8 @@ export function Payment(props: PaymentProps) {
           checked={commandItems.every((item) => selectedQuantity[item.id] === item.quantity)}
           onChange={handleSelectAll}
         />
+        </div>
+        <div className="items-container">
         {mockFoodCategories
           .filter((category) => commandItems.some((item) => item.categoryId === category.id))
           .map((category) => (
@@ -114,6 +117,7 @@ export function Payment(props: PaymentProps) {
               </div>
             </div>
           ))}
+        </div>
       </div>
       <div className="payment-summary-fixed">
         <hr className="payment-summary-separator" />

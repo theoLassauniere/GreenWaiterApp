@@ -1,9 +1,11 @@
 .BottomBarItem {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 8px;
   margin: 4px 0;
   background-color: #f0f0f0;
+  color: black;
   border-radius: 25px;
 
   .item-quantity {
@@ -19,20 +21,20 @@
     border-radius: 50%;
     font-size: 12px;
     font-weight: bold;
+    cursor: pointer;
   }
 
   .item-name {
     flex-grow: 1;
     overflow: hidden;
+    color: black;
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-right: 8px;
   }
 
   .item-close-button {
-    // Le style de l'IconButton est probablement déjà défini,
-    // mais vous pouvez ajouter des surcharges ici si nécessaire.
-    // Par exemple, pour la couleur :
-    // color: red;
+    width: 24px;
+    height: 24px;
   }
 }
