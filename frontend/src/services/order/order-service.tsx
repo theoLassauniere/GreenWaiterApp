@@ -1,4 +1,6 @@
-const baseUrl = "http://localhost:9500/kitchen";
+import config from '../../config';
+
+const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/kitchen') : '/api/kitchen';
 
 // Personal implementation (bff)
 export type OrderDto = {
