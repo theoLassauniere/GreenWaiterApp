@@ -76,47 +76,47 @@ export function Payment(props: PaymentProps) {
     <>
       <div className="payment-container">
         <div className="header">
-        <h1>Table {props.tableNumber}</h1>
-        <hr className="payment-table-separator" />
-        <SelectItemsCheckbox
-          label="Sélectionner tout"
-          checked={commandItems.every((item) => selectedQuantity[item.id] === item.quantity)}
-          onChange={handleSelectAll}
-        />
+          <h1>Table {props.tableNumber}</h1>
+          <hr className="payment-table-separator" />
+          <SelectItemsCheckbox
+            label="Sélectionner tout"
+            checked={commandItems.every((item) => selectedQuantity[item.id] === item.quantity)}
+            onChange={handleSelectAll}
+          />
         </div>
         <div className="items-container">
-        {mockFoodCategories
-          .filter((category) => commandItems.some((item) => item.categoryId === category.id))
-          .map((category) => (
-            <div key={category.id}>
-              <h2>{category.title}</h2>
-              <div className="items-category-container">
-                {commandItems
-                  .filter((item) => item.categoryId === category.id)
-                  .map((item) => (
-                    <ItemDetail
-                      key={item.id}
-                      name={item.name}
-                      quantity={item.quantity}
-                      selected={selected[item.id]}
-                      selectedQuantity={selectedQuantity[item.id]}
-                      onSelectChange={(checked) =>
-                        handleItemSelectChange(
-                          checked,
-                          item.id,
-                          selected,
-                          setSelected,
-                          setSelectedQuantity
-                        )
-                      }
-                      onQuantityChange={(value) =>
-                        handleItemQuantityChange(value, item.id, setSelectedQuantity, setSelected)
-                      }
-                    />
-                  ))}
+          {mockFoodCategories
+            .filter((category) => commandItems.some((item) => item.categoryId === category.id))
+            .map((category) => (
+              <div key={category.id}>
+                <h2>{category.title}</h2>
+                <div className="items-category-container">
+                  {commandItems
+                    .filter((item) => item.categoryId === category.id)
+                    .map((item) => (
+                      <ItemDetail
+                        key={item.id}
+                        name={item.name}
+                        quantity={item.quantity}
+                        selected={selected[item.id]}
+                        selectedQuantity={selectedQuantity[item.id]}
+                        onSelectChange={(checked) =>
+                          handleItemSelectChange(
+                            checked,
+                            item.id,
+                            selected,
+                            setSelected,
+                            setSelectedQuantity
+                          )
+                        }
+                        onQuantityChange={(value) =>
+                          handleItemQuantityChange(value, item.id, setSelectedQuantity, setSelected)
+                        }
+                      />
+                    ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
       <div className="payment-summary-fixed">
