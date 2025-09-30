@@ -12,12 +12,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --palette-gray: #dcdfda;
-  --palette-gray-light: #f0f0f0;
   --palette-green-light: #c8d6a2;
   --palette-green-medium: #b7ce66;
   --palette-green: #8fb43a;
   --palette-green-dark: #4b5943;
+  --palette-gray-dark: #535353;
+  --palette-gray: #787878;
+  --palette-gray-light: #f0f0f0;
   --palette-green-valid: #1b6826;
 }
 
@@ -36,6 +37,13 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
 h1 {
@@ -76,12 +84,11 @@ button:focus-visible {
 }
 
 .material-icons {
-  font-family: 'Material Icons', serif;
+  font-family: 'Material Icons', sans-serif;
   font-weight: normal;
   font-style: normal;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-size: 24px; /* Preferred icon size */
+  display: inline-block;
   line-height: 1;
   text-transform: none;
   letter-spacing: normal;

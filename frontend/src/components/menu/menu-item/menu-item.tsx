@@ -1,6 +1,6 @@
 import type { Item } from '../../../models/Item.ts';
-import type { ReactNode } from 'react';
-import { useState } from 'react';
+import * as React from 'react';
+import { type ReactNode, useState } from 'react';
 import './menu-item.scss';
 import IconButton from '../../common/icon-button/icon-button.tsx';
 import AllergenPopup from '../allergen-popup/allergen-popup.tsx';
@@ -14,7 +14,10 @@ type MenuItemProps = {
 export default function MenuItem({ item, onClick, className }: Readonly<MenuItemProps>): ReactNode {
   const { imageUrl, name, price, allergens } = item;
   const [isOpen, setIsOpen] = useState(false);
-  const open = () => setIsOpen(true);
+  const open = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setIsOpen(true);
+  };
   const close = () => setIsOpen(false);
   return (
     <>
