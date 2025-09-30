@@ -3,7 +3,7 @@ import './icon-button.scss';
 
 type ButtonProps = {
   icon?: string;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent) => void;
   className?: string;
 };
 
