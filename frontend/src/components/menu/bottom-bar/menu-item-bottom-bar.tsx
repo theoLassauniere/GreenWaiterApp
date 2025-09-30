@@ -1,4 +1,4 @@
-import './MenuItemBottomBar.scss';
+import './menu-item-bottom-bar.scss';
 import BottomBarItem from './BottomBarItem/BottomBarItem.tsx';
 import type { CommandItem } from '../../../models/CommandItem.ts';
 
