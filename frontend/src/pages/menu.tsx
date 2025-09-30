@@ -31,6 +31,7 @@ export function Menu(props: Readonly<MenuProps>) {
         <div className="menu-grid">
           <MenuItemSelection
             listItems={mockMenuItems}
+            table={11}
             onReturn={() => props.setSelectedCategory(null)}
           />
         </div>

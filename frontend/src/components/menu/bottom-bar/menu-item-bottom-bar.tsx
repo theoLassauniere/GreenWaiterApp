@@ -1,10 +1,10 @@
 import './menu-item-bottom-bar.scss';
-import BottomBarItem from './BottomBarItem/BottomBarItem.tsx';
+import BottomBarItem from './bottom-bar-item/bottom-bar-item.tsx';
 import type { CommandItem } from '../../../models/CommandItem.ts';
 
 type MenuItemBottomBarProps = {
   tableNumber: number;
-  items: CommandItem[]; // ici a remplacé une fois le merge de mathis
+  items: CommandItem[];
   onSend: () => void;
   onClick: (item: CommandItem) => void;
   onRemoveItem(item: CommandItem): void;
@@ -13,7 +13,7 @@ type MenuItemBottomBarProps = {
 export default function MenuItemBottomBar(props: MenuItemBottomBarProps) {
   return (
     <div className="MenuItemBottomBar">
-      <div className="bottom-bar-table-number">table : {props.tableNumber}</div>
+      <div className="bottom-bar-table-number">Table : {props.tableNumber}</div>
       <div className="menu-items-container">
         {props.items.map((item) => (
           <BottomBarItem
