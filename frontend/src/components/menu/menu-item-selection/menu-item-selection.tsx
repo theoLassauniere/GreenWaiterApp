@@ -18,7 +18,7 @@ export default function MenuItemSelection(props: MenuItemSelectionProps) {
   const [value, setValue] = useState('');
   const [selectedItems, setSelectedItems] = useState<CommandItem[]>(props.listSelectedItems || []);
 
-  const filtredList = props.listItems.filter((item: Item) =>
+  const filteredList= props.listItems.filter((item: Item) =>
     item.name.toLowerCase().includes(value.toLowerCase())
   );
 
