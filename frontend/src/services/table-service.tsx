@@ -19,12 +19,15 @@ export type StartOrderingDto = {
 
 export const TableService = {
   async listAllTables(): Promise<TableProps[]> {
-    const response = await fetch(`${baseUrl}/dining/tables`);
+    const url = config.bffFlag ? `${baseUrl}/tables` : `${baseUrl}/dining/tables`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Erreur lors du fetch des tables: ${response.statusText}`);
     }
+    if (config.bffFlag) {
+      return await response.json();
+    }
     const rawTables: RawTable[] = await response.json();
-
     return rawTables.map((t) => {
       const mock = mockTables.find((m) => m.tableNumber === t.number);
       return {
@@ -39,14 +42,29 @@ export const TableService = {
     });
   },
 
+  async seedTablesWithMocks(): Promise<TableProps[]> {
+    if (!config.bffFlag) {
+      throw new Error('seedTablesWithMocks should only be called when BFF is enabled');
+    }
+    const response = await fetch(`${baseUrl}/tables/seed`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(mockTables),
+    });
+    if (!response.ok) {
+      throw new Error(`Erreur seed tables sur BFF: ${response.statusText}`);
+    }
+    return await response.json();
+  },
+
   async addTable(table: { tableNumber: number }) {
     const payload = { number: table.tableNumber };
-    const response = await fetch(`${baseUrl}/dining/tables`, {
+    const endpoint = config.bffFlag ? `${baseUrl}/tables/add` : `${baseUrl}/dining/tables`;
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-
     if (!response.ok) {
       throw new Error(`Erreur création table: ${response.statusText}`);
     }
@@ -54,7 +72,8 @@ export const TableService = {
   },
 
   async openTable(order: StartOrderingDto) {
-    const response = await fetch(`${baseUrl}/dining/tableOrders`, {
+    const endpoint = config.bffFlag ? `${baseUrl}/tables/open` : `${baseUrl}/dining/tableOrders`;
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
