@@ -1,4 +1,4 @@
-import './BottomBarItem.scss';
+import './bottom-bar-item.scss';
 import IconButton from '../../../common/IconButton/IconButton.tsx';
 import type { CommandItem } from '../../../../models/CommandItem.ts';
 
