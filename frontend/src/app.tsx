@@ -1,4 +1,3 @@
-// App.tsx
 import './App.scss';
 import Sidebar from './components/sidebar/sidebar.tsx';
 import { useState } from 'react';

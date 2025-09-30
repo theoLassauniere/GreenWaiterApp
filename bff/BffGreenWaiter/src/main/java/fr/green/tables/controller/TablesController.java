@@ -1,7 +1,8 @@
 package fr.green.tables.controller;
 
-import fr.green.tables.dto.StartOrderingDto;
 import fr.green.tables.dto.TableDto;
+import fr.green.tables.dto.TableWithOrderDto;
+import fr.green.tables.mapper.TableMapper;
 import fr.green.tables.services.DiningServiceClient;
 import fr.green.tables.services.TableOrderServiceClient;
 import lombok.RequiredArgsConstructor;
@@ -20,35 +21,35 @@ public class TablesController {
     @PostMapping("/seed")
     public List<TableDto> seedTables(@RequestBody List<TableDto> mocks) {
         List<TableDto> result = new ArrayList<>();
-
         for (TableDto mock : mocks) {
-            diningClient.addTable(mock.getTableNumber());
-
-            if (mock.isOccupied()) {
-                orderClient.openTable(new StartOrderingDto(mock.getTableNumber(), mock.getCapacity()));
+            TableDto table;
+            TableWithOrderDto tableBack;
+            try {
+                tableBack = diningClient.getTableByNumber(mock.getTableNumber());
+            } catch (Exception e) {
+                diningClient.addTable(mock.getTableNumber());
+                tableBack = diningClient.getTableByNumber(mock.getTableNumber());
             }
 
-            TableDto table = diningClient.getTableByNumber(mock.getTableNumber());
+            if (mock.isOccupied() && (mock.getCommandState() == null || !tableBack.isTaken())) {
+                orderClient.openTableSafe(mock.getTableNumber(), mock.getCapacity());
+                tableBack = diningClient.getTableByNumber(mock.getTableNumber());
+            }
+            table = TableMapper.toTableDto(tableBack);
             table.setCapacity(mock.getCapacity());
+            table.setCommandesPage(mock.isCommandesPage());
             table.setCommandState(mock.getCommandState());
             table.setCommandPreparationPlace(mock.getCommandPreparationPlace());
-
             result.add(table);
         }
-
         return result;
     }
 
     @GetMapping
     public List<TableDto> listTables() {
-        return diningClient.listAllTables();
-    }
-
-    @PostMapping("/open")
-    public TableDto openTable(@RequestBody StartOrderingDto dto) {
-        orderClient.openTable(dto);
-        TableDto table = diningClient.getTableByNumber(dto.getTableNumber());
-        table.setCapacity(dto.getCustomersCount());
-        return table;
+        List<TableWithOrderDto> tablesFromBack = diningClient.listAllTables();
+        return tablesFromBack.stream()
+                .map(TableMapper::toTableDto)
+                .toList();
     }
 }

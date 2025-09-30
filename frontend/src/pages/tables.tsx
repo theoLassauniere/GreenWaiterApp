@@ -6,6 +6,7 @@ import SelectItemsCheckbox from '../components/common/select-items-checkbox/sele
 import { TableService } from '../services/table-service.tsx';
 import { mockTables } from '../mocks/tables.ts';
 import * as React from 'react';
+import config from '../config.ts';
 
 type TablesProps = {
   tables: TableProps[];
@@ -53,20 +54,23 @@ export default function Tables({ tables, setTables }: Readonly<TablesProps>) {
 
   const loadTables = useCallback(async () => {
     try {
-      await seedTablesIfEmpty();
-      let existing = await TableService.listAllTables();
-      await syncWithMocks(existing);
-      existing = await TableService.listAllTables();
-      setTables(existing);
+      if (config.bffFlag) {
+        const tablesFromBff = await TableService.seedTablesWithMocks();
+        setTables(tablesFromBff);
+      } else {
+        await seedTablesIfEmpty();
+        let existing = await TableService.listAllTables();
+        await syncWithMocks(existing);
+        existing = await TableService.listAllTables();
+        setTables(existing);
+      }
     } catch (err) {
       console.error('Erreur init tables', err);
     }
   }, [setTables]);
 
   useEffect(() => {
-    (async () => {
-      await loadTables();
-    })();
+    void loadTables();
   }, [loadTables]);
 
   const filteredTables = tables.filter((t) => {
