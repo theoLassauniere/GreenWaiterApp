@@ -118,10 +118,10 @@ export function Payment(props: PaymentProps) {
               </div>
             ))}
         </div>
-      </div>
-      <div className="payment-summary-fixed">
-        <hr className="payment-summary-separator" />
-        <PaymentSummary total={total} toPay={toPay} onSplit={() => {}} onPay={handlePay} />
+        <div className="payment-summary-fixed">
+          <hr className="payment-summary-separator" />
+          <PaymentSummary total={total} toPay={toPay} onSplit={() => {}} onPay={handlePay} />
+        </div>
       </div>
     </>
   );
