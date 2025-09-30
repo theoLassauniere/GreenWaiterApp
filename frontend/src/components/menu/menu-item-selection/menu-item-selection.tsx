@@ -61,7 +61,7 @@ export default function MenuItemSelection(props: MenuItemSelectionProps) {
           />
         </div>
         <div className="MenuItemSelection">
-          {filtredList.map((item: Item) => (
+          {filteredList.map((item: Item) => (
             <MenuItem
               item={item}
               key={item.id}
