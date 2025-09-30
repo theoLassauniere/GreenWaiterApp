@@ -1,5 +1,5 @@
 .MenuItemBottomBar {
-  height: 50px;
+  height: 65px;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -33,6 +33,7 @@
   & .send-button {
     min-width: 80px;
     display: flex;
+    font-weight: bold;
     justify-content: center;
     align-items: center;
     background: darkred;

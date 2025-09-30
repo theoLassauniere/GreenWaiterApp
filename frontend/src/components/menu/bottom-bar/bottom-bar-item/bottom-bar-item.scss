@@ -4,8 +4,8 @@
   justify-content: center;
   padding: 8px;
   margin: 4px 0;
-  background-color: #f0f0f0;
-  color: black;
+  background-color: var(--palette-gray);
+  color: white;
   border-radius: 25px;
 
   .item-quantity {
@@ -17,7 +17,6 @@
     min-width: 24px;
     margin-right: 12px;
     background-color: #333;
-    color: white;
     border-radius: 50%;
     font-size: 12px;
     font-weight: bold;
@@ -27,7 +26,6 @@
   .item-name {
     flex-grow: 1;
     overflow: hidden;
-    color: black;
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-right: 8px;
