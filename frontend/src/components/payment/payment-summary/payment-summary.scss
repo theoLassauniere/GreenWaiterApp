@@ -1,0 +1,52 @@
+.payment-summary-container {
+  display: flex;
+  margin: 0 2% 2% 2%;
+  justify-content: space-between;
+  align-items: center;
+
+  .payment-summary-info {
+    font-size: 1.5rem;
+    font-weight: 500;
+
+    .label {
+      margin-right: 0.5rem;
+      color: #555;
+    }
+
+    .amount {
+      color: #111;
+      font-weight: 600;
+    }
+  }
+
+  .payment-actions {
+    display: flex;
+    gap: 1rem;
+
+    .btn {
+      font-size: 1.25rem;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      border: solid 0.1rem #000000;
+    }
+
+    .split {
+      background: var(--palette-gray-light);
+      color: #333;
+
+      &:hover {
+        background: var(--palette-gray);
+      }
+    }
+
+    .pay {
+      background: var(--palette-green-valid);
+      color: white;
+
+      &:hover {
+        background: var(--palette-green-dark);
+      }
+    }
+  }
+}
