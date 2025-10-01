@@ -19,13 +19,28 @@ export type StartOrderingDto = {
 
 export const TableService = {
   async listAllTables(): Promise<TableProps[]> {
-    const url = config.bffFlag ? `${baseUrl}/tables` : `${baseUrl}/dining/tables`;
+    if (config.bffFlag) {
+      return this.listAllTablesFromBff();
+    } else {
+      return this.listAllTablesFromDining();
+    }
+  },
+
+  async listAllTablesFromBff(): Promise<TableProps[]> {
+    const url = `${baseUrl}/tables`;
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`Erreur lors du fetch des tables: ${response.statusText}`);
+      throw new Error(`Erreur lors du fetch des tables (BFF): ${response.statusText}`);
     }
-    if (config.bffFlag) {
-      return await response.json();
+    return await response.json();
+  },
+
+  async listAllTablesFromDining(): Promise<TableProps[]> {
+    const url = `${baseUrl}/dining/tables`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Erreur lors du fetch des tables (Dining): ${response.statusText}`);
     }
     const rawTables: RawTable[] = await response.json();
     return rawTables.map((t) => {

@@ -5,13 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Component
 @RequiredArgsConstructor
 public class TableOrderServiceClient {
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final WebClient.Builder webClientBuilder;
 
     @Value("${tableOrders.service.url}")
     private String baseUrl;
@@ -19,9 +19,15 @@ public class TableOrderServiceClient {
     public void openTableSafe(int tableNumber, int customersCount) {
         StartOrderingDto dto = new StartOrderingDto(tableNumber, customersCount);
 
+        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+
         try {
-            restTemplate.postForObject(baseUrl, dto, Void.class);
-        } catch (HttpClientErrorException e) {
+            webClient.post()
+                    .bodyValue(dto)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+        } catch (WebClientResponseException e) {
             if (e.getStatusCode() == HttpStatus.UNPROCESSABLE_ENTITY) {
                 System.out.println("Table " + tableNumber + " already taken, skipping openTable.");
             } else {
