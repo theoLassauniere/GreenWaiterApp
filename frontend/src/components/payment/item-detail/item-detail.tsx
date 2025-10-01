@@ -1,4 +1,5 @@
 import './item-detail.scss';
+import { useEffect, useRef } from 'react';
 
 export type ItemDetailProps = {
   name: string;
@@ -17,6 +18,15 @@ export function ItemDetail({
   onSelectChange,
   onQuantityChange,
 }: Readonly<ItemDetailProps>) {
+  const checkboxRef = useRef<HTMLInputElement>(null);
+  const isIndeterminate = selectedQuantity > 0 && selectedQuantity < quantity;
+
+  useEffect(() => {
+    if (checkboxRef.current) {
+      checkboxRef.current.indeterminate = isIndeterminate;
+    }
+  }, [isIndeterminate]);
+
   return (
     <div className="item-detail-card">
       <div className="item-header">
@@ -24,6 +34,7 @@ export function ItemDetail({
         <input
           className="item-checkbox"
           type="checkbox"
+          ref={checkboxRef}
           checked={selected}
           onChange={(e) => onSelectChange(e.target.checked)}
         />
