@@ -1,25 +1,24 @@
 import './payment-summary.scss';
 
-export type PaymentBarProps = {
+export type SplitPaymentSummaryProps = {
   readonly total: number;
-  readonly toPay: number;
-  readonly onSplit: () => void;
+  readonly amountPerPerson: number;
+  readonly remainingPeople: number;
   readonly onPay: () => void;
 };
 
-export function PaymentSummary(props: Readonly<PaymentBarProps>) {
+export function SplitPaymentSummary(props: Readonly<SplitPaymentSummaryProps>) {
   return (
     <div className="payment-summary-container">
       <div className="payment-summary-info">
         <span className="label">Reste à payer :</span>
         <span className="amount">{props.total.toFixed(2)}€</span>
+        <span className="label">Paiements restants :</span>
+        <span className="amount">{props.remainingPeople}</span>
       </div>
       <div className="payment-actions">
-        <button className="btn split" onClick={props.onSplit}>
-          Partager équitablement
-        </button>
         <button className="btn pay" onClick={props.onPay}>
-          Payer : {props.toPay.toFixed(2)}€
+          Payer : {props.amountPerPerson.toFixed(2)}€
         </button>
       </div>
     </div>
