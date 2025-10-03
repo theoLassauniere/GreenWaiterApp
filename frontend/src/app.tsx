@@ -32,7 +32,7 @@ function App() {
           <Menu selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
         )}
         {page === 'commandes' && <OrdersList tables={tables} />}
-        {page === 'paiement' && <Payment tableNumber={12} />}
+        {page === 'paiement' && <Payment tableNumber={12} tableCapacity={8} />}
       </main>
       {readyNotification && (
         <ReadyNotification message={readyNotification} onClose={() => setReadyNotification(null)} />
