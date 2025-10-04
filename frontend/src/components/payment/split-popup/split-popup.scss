@@ -4,6 +4,7 @@
   gap: 1rem;
   margin: 2rem auto;
   width: 80%;
+  position: relative;
 
   .min-label {
     font-size: 1rem;
@@ -42,6 +43,29 @@
     font-size: 1rem;
     color: #666;
     min-width: 20px;
+  }
+
+  .slider-tooltip {
+    position: absolute;
+    top: 100%;
+    transform: translateX(-50%);
+    background: var(--palette-green-dark);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 5px solid var(--palette-green-dark);
+    }
   }
 }
 

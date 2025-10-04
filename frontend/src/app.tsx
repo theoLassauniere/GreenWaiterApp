@@ -1,4 +1,4 @@
-import './App.scss';
+import './app.scss';
 import Sidebar from './components/sidebar/sidebar.tsx';
 import { useState } from 'react';
 import { Payment } from './pages/payment.tsx';
@@ -32,7 +32,7 @@ function App() {
           <Menu selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
         )}
         {page === 'commandes' && <OrdersList tables={tables} />}
-        {page === 'paiement' && <Payment tableNumber={12} tableCapacity={8} />}
+        {page === 'paiement' && <Payment tableNumber={12} tableCapacity={12} />}
       </main>
       {readyNotification && (
         <ReadyNotification message={readyNotification} onClose={() => setReadyNotification(null)} />

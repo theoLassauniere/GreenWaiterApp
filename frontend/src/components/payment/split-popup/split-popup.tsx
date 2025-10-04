@@ -14,6 +14,11 @@ export type SplitPopupProps = {
 export function SplitPopup(props: Readonly<SplitPopupProps>) {
   const [sliderValue, setSliderValue] = useState(1);
 
+  const sliderWidth = 100;
+  const labelOffset = 8;
+  const tooltipPosition =
+    labelOffset + ((sliderValue - 1) / (props.splitMax - 1)) * (sliderWidth - 2 * labelOffset);
+
   return (
     <PopUp isOpen={props.isOpen} onClose={props.onClose} title={props.title}>
       <div className="slider-container">
@@ -30,6 +35,9 @@ export function SplitPopup(props: Readonly<SplitPopupProps>) {
           }}
         />
         <span className="max-label">{props.splitMax}</span>
+        <div className="slider-tooltip" style={{ left: `${tooltipPosition}%` }}>
+          {sliderValue}
+        </div>
       </div>
       <div className="split-popup-actions">
         <button
