@@ -70,6 +70,7 @@ export function Payment(props: PaymentProps) {
     setInitialPeopleCount(divider);
     setIsSplitEquallyMode(true);
     setRemainingPeople(divider);
+    handleSelectAll(true);
   }
 
   function handleSelectAll(checked: boolean) {
