@@ -23,13 +23,13 @@
       margin-bottom: 10px;
       display: flex;
       flex-direction: row;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 10px;
       & .popup-title {
-        margin: 0;
         color: black;
         font-size: 1.2em;
+        margin-top: 5px;
       }
 
       & .popup-close {
@@ -38,13 +38,11 @@
         bottom: 14px;
         left: 10px;
         & .IconButton {
-          align-self: flex-end;
           background: none;
           border: none;
           width: 25px;
           height: 25px;
           cursor: pointer;
-          margin-left: auto;
           & .material-icons {
             font-size: 1em;
             color: black;

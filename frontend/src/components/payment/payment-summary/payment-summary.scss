@@ -1,6 +1,6 @@
 .payment-summary-container {
   display: flex;
-  margin: 0 2% 2% 2%;
+  margin: 0 2% 2% 0;
   justify-content: space-between;
   align-items: center;
 
@@ -16,6 +16,10 @@
     .amount {
       color: #111;
       font-weight: 600;
+    }
+
+    span:nth-child(2) {
+      margin-right: 2rem;
     }
   }
 
