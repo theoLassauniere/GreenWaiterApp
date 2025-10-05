@@ -1,6 +1,6 @@
 import AppButton from '../common/app-button/app-button.tsx';
 import './sidebar.scss';
-import {OrderService} from "../../services/order/order-service.tsx";
+import { OrderService } from '../../services/order/order-service.tsx';
 
 type SidebarProps = {
   onSelect: (page: 'tables' | 'menu' | 'commandes' | 'paiement') => void;
@@ -11,11 +11,13 @@ export default function Sidebar({ onSelect }: SidebarProps) {
     <div className="sidebar-container">
       <AppButton label="Tables" onClick={() => onSelect('tables')} />
       <AppButton label="Menu" onClick={() => onSelect('menu')} />
-      <AppButton label="Commandes" onClick={() => {
+      <AppButton
+        label="Commandes"
+        onClick={() => {
           onSelect('commandes');
-          OrderService.getReadyOrders().then(r => console.log(r));
-        }
-      }/>
+          OrderService.getReadyOrders().then((r) => console.log(r));
+        }}
+      />
       <AppButton label="Paiement" onClick={() => onSelect('paiement')} />
     </div>
   );

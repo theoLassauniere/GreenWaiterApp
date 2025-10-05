@@ -6,7 +6,7 @@ type ButtonProps = {
   className?: string;
 };
 
-export default function AppButton({ label, onClick, className = '' }: ButtonProps) {
+export default function AppButton({ label, onClick, className = '' }: Readonly<ButtonProps>) {
   return (
     <button className={`custom-btn ${className}`} onClick={onClick}>
       {label}
