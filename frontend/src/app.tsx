@@ -1,4 +1,4 @@
-import './App.scss';
+import './app.scss';
 import Sidebar from './components/sidebar/sidebar.tsx';
 import { useState } from 'react';
 import { Payment } from './pages/payment.tsx';

@@ -1,10 +1,10 @@
-package fr.green.tables.controller;
+package fr.green.BffGreenWaiter.tables.controller;
 
-import fr.green.tables.dto.TableDto;
-import fr.green.tables.dto.TableWithOrderDto;
-import fr.green.tables.mapper.TableMapper;
-import fr.green.tables.services.DiningServiceClient;
-import fr.green.tables.services.TableOrderServiceClient;
+import fr.green.BffGreenWaiter.tables.dto.TableDto;
+import fr.green.BffGreenWaiter.tables.dto.TableWithOrderDto;
+import fr.green.BffGreenWaiter.tables.mapper.TableMapper;
+import fr.green.BffGreenWaiter.tables.services.DiningServiceClient;
+import fr.green.BffGreenWaiter.tables.services.TableOrderServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

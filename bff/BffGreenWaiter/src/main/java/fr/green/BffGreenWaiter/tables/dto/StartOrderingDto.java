@@ -1,4 +1,4 @@
-package fr.green.tables.dto;
+package fr.green.BffGreenWaiter.tables.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

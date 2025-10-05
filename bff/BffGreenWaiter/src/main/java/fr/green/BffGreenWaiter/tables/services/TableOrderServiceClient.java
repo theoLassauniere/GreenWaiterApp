@@ -1,6 +1,6 @@
-package fr.green.tables.services;
+package fr.green.BffGreenWaiter.tables.services;
 
-import fr.green.tables.dto.StartOrderingDto;
+import fr.green.BffGreenWaiter.tables.dto.StartOrderingDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
