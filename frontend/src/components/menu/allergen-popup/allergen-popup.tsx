@@ -1,5 +1,5 @@
-import './allergen-popup.scss';
 import { PopUp } from '../../common/pop-up/pop-up.tsx';
+import './allergen-popup.scss';
 
 type AllergenPopupProps = {
   title?: string;
@@ -9,7 +9,7 @@ type AllergenPopupProps = {
   className?: string;
 };
 
-export default function AllergenPopup(props: Readonly<AllergenPopupProps>) {
+export default function AllergenPopup(props: AllergenPopupProps) {
   const { title = 'Allergènes', isOpen, onClose, allergens = [], className = '' } = props;
   return (
     <PopUp isOpen={isOpen} onClose={onClose} title={title} className={className}>
