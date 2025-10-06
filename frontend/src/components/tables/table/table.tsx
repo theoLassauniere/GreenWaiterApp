@@ -18,7 +18,6 @@ function openOrderPopup(tableNumber: number) {
 
 export type TableProps = {
   readonly table: TableType;
-  readonly isCommandesPage: boolean; // L'affichage du composant table n'est pas le même selon la page "Commandes" ou la page "Tables" d'où ce flag
   readonly onSelectPage: (page: PageType, tableNumber: number) => void;
 };
 
