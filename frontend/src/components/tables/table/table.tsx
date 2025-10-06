@@ -33,8 +33,9 @@ export function Table(props: Readonly<TableProps>) {
       </p>
 
       <div className="command-actions">
-        <button onClick={() => openOrderPopup(props.table.tableNumber)}>Nouvelle commande</button>
-
+        {props.table.occupied && (
+          <button onClick={() => openOrderPopup(props.table.tableNumber)}>Nouvelle commande</button>
+        )}
         {props.table.commandState === 'awaiting-service' && <button>Servi</button>}
       </div>
 

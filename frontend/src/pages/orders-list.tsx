@@ -25,7 +25,7 @@ export default function OrdersList(props: Readonly<OrdersListProps>) {
       <div className="orders-column">
         <h2>Préparation</h2>
         {preparation.map((t) => (
-          <Table key={t.id} table={t} isCommandesPage={true} onSelectPage={props.onSelectPage} />
+          <Table key={t.id} table={t} onSelectPage={props.onSelectPage} />
         ))}
       </div>
 
@@ -34,21 +34,14 @@ export default function OrdersList(props: Readonly<OrdersListProps>) {
         {readyOrders.map((o) => {
           const table = props.tables.find((t) => t.tableNumber === o.tableNumber);
           if (!table) return null;
-          return (
-            <Table
-              key={table.id}
-              table={table}
-              isCommandesPage={true}
-              onSelectPage={props.onSelectPage}
-            />
-          );
+          return <Table key={table.id} table={table} onSelectPage={props.onSelectPage} />;
         })}
       </div>
 
       <div className="orders-column">
         <h2>Servies / En attente</h2>
         {served.map((t) => (
-          <Table key={t.id} table={t} isCommandesPage={true} onSelectPage={props.onSelectPage} />
+          <Table key={t.id} table={t} onSelectPage={props.onSelectPage} />
         ))}
       </div>
     </div>
