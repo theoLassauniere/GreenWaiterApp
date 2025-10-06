@@ -15,7 +15,7 @@ export type RawMenuItem = {
 export const MenuService = {
   async getMenuItem(id: string): Promise<RawMenuItem> {
     const url = `${baseUrl}/${id}`;
-    await TableService.listAllTablesFromDining();
+    await TableService.listAllTables();
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Erreur lors de la récupération des menus: ${response.statusText}`);
