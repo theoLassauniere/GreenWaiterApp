@@ -6,20 +6,25 @@ import Tables from './pages/tables.tsx';
 import OrdersList from './pages/orders-list.tsx';
 import ReadyNotification from './components/common/ready-notification/ready-notification.tsx';
 import { Menu } from './pages/menu.tsx';
-import type { TableProps } from './components/tables/table/table.tsx';
+import { Pages, type PageType } from './models/Pages.ts';
+import type { TableType } from './models/Table.ts';
 
 function App() {
-  const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
+  const [page, setPage] = useState<PageType>(Pages.Tables);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [readyNotification, setReadyNotification] = useState<string | null>(null);
-  const [tables, setTables] = useState<TableProps[]>([]);
+  const [tables, setTables] = useState<TableType[]>([]);
+  const [selectedTable, setSelectedTable] = useState<TableType | null>(null);
 
-  const handleSelectPage = (newPage: typeof page) => {
-    setPage(newPage);
-    if (newPage === 'menu') {
+  function handleSelectPage(newPage: PageType, tableNumber?: number) {
+    if (newPage === Pages.Menu) {
       setSelectedCategory(null);
     }
-  };
+    if (newPage === Pages.Paiement) {
+      setSelectedTable(tables.find((table) => table.tableNumber === tableNumber) ?? null);
+    }
+    setPage(newPage);
+  }
 
   return (
     <div className="app">
@@ -27,12 +32,16 @@ function App() {
         <Sidebar onSelect={handleSelectPage} />
       </div>
       <main>
-        {page === 'tables' && <Tables tables={tables} setTables={setTables} />}
-        {page === 'menu' && (
+        {page === Pages.Tables && (
+          <Tables tables={tables} setTables={setTables} onSelectPage={handleSelectPage} />
+        )}
+        {page === Pages.Menu && (
           <Menu selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
         )}
-        {page === 'commandes' && <OrdersList tables={tables} />}
-        {page === 'paiement' && <Payment tableNumber={12} tableCapacity={12} />}
+        {page === Pages.Commandes && <OrdersList tables={tables} onSelectPage={handleSelectPage} />}
+        {page === Pages.Paiement && selectedTable && (
+          <Payment table={selectedTable} onSelectPage={handleSelectPage} />
+        )}
       </main>
       {readyNotification && (
         <ReadyNotification message={readyNotification} onClose={() => setReadyNotification(null)} />

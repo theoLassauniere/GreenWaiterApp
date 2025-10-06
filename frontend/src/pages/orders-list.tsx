@@ -1,15 +1,18 @@
 import './orders-list.scss';
-import Table, { type TableProps } from '../components/tables/table/table.tsx';
+import { Table } from '../components/tables/table/table.tsx';
+import type { TableType } from '../models/Table.ts';
+import type { PageType } from '../models/Pages.ts';
 import { type OrderDto, OrderService } from '../services/order-service.tsx';
 import { useEffect, useState } from 'react';
 
 type OrdersListProps = {
-  readonly tables: readonly TableProps[];
+  readonly tables: TableType[];
+  readonly onSelectPage: (page: PageType, tableNumber?: number) => void;
 };
 
-export default function OrdersList({ tables }: Readonly<OrdersListProps>) {
-  const preparation = tables.filter((t) => t.commandState === 'preparing-in-kitchen');
-  const served = tables.filter((t) => t.commandState === 'served');
+export default function OrdersList(props: Readonly<OrdersListProps>) {
+  const preparation = props.tables.filter((t) => t.commandState === 'preparing-in-kitchen');
+  const served = props.tables.filter((t) => t.commandState === 'served');
 
   const [readyOrders, setReadyOrders] = useState<OrderDto[]>([]);
 
@@ -22,23 +25,23 @@ export default function OrdersList({ tables }: Readonly<OrdersListProps>) {
       <div className="orders-column">
         <h2>Préparation</h2>
         {preparation.map((t) => (
-          <Table key={t.id} {...t} isCommandesPage={true} />
+          <Table key={t.id} table={t} isCommandesPage={true} onSelectPage={props.onSelectPage} />
         ))}
       </div>
 
       <div className="orders-column">
         <h2>À servir</h2>
         {readyOrders.map((o) => {
-          const table = tables.find((t) => t.tableNumber === o.tableNumber);
+          const table = props.tables.find((t) => t.tableNumber === o.tableNumber);
           if (!table) return null;
-          return <Table key={table.id} {...table} />;
+          return <Table key={table.id} table={table} isCommandesPage={true} onSelectPage={props.onSelectPage} />
         })}
       </div>
 
       <div className="orders-column">
         <h2>Servies / En attente</h2>
         {served.map((t) => (
-          <Table key={t.id} {...t} isCommandesPage={true} />
+          <Table key={t.id} table={t} isCommandesPage={true} onSelectPage={props.onSelectPage} />
         ))}
       </div>
     </div>

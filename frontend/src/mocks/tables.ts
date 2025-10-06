@@ -1,12 +1,11 @@
-import { type TableProps } from '../components/tables/table/table';
+import type { TableType } from '../models/Table.ts';
 
-export const mockTables: readonly TableProps[] = [
+export const mockTables: readonly TableType[] = [
   {
     id: '',
     tableNumber: 1,
     capacity: 4,
     occupied: true,
-    isCommandesPage: true,
     commandState: 'preparing-in-kitchen',
     commandPreparationPlace: 'bar',
   },
@@ -15,14 +14,12 @@ export const mockTables: readonly TableProps[] = [
     tableNumber: 2,
     capacity: 2,
     occupied: false,
-    isCommandesPage: false,
   },
   {
     id: '',
     tableNumber: 3,
     capacity: 2,
     occupied: true,
-    isCommandesPage: true,
     commandState: 'awaiting-service',
     commandPreparationPlace: 'bar',
   },
@@ -31,7 +28,6 @@ export const mockTables: readonly TableProps[] = [
     tableNumber: 4,
     capacity: 6,
     occupied: true,
-    isCommandesPage: true,
     commandState: 'served',
     commandPreparationPlace: 'cuisine',
   },
@@ -40,21 +36,18 @@ export const mockTables: readonly TableProps[] = [
     tableNumber: 5,
     capacity: 8,
     occupied: false,
-    isCommandesPage: false,
   },
   {
     id: '',
     tableNumber: 6,
     capacity: 4,
     occupied: false,
-    isCommandesPage: false,
   },
   {
     id: '',
     tableNumber: 7,
     capacity: 4,
     occupied: true,
-    isCommandesPage: true,
     commandState: 'awaiting-service',
     commandPreparationPlace: 'bar',
   },
@@ -63,28 +56,24 @@ export const mockTables: readonly TableProps[] = [
     tableNumber: 8,
     capacity: 6,
     occupied: false,
-    isCommandesPage: false,
   },
   {
     id: '',
     tableNumber: 9,
     capacity: 2,
     occupied: false,
-    isCommandesPage: false,
   },
   {
     id: '',
     tableNumber: 10,
     capacity: 4,
     occupied: false,
-    isCommandesPage: false,
   },
   {
     id: '',
     tableNumber: 11,
     capacity: 2,
     occupied: true,
-    isCommandesPage: true,
     commandState: 'awaiting-service',
     commandPreparationPlace: 'cuisine',
   },

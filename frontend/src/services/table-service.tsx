@@ -1,6 +1,6 @@
 import config from '../config';
 import { mockTables } from '../mocks/tables.ts';
-import type { TableProps } from '../components/tables/table/table.tsx';
+import type { TableType } from '../models/Table.ts';
 
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '') : '/api';
 
@@ -18,7 +18,7 @@ export type StartOrderingDto = {
 };
 
 export const TableService = {
-  async listAllTables(): Promise<TableProps[]> {
+  async listAllTables(): Promise<TableType[]> {
     if (config.bffFlag) {
       return this.listAllTablesFromBff();
     } else {
@@ -26,7 +26,7 @@ export const TableService = {
     }
   },
 
-  async listAllTablesFromBff(): Promise<TableProps[]> {
+  async listAllTablesFromBff(): Promise<TableType[]> {
     const url = `${baseUrl}/tables`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -35,7 +35,7 @@ export const TableService = {
     return await response.json();
   },
 
-  async listAllTablesFromDining(): Promise<TableProps[]> {
+  async listAllTablesFromDining(): Promise<TableType[]> {
     const url = `${baseUrl}/dining/tables`;
     const response = await fetch(url);
 
@@ -51,13 +51,13 @@ export const TableService = {
         capacity: mock?.capacity ?? 2,
         occupied: t.taken,
         commandState: mock?.commandState ?? undefined,
-        isCommandesPage: mock?.isCommandesPage ?? undefined,
+        isCommandesPage: false,
         commandPreparationPlace: mock?.commandPreparationPlace ?? undefined,
       };
     });
   },
 
-  async seedTablesWithMocks(): Promise<TableProps[]> {
+  async seedTablesWithMocks(): Promise<TableType[]> {
     if (!config.bffFlag) {
       throw new Error('seedTablesWithMocks should only be called when BFF is enabled');
     }

@@ -7,10 +7,13 @@ import { ItemDetail } from '../components/payment/item-detail/item-detail.tsx';
 import type { CommandItem } from '../models/CommandItem.ts';
 import { SplitPaymentSummary } from '../components/payment/payment-summary/split-payment-summary.tsx';
 import { NormalPaymentSummary } from '../components/payment/payment-summary/normal-payment-summary.tsx';
+import { Pages, type PageType } from '../models/Pages.ts';
+import { PopUp } from '../components/common/pop-up/pop-up.tsx';
+import type { TableType } from '../models/Table.ts';
 
 export type PaymentProps = {
-  readonly tableNumber: number;
-  readonly tableCapacity: number;
+  readonly table: TableType;
+  readonly onSelectPage: (page: PageType) => void;
 };
 
 export function Payment(props: PaymentProps) {
@@ -27,6 +30,8 @@ export function Payment(props: PaymentProps) {
   const [remainingPeople, setRemainingPeople] = useState(0);
   const [totalToSplit, setTotalToSplit] = useState(0);
   const [initialPeopleCount, setInitialPeopleCount] = useState(0);
+
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
 
   const baseTotal = commandItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const amountPerPerson = initialPeopleCount > 0 ? totalToSplit / initialPeopleCount : 0;
@@ -47,20 +52,23 @@ export function Payment(props: PaymentProps) {
         setRemainingPeople(0);
         setTotalToSplit(0);
         setInitialPeopleCount(0);
+        setShowPaymentSuccess(true);
       }
     } else {
-      setCommandItems((prev) =>
-        prev
-          .map((item) => {
-            const paidQty = selectedQuantity[item.id] || 0;
-            if (paidQty >= item.quantity) return null;
-            if (paidQty > 0) return { ...item, quantity: item.quantity - paidQty };
-            return item;
-          })
-          .filter((item): item is CommandItem => item !== null)
-      );
+      const newCommandItems = commandItems
+        .map((item) => {
+          const paidQty = selectedQuantity[item.id] || 0;
+          if (paidQty >= item.quantity) return null;
+          if (paidQty > 0) return { ...item, quantity: item.quantity - paidQty };
+          return item;
+        })
+        .filter((item): item is CommandItem => item !== null);
+      setCommandItems(newCommandItems);
       setSelected(Object.fromEntries(commandItems.map((item) => [item.id, false])));
       setSelectedQuantity(Object.fromEntries(commandItems.map((item) => [item.id, 0])));
+      if (newCommandItems.length === 0) {
+        setShowPaymentSuccess(true);
+      }
     }
   }
 
@@ -82,10 +90,15 @@ export function Payment(props: PaymentProps) {
     setSelectedQuantity(newSelectedQuantity);
   }
 
+  function handlePopUpClose() {
+    setShowPaymentSuccess(false);
+    props.onSelectPage(Pages.Tables);
+  }
+
   return (
     <div className="payment-container">
       <div className="header">
-        <h1>Table {props.tableNumber}</h1>
+        <h1>Table {props.table.tableNumber}</h1>
         <hr className="payment-table-separator" />
         <SelectItemsCheckbox
           label="Sélectionner tout"
@@ -142,12 +155,15 @@ export function Payment(props: PaymentProps) {
           <NormalPaymentSummary
             total={total}
             toPay={toPay}
-            tableCapacity={props.tableCapacity}
+            tableCapacity={props.table.capacity}
             onSplit={handleSplit}
             onPay={handlePay}
           />
         )}
       </div>
+      <PopUp isOpen={showPaymentSuccess} onClose={handlePopUpClose} title={'Paiement terminé !'}>
+        <p>Le paiement de la table {props.table.tableNumber} a été effectué avec succès.</p>
+      </PopUp>
     </div>
   );
 }
