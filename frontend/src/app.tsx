@@ -6,23 +6,22 @@ import Tables from './pages/tables.tsx';
 import OrdersList from './pages/orders-list.tsx';
 import ReadyNotification from './components/common/ready-notification/ready-notification.tsx';
 import { Menu } from './pages/menu.tsx';
-import type { TableProps } from './components/tables/table/table.tsx';
 import { Pages, type PageType } from './models/Pages.ts';
 import type { TableType } from './models/Table.ts';
-        
+
 function App() {
   const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
   const [readyNotification, setReadyNotification] = useState<string | null>(null);
-  const [tables, setTables] = useState<TableProps[]>([]);
   const [tables, setTables] = useState<TableType[]>([]);
   const [selectedTable, setSelectedTable] = useState<TableType | null>(null);
+
   function handleSelectPage(newPage: PageType, tableNumber?: number) {
     setPage(newPage);
     if (newPage === Pages.Paiement) {
       setSelectedTable(tables.find((table) => table.tableNumber === tableNumber) ?? null);
     }
     setPage(newPage);
-  };
+  }
 
   return (
     <div className="app">
@@ -33,9 +32,7 @@ function App() {
         {page === Pages.Tables && (
           <Tables tables={tables} setTables={setTables} onSelectPage={handleSelectPage} />
         )}
-        {page === Pages.Menu && (
-          <Menu/>
-        )}
+        {page === Pages.Menu && <Menu />}
         {page === Pages.Commandes && <OrdersList tables={tables} onSelectPage={handleSelectPage} />}
         {page === Pages.Paiement && selectedTable && (
           <Payment table={selectedTable} onSelectPage={handleSelectPage} />
