@@ -1,4 +1,4 @@
-import './app.scss';
+import './App-wrong.scss';
 import Sidebar from './components/sidebar/sidebar.tsx';
 import { useState } from 'react';
 import { Payment } from './pages/payment.tsx';
