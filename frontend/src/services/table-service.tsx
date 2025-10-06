@@ -51,7 +51,6 @@ export const TableService = {
         capacity: mock?.capacity ?? 2,
         occupied: t.taken,
         commandState: mock?.commandState ?? undefined,
-        isCommandesPage: false,
         commandPreparationPlace: mock?.commandPreparationPlace ?? undefined,
       };
     });

@@ -61,7 +61,7 @@ export default function Tables(props: Readonly<TablesProps>) {
 
       <div className="tables-grid">
         {filteredTables.map((t) => (
-          <Table table={t} key={t.id} isCommandesPage={false} onSelectPage={props.onSelectPage} />
+          <Table table={t} key={t.id} onSelectPage={props.onSelectPage} />
         ))}
       </div>
     </div>
