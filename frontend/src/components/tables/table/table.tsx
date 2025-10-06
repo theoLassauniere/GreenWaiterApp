@@ -1,7 +1,7 @@
 import './table.scss';
-import { CommandState } from '../../../models/CommandState.ts';
-import { PreparationPlace } from '../../../models/PreparationPlace.ts';
 import { OrderService, type PreparationDto } from '../../../services/order-service.tsx';
+import { Pages, type PageType } from '../../../models/Pages.ts';
+import type { TableType } from '../../../models/Table.ts';
 
 function openOrderPopup(tableNumber: number) {
   // TODO: rediriger vers la page de création de commande
@@ -16,49 +16,44 @@ function openOrderPopup(tableNumber: number) {
   OrderService.createNewOrder(preparation).then((r) => console.log(r));
 }
 
-export default function Table({
-  tableNumber,
-  capacity,
-  occupied,
-  isCommandesPage = false,
-  commandState,
-  commandPreparationPlace,
-}: Readonly<TableProps>) {
+export type TableProps = {
+  readonly table: TableType;
+  readonly onSelectPage: (page: PageType, tableNumber: number) => void;
+};
+
+export function Table(props: Readonly<TableProps>) {
   return (
-    <div className={`table-card ${occupied ? 'occupied' : 'free'}`}>
-      <h3>Table {tableNumber}</h3>
+    <div className={`table-card ${props.table.occupied ? 'occupied' : 'free'}`}>
+      <h3>Table {props.table.tableNumber}</h3>
       <p>
-        Capacité :<strong> {capacity}</strong>
+        Capacité :<strong> {props.table.capacity}</strong>
       </p>
       <p>
-        <strong>{occupied ? 'Occupé' : 'Libre'}</strong>
+        <strong>{props.table.occupied ? 'Occupé' : 'Libre'}</strong>
       </p>
 
-      {isCommandesPage && (
-        <div className="command-actions">
-          <button onClick={() => openOrderPopup(tableNumber)}>Nouvelle commande</button>
+      <div className="command-actions">
+        {props.table.occupied && (
+          <button onClick={() => openOrderPopup(props.table.tableNumber)}>Nouvelle commande</button>
+        )}
+        {props.table.commandState === 'awaiting-service' && <button>Servi</button>}
+      </div>
 
-          {commandState === 'awaiting-service' && <button>Servi</button>}
-        </div>
+      {props.table.commandState === 'served' && (
+        <button
+          onClick={() => props.onSelectPage(Pages.Paiement, props.table.tableNumber)}
+          className="pay-btn"
+        >
+          Paiement
+        </button>
       )}
 
-      {commandState === 'served' && <button className="pay-btn">Paiement</button>}
-
-      {commandPreparationPlace && (
+      {props.table.commandPreparationPlace && (
         <p>
-          Commande pour : <strong>{commandPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
+          Commande pour :{' '}
+          <strong>{props.table.commandPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
         </p>
       )}
     </div>
   );
 }
-
-export type TableProps = {
-  readonly id: string;
-  readonly tableNumber: number;
-  readonly capacity: number;
-  readonly occupied: boolean;
-  readonly isCommandesPage?: boolean; // L'affichage du composant table n'est pas le même selon la page "Commandes" ou la page "Tables" d'où ce flag
-  readonly commandState?: CommandState;
-  readonly commandPreparationPlace?: PreparationPlace;
-};

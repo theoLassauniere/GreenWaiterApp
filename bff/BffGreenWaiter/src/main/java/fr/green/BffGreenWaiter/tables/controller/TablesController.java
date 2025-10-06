@@ -37,7 +37,6 @@ public class TablesController {
             }
             table = TableMapper.toTableDto(tableBack);
             table.setCapacity(mock.getCapacity());
-            table.setCommandesPage(mock.isCommandesPage());
             table.setCommandState(mock.getCommandState());
             table.setCommandPreparationPlace(mock.getCommandPreparationPlace());
             result.add(table);
