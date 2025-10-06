@@ -6,7 +6,7 @@ export const mockTables: readonly TableType[] = [
     tableNumber: 1,
     capacity: 4,
     occupied: true,
-    commandState: 'preparing-in-kitchen',
+    commandState: 'served',
     commandPreparationPlace: 'bar',
   },
   {
