@@ -1,17 +1,6 @@
 import config from '../config.ts';
 
-const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/kitchen') : '/api/kitchen';
-
-// Teacher's implementation (web-services)
-export type PreparationDto = {
-  tableNumber: number;
-  itemsToBeCooked: MenuItemShortDto[];
-};
-
-export type MenuItemShortDto = {
-  menuItemShortName: string;
-  howMany: number;
-};
+const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/dining') : '/api/dining';
 
 export type OrderDto = {
   id: number;
@@ -30,24 +19,56 @@ export type PreparedItemDto = {
   finishedAt: string;
 };
 
+export type ShortOrderDto = {
+  tableNumber: number;
+  menuItems: MenuItemToOrderDto[];
+};
+
+export type MenuItemToOrderDto = {
+  menuItemId: string;
+  menuItemShortName: string;
+  howMany: number;
+};
+
+export type SimplifiedOrder = {
+  _id: string;
+  tableNumber: number;
+};
+
 export const OrderService = {
-  async createNewOrder(preparation: PreparationDto): Promise<OrderDto> {
-    const payload = {
-      tableNumber: preparation.tableNumber,
-      itemsToBeCooked: preparation.itemsToBeCooked.map((item) => ({
-        menuItemShortName: item.menuItemShortName,
-        howMany: item.howMany,
-      })),
-    };
-    const response = await fetch(`${baseUrl}/preparations`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+  // Retrieves the order ID for a given table number
+  async findOrderForTable(tableNumber: number): Promise<string> {
+    const response = await fetch(`${baseUrl}/tableOrders`, {
+      method: 'GET',
     });
-    if (!response.ok) throw new Error(`Erreur création commande: ${response.statusText}`);
-    return response.json();
+    if (!response.ok) {
+      throw new Error(`Erreur récupération commandes prêtes: ${response.statusText}`);
+    }
+    const orders: SimplifiedOrder[] = await response.json();
+    return orders.filter((order) => order.tableNumber === tableNumber)[0]._id;
   },
 
+  // Creates a new order. Each menu item in the order is sent as a separate POST request.
+  async createNewOrder(order: ShortOrderDto): Promise<void> {
+    const tableOrderId = await this.findOrderForTable(order.tableNumber);
+    for (const item of order.menuItems) {
+      const payload = {
+        menuItemId: item.menuItemId,
+        menuItemShortName: item.menuItemShortName,
+        howMany: item.howMany,
+      };
+      const response = await fetch(`${baseUrl}/tableOrders/${tableOrderId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) throw new Error(`Erreur création commande: ${response.statusText}`);
+    }
+  },
+
+  // Fetches all orders that are ready to be served
+  // TODO : move this in the kitchen service
+  /*
   async getReadyOrders(): Promise<OrderDto[]> {
     const response = await fetch(`${baseUrl}/preparations?state=readyToBeServed`, {
       method: 'GET',
@@ -56,16 +77,5 @@ export const OrderService = {
       throw new Error(`Erreur récupération commandes prêtes: ${response.statusText}`);
     return response.json();
   },
-
-  /*
-    async addItemToOrder(orderId: number, itemId: number, quantity: number): Promise<OrderDto> {
-        const response = await fetch(`${baseUrl}/dining/orders/${orderId}/items`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ itemId, quantity }),
-        });
-        if (!response.ok) throw new Error(`Erreur d'ajout d'item à la commande: ${response.statusText}`);
-        return response.json();
-    },
-     */
+   */
 };

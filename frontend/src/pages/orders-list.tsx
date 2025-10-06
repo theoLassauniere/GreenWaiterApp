@@ -1,7 +1,6 @@
 import './orders-list.scss';
 import Table, { type TableProps } from '../components/tables/table/table.tsx';
-import { type OrderDto, OrderService } from '../services/order-service.tsx';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 type OrdersListProps = {
   readonly tables: readonly TableProps[];
@@ -11,10 +10,9 @@ export default function OrdersList({ tables }: Readonly<OrdersListProps>) {
   const preparation = tables.filter((t) => t.commandState === 'preparing-in-kitchen');
   const served = tables.filter((t) => t.commandState === 'served');
 
-  const [readyOrders, setReadyOrders] = useState<OrderDto[]>([]);
-
   useEffect(() => {
-    OrderService.getReadyOrders().then(setReadyOrders);
+    // TODO : use the kitchen service to retrieve ready orders
+    // KitchenService.getReadyOrders().then(setReadyOrders);
   }, []);
 
   return (
@@ -28,11 +26,13 @@ export default function OrdersList({ tables }: Readonly<OrdersListProps>) {
 
       <div className="orders-column">
         <h2>À servir</h2>
-        {readyOrders.map((o) => {
-          const table = tables.find((t) => t.tableNumber === o.tableNumber);
-          if (!table) return null;
-          return <Table key={table.id} {...table} />;
-        })}
+        {
+          // readyOrders.map((o) => {
+          // const table = tables.find((t) => t.tableNumber === o.tableNumber);
+          // if (!table) return null;
+          // return <Table key={table.id} {...table} />;
+          // })
+        }
       </div>
 
       <div className="orders-column">

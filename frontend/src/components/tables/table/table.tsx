@@ -1,16 +1,16 @@
 import './table.scss';
 import { CommandState } from '../../../models/CommandState.ts';
 import { PreparationPlace } from '../../../models/PreparationPlace.ts';
-import { OrderService, type PreparationDto } from '../../../services/order-service.tsx';
+import { OrderService, type ShortOrderDto } from '../../../services/order-service.tsx';
 
 function openOrderPopup(tableNumber: number) {
   // TODO: rediriger vers la page de création de commande
   // Mock pour l'instant, à refaire dans la page de création de commande
-  const preparation: PreparationDto = {
+  const preparation: ShortOrderDto = {
     tableNumber: tableNumber,
-    itemsToBeCooked: [
-      { menuItemShortName: 'lasagna', howMany: 2 },
-      { menuItemShortName: 'beef burger', howMany: 1 },
+    menuItems: [
+      { menuItemId: '68da3b2fdf0da1d568180535', menuItemShortName: 'foie gras', howMany: 2 },
+      { menuItemId: '68da3b2fdf0da1d568180538', menuItemShortName: 'soft-boiled egg', howMany: 3 },
     ],
   };
   OrderService.createNewOrder(preparation).then((r) => console.log(r));
