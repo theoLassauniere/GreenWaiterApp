@@ -2,12 +2,6 @@ import config from '../config.ts';
 
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/kitchen') : '/api/kitchen';
 
-// Personal implementation (bff)
-export type OrderDtoMine = {
-  id: number;
-  items: number[];
-};
-
 // Teacher's implementation (web-services)
 export type PreparationDto = {
   tableNumber: number;

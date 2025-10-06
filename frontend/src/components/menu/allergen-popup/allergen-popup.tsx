@@ -1,5 +1,5 @@
 import { PopUp } from '../../common/pop-up/pop-up.tsx';
-import './AllergenPopup.scss';
+import './allergen-popup.scss';
 
 type AllergenPopupProps = {
   title?: string;
