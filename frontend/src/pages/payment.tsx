@@ -10,6 +10,7 @@ import { PopUp } from '../components/common/pop-up/pop-up.tsx';
 import type { TableType } from '../models/Table.ts';
 import { PaymentService } from '../services/payment-service.ts';
 import { Category, getCategoryTitle } from '../models/Category.ts';
+import { TableService } from '../services/table-service.ts';
 
 export type PaymentProps = {
   readonly table: TableType;
@@ -47,7 +48,7 @@ export function Payment(props: PaymentProps) {
   const total = isSplitEquallyMode ? remainingPeople * amountPerPerson : baseTotal;
   const toPay = isSplitEquallyMode
     ? amountPerPerson
-    : commandItems.reduce((sum, item) => sum + item.price * selectedQuantity[item.id], 0);
+    : commandItems.reduce((sum, item) => sum + item.price * (selectedQuantity[item.id] ?? 0), 0);
 
   function handlePay() {
     if (isSplitEquallyMode) {
@@ -98,9 +99,10 @@ export function Payment(props: PaymentProps) {
     setSelectedQuantity(newSelectedQuantity);
   }
 
-  function handlePopUpClose() {
+  async function handlePopUpClose() {
     setShowPaymentSuccess(false);
     props.onSelectPage(Pages.Tables);
+    await TableService.billTable(props.table.tableNumber);
   }
 
   return (
@@ -169,7 +171,11 @@ export function Payment(props: PaymentProps) {
           />
         )}
       </div>
-      <PopUp isOpen={showPaymentSuccess} onClose={handlePopUpClose} title={'Paiement terminé !'}>
+      <PopUp
+        isOpen={showPaymentSuccess}
+        onClose={async () => handlePopUpClose()}
+        title={'Paiement terminé !'}
+      >
         <p>Le paiement de la table {props.table.tableNumber} a été effectué avec succès.</p>
       </PopUp>
     </div>

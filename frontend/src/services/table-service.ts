@@ -127,4 +127,22 @@ export const TableService = {
     }
     return await response.json();
   },
+
+  async getTableOrder(tableNumber: number) {
+    const tableOrders: RawOrder[] = await TableService.getTableOrders();
+    return tableOrders.find((table) => table.tableNumber === tableNumber);
+  },
+
+  async billTable(tableNumber: number) {
+    const orderId = (await this.getTableOrder(tableNumber))?._id;
+    const endpoint = `${baseUrl}/dining/tableOrders/${orderId}/bill`;
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      throw new Error(`Erreur de paiement pour la table ${tableNumber}: ${response.statusText}`);
+    }
+    return await response.json();
+  },
 };

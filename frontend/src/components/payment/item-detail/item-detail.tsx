@@ -30,7 +30,7 @@ export function ItemDetail(props: Readonly<ItemDetailProps>) {
           type="checkbox"
           disabled={props.disabled}
           ref={checkboxRef}
-          checked={props.selected}
+          checked={props.selected ?? false}
           onChange={(e) => props.onSelectChange(e.target.checked)}
         />
       </div>

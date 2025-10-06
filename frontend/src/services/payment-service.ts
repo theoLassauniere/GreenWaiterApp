@@ -1,13 +1,12 @@
-import { type RawOrder, TableService } from './table-service.ts';
+import { TableService } from './table-service.ts';
 import type { CommandItem } from '../models/CommandItem.ts';
 import { MenuService } from './menu-service.ts';
 import type Category from '../models/Category.ts';
 
 export const PaymentService = {
   async getCommandItems(tableNumber: number): Promise<CommandItem[]> {
-    const tableOrders: RawOrder[] = await TableService.getTableOrders();
-    const order = tableOrders.find((table) => table.tableNumber === tableNumber);
-    if (!order || !order.lines) {
+    const order = await TableService.getTableOrder(tableNumber);
+    if (!order?.lines) {
       return [];
     }
 
