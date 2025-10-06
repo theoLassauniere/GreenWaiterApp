@@ -3,7 +3,7 @@ import './tables.scss';
 import { Table } from '../components/tables/table/table.tsx';
 import TableFilter from '../components/tables/tables-filter/tables-filter.tsx';
 import SelectItemsCheckbox from '../components/common/select-items-checkbox/select-items-checkbox.tsx';
-import { TableService } from '../services/table-service.tsx';
+import { TableService } from '../services/table-service.ts';
 import { mockTables } from '../mocks/tables.ts';
 import * as React from 'react';
 import config from '../config.ts';
