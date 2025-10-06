@@ -1,4 +1,4 @@
-package fr.green.kitchen.enums;
+package fr.green.dining.enums;
 
 public enum PreparationStatus {
     READY_TO_BE_SERVED("readyToBeServed"),

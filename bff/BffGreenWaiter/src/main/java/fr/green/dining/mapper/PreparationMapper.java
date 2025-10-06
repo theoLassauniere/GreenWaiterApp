@@ -1,4 +1,4 @@
-package fr.green.kitchen.mapper;
+package fr.green.dining.mapper;
 
 import lombok.experimental.UtilityClass;
 

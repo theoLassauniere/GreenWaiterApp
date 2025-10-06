@@ -1,4 +1,4 @@
-package fr.green.kitchen.dto;
+package fr.green.dining.dto;
 
 public class PreparedItemDto {
     String id;

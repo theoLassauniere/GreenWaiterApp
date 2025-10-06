@@ -1,17 +1,25 @@
-package fr.green.kitchen.controller;
+package fr.green.dining.controller;
 
-import fr.green.kitchen.dto.PreparationDto;
-import fr.green.kitchen.dto.PreparedItemDto;
-import fr.green.kitchen.enums.PreparationStatus;
-import fr.green.kitchen.services.OrderService;
+import fr.green.dining.dto.PreparationDto;
+import fr.green.dining.dto.PreparedItemDto;
+import fr.green.dining.dto.SimpleOrderDto;
+import fr.green.dining.enums.PreparationStatus;
+import fr.green.dining.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/kitchen")
-public class OrdersController {
-    private OrderService orderService;
+@RequestMapping("/dining")
+public class DiningController {
+    private final OrderService orderService;
+
+    @GetMapping("/tableOrders")
+    public List<SimpleOrderDto> getOrders() {
+        return orderService.getOrders();
+    }
 
     @PostMapping("/preparations")
     public PreparedItemDto createNewOrder(@RequestBody PreparationDto preparation) {
