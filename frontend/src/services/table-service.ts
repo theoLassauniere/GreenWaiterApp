@@ -38,8 +38,6 @@ export const TableService = {
   async listAllTablesFromDining(): Promise<TableType[]> {
     const url = `${baseUrl}/dining/tables`;
     const response = await fetch(url);
-    console.log('La sdb');
-    console.log(response);
 
     if (!response.ok) {
       throw new Error(`Erreur lors du fetch des tables (Dining): ${response.statusText}`);
