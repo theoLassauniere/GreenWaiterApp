@@ -34,7 +34,14 @@ export default function OrdersList(props: Readonly<OrdersListProps>) {
         {readyOrders.map((o) => {
           const table = props.tables.find((t) => t.tableNumber === o.tableNumber);
           if (!table) return null;
-          return <Table key={table.id} table={table} isCommandesPage={true} onSelectPage={props.onSelectPage} />
+          return (
+            <Table
+              key={table.id}
+              table={table}
+              isCommandesPage={true}
+              onSelectPage={props.onSelectPage}
+            />
+          );
         })}
       </div>
 

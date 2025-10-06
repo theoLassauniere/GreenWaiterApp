@@ -1,65 +1,39 @@
 [
   {
     "_id": "68dbf1f555cbbfbfb52a4afb",
-    "allergens": [
-      "sulfites"
-    ]
+    "allergens": ["sulfites"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4afe",
-    "allergens": [
-      "gluten",
-      "oeufs",
-      "fruits à coque"
-    ]
+    "allergens": ["gluten", "oeufs", "fruits à coque"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b01",
-    "allergens": [
-      "lait"
-    ]
+    "allergens": ["lait"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b04",
-    "allergens": [
-      "poisson"
-    ]
+    "allergens": ["poisson"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b07",
-    "allergens": [
-      "crustacés",
-      "soja",
-      "sésame"
-    ]
+    "allergens": ["crustacés", "soja", "sésame"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b0a",
-    "allergens": [
-      "lait"
-    ]
+    "allergens": ["lait"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b0d",
-    "allergens": [
-      "gluten",
-      "lait"
-    ]
+    "allergens": ["gluten", "lait"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b10",
-    "allergens": [
-      "gluten",
-      "lait",
-      "oeufs"
-    ]
+    "allergens": ["gluten", "lait", "oeufs"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b13",
-    "allergens": [
-      "gluten",
-      "lait"
-    ]
+    "allergens": ["gluten", "lait"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b16",
@@ -67,33 +41,19 @@
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b19",
-    "allergens": [
-      "poisson",
-      "mollusques"
-    ]
+    "allergens": ["poisson", "mollusques"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b1c",
-    "allergens": [
-      "gluten",
-      "oeufs",
-      "lait"
-    ]
+    "allergens": ["gluten", "oeufs", "lait"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b1f",
-    "allergens": [
-      "lait",
-      "oeufs"
-    ]
+    "allergens": ["lait", "oeufs"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b22",
-    "allergens": [
-      "oeufs",
-      "lait",
-      "sulfites"
-    ]
+    "allergens": ["oeufs", "lait", "sulfites"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b25",
@@ -101,10 +61,7 @@
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b28",
-    "allergens": [
-      "lait",
-      "oeufs"
-    ]
+    "allergens": ["lait", "oeufs"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b2b",
@@ -112,11 +69,7 @@
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b2e",
-    "allergens": [
-      "gluten",
-      "lait",
-      "oeufs"
-    ]
+    "allergens": ["gluten", "lait", "oeufs"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b31",
@@ -136,9 +89,7 @@
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b3d",
-    "allergens": [
-      "sulfites"
-    ]
+    "allergens": ["sulfites"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b40",
@@ -154,9 +105,7 @@
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b49",
-    "allergens": [
-      "sulfites"
-    ]
+    "allergens": ["sulfites"]
   },
   {
     "_id": "68dbf1f555cbbfbfb52a4b4c",
