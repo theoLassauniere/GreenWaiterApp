@@ -19,7 +19,7 @@ export async function getListItems(category: Category): Promise<Item[]> {
 
 async function getListItemsBFF(category: Category): Promise<Item[]> {
   try {
-    const res = await fetch(`${config.bffApi}/menus/${category}`, {
+    const res = await fetch(`${config.bffApi}/item/getItems/${category}`, {
       method: 'GET',
       headers: { Accept: 'application/json' },
     });
