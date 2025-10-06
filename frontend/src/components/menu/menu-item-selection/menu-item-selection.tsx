@@ -6,12 +6,14 @@ import { useState } from 'react';
 import IconButton from '../../common/icon-button/icon-button.tsx';
 import type { CommandItem } from '../../../models/CommandItem.ts';
 import MenuItemBottomBar from '../../menu/bottom-bar/menu-item-bottom-bar.tsx';
+import Loader from '../../common/loader/loader.tsx';
 
 type MenuItemSelectionProps = {
   listItems: Item[];
   listSelectedItems?: CommandItem[];
   onReturn?: () => void;
   table?: number;
+  loading?: boolean;
 };
 
 export default function MenuItemSelection(props: MenuItemSelectionProps) {
@@ -61,14 +63,18 @@ export default function MenuItemSelection(props: MenuItemSelectionProps) {
           />
         </div>
         <div className="MenuItemSelection">
-          {filteredList.map((item: Item) => (
-            <MenuItem
-              item={item}
-              key={item.id}
-              onClick={() => handleAddItem(item)}
-              className={'item'}
-            />
-          ))}
+          {props.loading ? (
+            <Loader />
+          ) : (
+            filteredList.map((item: Item) => (
+              <MenuItem
+                item={item}
+                key={item.id}
+                onClick={() => handleAddItem(item)}
+                className="item"
+              />
+            ))
+          )}
         </div>
         {props.table != null && (
           <div className="footer">

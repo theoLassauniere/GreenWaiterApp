@@ -1,7 +1,7 @@
 import './food-category.scss';
 
 type FoodCategoryProps = {
-  id: number;
+  id: Category;
   title: string;
   imageUrl: string;
   onClick: (id: number) => void;

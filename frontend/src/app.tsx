@@ -10,15 +10,11 @@ import type { TableProps } from './components/tables/table/table.tsx';
 
 function App() {
   const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [readyNotification, setReadyNotification] = useState<string | null>(null);
   const [tables, setTables] = useState<TableProps[]>([]);
 
   const handleSelectPage = (newPage: typeof page) => {
     setPage(newPage);
-    if (newPage === 'menu') {
-      setSelectedCategory(null);
-    }
   };
 
   return (
@@ -28,9 +24,7 @@ function App() {
       </div>
       <main>
         {page === 'tables' && <Tables tables={tables} setTables={setTables} />}
-        {page === 'menu' && (
-          <Menu selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
-        )}
+        {page === 'menu' && <Menu />}
         {page === 'commandes' && <OrdersList tables={tables} />}
         {page === 'paiement' && <Payment tableNumber={12} tableCapacity={12} />}
       </main>

@@ -2,79 +2,59 @@ import './menu.scss';
 import { mockFoodCategories } from '../models/food-categories.ts';
 import FoodCategory from '../components/menu/food-category/food-category.tsx';
 import MenuItemSelection from '../components/menu/menu-item-selection/menu-item-selection.tsx';
-import type Category from '../models/Category.ts';
-import config from '../../../config';
+import { getListItems } from '../services/item-service.ts';
+import { useState } from 'react';
+import type { Category } from '../models/Category.ts';
+import type { Item } from '../models/Item.ts';
 
-export type MenuProps = {
-  selectedCategory: number | null;
-  setSelectedCategory: (cat: number | null) => void;
-};
+export function Menu() {
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [listItems, setListItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(false);
 
-export function Menu(props: Readonly<MenuProps>) {
-  const getListItems = (category: Category) => {
-    config.bffFlag ? getListItemsBFF(category) : getListItemsNoBFF(category);
+  const onReturn = () => {
+    setSelectedCategory(null);
+    setListItems([]);
   };
 
-  const getListItemsBFF = (category: Category) => {
+  const handleCategoryClick = async (category: Category) => {
+    setSelectedCategory(category);
+    setLoading(true);
     try {
-      const res = await fetch(`${config.bffApi}//${id}`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        console.error('Erreur HTTP allergènes', res.status);
-        return [];
-      }
-      const payload = await res.json();
-      return Array.isArray(payload) ? payload : (payload ?? []);
+      const items = await getListItems(category);
+      setListItems(items);
     } catch (e) {
-      console.error('Erreur réseau allergènes', e);
-      return [];
+      console.error(e);
+      setListItems([]);
+    } finally {
+      setLoading(false);
     }
-  };
-  const getListItemsNoBFF = (category: Category) => {
-    try {
-      const res = await fetch(`${config.apiUrl}menu/menus`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        console.error('Erreur HTTP allergènes', res.status);
-        return [];
-      }
-      const payload = await res.json();
-    } catch (e) {
-      console.error('Erreur réseau allergènes', e);
-      return [];
-    }
-  };
-  const handleCategoryClick = (id: number) => {
-    props.setSelectedCategory(id);
   };
 
   return (
-    <div className="menu">
-      {props.selectedCategory === null ? (
+    <>
+      {selectedCategory === null ? (
         <div className="categories-grid">
-          {mockFoodCategories.map((cat) => (
+          {mockFoodCategories.map((cat, i) => (
             <FoodCategory
-              key={cat.id}
-              id={cat.id}
+              key={i}
+              id={cat.category}
               title={cat.title}
               imageUrl={cat.imageUrl}
-              onClick={handleCategoryClick}
+              onClick={() => handleCategoryClick(cat.category)}
             />
           ))}
         </div>
       ) : (
         <div className="menu-grid">
           <MenuItemSelection
-            listItems={getlistItems}
+            listItems={listItems}
             table={11}
-            onReturn={() => props.setSelectedCategory(null)}
+            onReturn={onReturn}
+            loading={loading}
           />
         </div>
       )}
-    </div>
+    </>
   );
 }

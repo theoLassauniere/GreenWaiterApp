@@ -36,7 +36,7 @@ public class AllergenService {
                     allergen.setAllergens(entry.getValue());
                     return allergen;
                 })
-                .collect(Collectors.toList());
+                .toList();
 
     }
 }
