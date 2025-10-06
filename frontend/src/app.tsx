@@ -10,7 +10,7 @@ import { Pages, type PageType } from './models/Pages.ts';
 import type { TableType } from './models/Table.ts';
 
 function App() {
-  const [page, setPage] = useState<'tables' | 'menu' | 'commandes' | 'paiement'>('tables');
+  const [page, setPage] = useState<PageType>(Pages.Tables);
   const [readyNotification, setReadyNotification] = useState<string | null>(null);
   const [tables, setTables] = useState<TableType[]>([]);
   const [selectedTable, setSelectedTable] = useState<TableType | null>(null);

@@ -1,4 +1,3 @@
-// src/main/java/fr/green/BffGreenWaiter/items/service/MenuService.java
 package fr.green.BffGreenWaiter.items.service;
 
 import fr.green.BffGreenWaiter.items.model.ItemDB;
