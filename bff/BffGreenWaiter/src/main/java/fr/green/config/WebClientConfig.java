@@ -1,4 +1,4 @@
-package fr.green.BffGreenWaiter.config;
+package fr.green.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
