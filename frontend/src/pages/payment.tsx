@@ -1,7 +1,7 @@
 import { type Dispatch, type SetStateAction, useState } from 'react';
 import './payment.scss';
 import { mockCommandItems } from '../mocks/command-items.ts';
-import { mockFoodCategories } from '../mocks/food-categories.ts';
+import { mockFoodCategories } from '../models/food-categories.ts';
 import SelectItemsCheckbox from '../components/common/select-items-checkbox/select-items-checkbox.tsx';
 import { ItemDetail } from '../components/payment/item-detail/item-detail.tsx';
 import type { CommandItem } from '../models/CommandItem.ts';

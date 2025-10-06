@@ -1,22 +1,25 @@
+import category from './Category.ts';
+
 export const mockFoodCategories = [
   {
-    id: 1,
-    title: 'Softs',
+    title: 'Boissons',
+    category: category.BEVERAGE,
     imageUrl: 'https://picsum.photos/400/300?random=1',
   },
   {
-    id: 2,
-    title: 'Alcools',
+    title: 'Entrées',
+    category: category.STARTER,
     imageUrl: 'https://picsum.photos/400/300?random=2',
   },
   {
-    id: 3,
     title: 'Plats',
+    category: category.MAIN,
     imageUrl: 'https://picsum.photos/400/300?random=3',
   },
   {
     id: 4,
     title: 'Desserts',
+    category: category.DESSERT,
     imageUrl: 'https://picsum.photos/400/300?random=4',
   },
 ];
