@@ -1,7 +1,7 @@
 import './table.scss';
 import { CommandState } from '../../../models/CommandState.ts';
 import { PreparationPlace } from '../../../models/PreparationPlace.ts';
-import { OrderService, type PreparationDto } from '../../services/order/order-service.tsx';
+import { OrderService, type PreparationDto } from '../../../services/order-service.tsx';
 
 function openOrderPopup(tableNumber: number) {
   // TODO: rediriger vers la page de création de commande

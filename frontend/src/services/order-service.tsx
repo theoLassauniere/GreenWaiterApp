@@ -1,4 +1,4 @@
-import config from '../../config';
+import config from '../config.ts';
 
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/kitchen') : '/api/kitchen';
 

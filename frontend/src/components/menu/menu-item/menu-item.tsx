@@ -3,7 +3,7 @@ import * as React from 'react';
 import { type ReactNode, useState } from 'react';
 import './menu-item.scss';
 import IconButton from '../../common/icon-button/icon-button.tsx';
-import AllergenPopup from '../allergen-popup/allergen-popup.tsx';
+import AllergenPopup from '../AllergenPopup/AllergenPopup.tsx';
 
 type MenuItemProps = {
   item: Item;

@@ -1,6 +1,6 @@
 import './orders-list.scss';
 import Table, { type TableProps } from '../components/tables/table/table.tsx';
-import { type OrderDto, OrderService } from '../../services/order/order-service.tsx';
+import { type OrderDto, OrderService } from '../services/order-service.tsx';
 import { useEffect, useState } from 'react';
 
 type OrdersListProps = {
@@ -29,7 +29,7 @@ export default function OrdersList({ tables }: Readonly<OrdersListProps>) {
       <div className="orders-column">
         <h2>À servir</h2>
         {readyOrders.map((o) => {
-          const table = tables.find((t) => t.id === o.tableNumber);
+          const table = tables.find((t) => t.tableNumber === o.tableNumber);
           if (!table) return null;
           return <Table key={table.id} {...table} />;
         })}

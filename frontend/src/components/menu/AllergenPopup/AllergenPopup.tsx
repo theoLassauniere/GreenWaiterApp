@@ -1,4 +1,4 @@
-import Popup from '../../common/Popup/Popup.tsx';
+import { PopUp } from '../../common/pop-up/pop-up.tsx';
 import './AllergenPopup.scss';
 
 type AllergenPopupProps = {
@@ -12,7 +12,7 @@ type AllergenPopupProps = {
 export default function AllergenPopup(props: AllergenPopupProps) {
   const { title = 'Allergènes', isOpen, onClose, allergens = [], className = '' } = props;
   return (
-    <Popup isOpen={isOpen} onClose={onClose} title={title} className={className}>
+    <PopUp isOpen={isOpen} onClose={onClose} title={title} className={className}>
       <ul className="allergen-list">
         {allergens.length > 0 ? (
           allergens.map((allergen, index) => (
@@ -24,6 +24,6 @@ export default function AllergenPopup(props: AllergenPopupProps) {
           <li>Aucun allergène trouvé</li>
         )}
       </ul>
-    </Popup>
+    </PopUp>
   );
 }

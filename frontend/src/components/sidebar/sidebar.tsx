@@ -1,6 +1,6 @@
 import AppButton from '../common/app-button/app-button.tsx';
 import './sidebar.scss';
-import { OrderService } from '../../services/order/order-service.tsx';
+import { OrderService } from '../../services/order-service.tsx';
 
 type SidebarProps = {
   onSelect: (page: 'tables' | 'menu' | 'commandes' | 'paiement') => void;
