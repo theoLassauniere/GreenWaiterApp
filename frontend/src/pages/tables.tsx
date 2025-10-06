@@ -85,6 +85,7 @@ export default function Tables({ tables, setTables }: Readonly<TablesProps>) {
         <TableFilter tables={tables} minCapacity={minCapacity} onChange={setMinCapacity} />
         <SelectItemsCheckbox
           label="Afficher seulement les tables occupées"
+          disabled={false}
           checked={showOccupied}
           onChange={setShowOccupied}
         />

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 
 export type ItemDetailProps = {
   name: string;
+  disabled: boolean;
   quantity: number;
   selected: boolean;
   selectedQuantity: number;
@@ -10,16 +11,9 @@ export type ItemDetailProps = {
   onQuantityChange: (value: number) => void;
 };
 
-export function ItemDetail({
-  name,
-  quantity,
-  selected,
-  selectedQuantity,
-  onSelectChange,
-  onQuantityChange,
-}: Readonly<ItemDetailProps>) {
+export function ItemDetail(props: Readonly<ItemDetailProps>) {
   const checkboxRef = useRef<HTMLInputElement>(null);
-  const isIndeterminate = selectedQuantity > 0 && selectedQuantity < quantity;
+  const isIndeterminate = props.selectedQuantity > 0 && props.selectedQuantity < props.quantity;
 
   useEffect(() => {
     if (checkboxRef.current) {
@@ -30,29 +24,31 @@ export function ItemDetail({
   return (
     <div className="item-detail-card">
       <div className="item-header">
-        <h1 className="item-title">{name}</h1>
+        <h1 className="item-title">{props.name}</h1>
         <input
           className="item-checkbox"
           type="checkbox"
+          disabled={props.disabled}
           ref={checkboxRef}
-          checked={selected}
-          onChange={(e) => onSelectChange(e.target.checked)}
+          checked={props.selected}
+          onChange={(e) => props.onSelectChange(e.target.checked)}
         />
       </div>
       <div className="item-quantity">
         <label htmlFor="quantity-select">Quantité :</label>
         <select
           className="quantity-select"
-          value={selectedQuantity}
-          onChange={(e) => onQuantityChange(Number(e.target.value))}
+          disabled={props.disabled}
+          value={props.selectedQuantity}
+          onChange={(e) => props.onQuantityChange(Number(e.target.value))}
         >
-          {[...Array(quantity + 1).keys()].map((i) => (
+          {[...new Array(props.quantity + 1).keys()].map((i) => (
             <option key={i} value={i}>
               {i}
             </option>
           ))}
         </select>
-        <span>/ {quantity}</span>
+        <span>/ {props.quantity}</span>
       </div>
     </div>
   );
