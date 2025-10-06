@@ -1,7 +1,7 @@
-package fr.green.tables.services;
+package fr.green.BffGreenWaiter.tables.services;
 
-import fr.green.tables.dto.TableDto;
-import fr.green.tables.dto.TableWithOrderDto;
+import fr.green.BffGreenWaiter.tables.dto.TableDto;
+import fr.green.BffGreenWaiter.tables.dto.TableWithOrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
