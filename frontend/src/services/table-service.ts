@@ -4,12 +4,33 @@ import type { TableType } from '../models/Table.ts';
 
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '') : '/api';
 
-type RawTable = {
+export type RawTable = {
   _id: string;
   number: number;
   capacity?: number;
   taken: boolean;
   tableOrderId?: string | null;
+};
+
+export type RawOrder = {
+  _id: string;
+  tableNumber: number;
+  customersCount: number;
+  opened: string;
+  lines: {
+    item: { _id: string; shortName: string };
+    howMany: number;
+    sentForPreparation: boolean;
+  }[];
+  preparations: {
+    _id: string;
+    shouldBeReadyAt: string;
+    preparedItems: {
+      _id: string;
+      shortName: string;
+    }[];
+  }[];
+  billed?: string | null;
 };
 
 export type StartOrderingDto = {
@@ -94,6 +115,33 @@ export const TableService = {
     });
     if (!response.ok) {
       throw new Error(`Erreur ouverture table: ${response.statusText}`);
+    }
+    return await response.json();
+  },
+
+  async getTableOrders() {
+    const url = `${baseUrl}/dining/tableOrders`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Erreur lors de la récupération des commandes: ${response.statusText}`);
+    }
+    return await response.json();
+  },
+
+  async getTableOrder(tableNumber: number) {
+    const tableOrders: RawOrder[] = await TableService.getTableOrders();
+    return tableOrders.find((table) => table.tableNumber === tableNumber);
+  },
+
+  async billTable(tableNumber: number) {
+    const orderId = (await this.getTableOrder(tableNumber))?._id;
+    const endpoint = `${baseUrl}/dining/tableOrders/${orderId}/bill`;
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      throw new Error(`Erreur de paiement pour la table ${tableNumber}: ${response.statusText}`);
     }
     return await response.json();
   },

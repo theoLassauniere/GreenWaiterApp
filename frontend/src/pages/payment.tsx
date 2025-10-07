@@ -1,7 +1,5 @@
-import { type Dispatch, type SetStateAction, useState } from 'react';
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import './payment.scss';
-import { mockCommandItems } from '../mocks/command-items.ts';
-import { mockFoodCategories } from '../mocks/food-categories.ts';
 import SelectItemsCheckbox from '../components/common/select-items-checkbox/select-items-checkbox.tsx';
 import { ItemDetail } from '../components/payment/item-detail/item-detail.tsx';
 import type { CommandItem } from '../models/CommandItem.ts';
@@ -10,6 +8,9 @@ import { NormalPaymentSummary } from '../components/payment/payment-summary/norm
 import { Pages, type PageType } from '../models/Pages.ts';
 import { PopUp } from '../components/common/pop-up/pop-up.tsx';
 import type { TableType } from '../models/Table.ts';
+import { PaymentService } from '../services/payment-service.ts';
+import { Category, getCategoryTitle } from '../models/Category.ts';
+import { TableService } from '../services/table-service.ts';
 
 export type PaymentProps = {
   readonly table: TableType;
@@ -17,14 +18,22 @@ export type PaymentProps = {
 };
 
 export function Payment(props: PaymentProps) {
-  const [commandItems, setCommandItems] = useState([...mockCommandItems]);
+  const [commandItems, setCommandItems] = useState<CommandItem[]>([]);
 
-  const initialSelected = Object.fromEntries(commandItems.map((item) => [item.id, false]));
-  const initialSelectedQuantity = Object.fromEntries(commandItems.map((item) => [item.id, 0]));
-  const [selected, setSelected] = useState<{ [id: number]: boolean }>(initialSelected);
-  const [selectedQuantity, setSelectedQuantity] = useState<{ [id: number]: number }>(
-    initialSelectedQuantity
-  );
+  useEffect(() => {
+    const loadCommandItems = async () => {
+      const items = await PaymentService.getCommandItems(props.table.tableNumber);
+      setCommandItems(items);
+    };
+
+    loadCommandItems().catch((error) => {
+      console.error('Erreur lors de la récupération des composants de la commande:', error);
+      setCommandItems([]);
+    });
+  }, [props.table.tableNumber]);
+
+  const [selected, setSelected] = useState<{ [id: string]: boolean }>({});
+  const [selectedQuantity, setSelectedQuantity] = useState<{ [id: string]: number }>({});
 
   const [isSplitEquallyMode, setIsSplitEquallyMode] = useState(false);
   const [remainingPeople, setRemainingPeople] = useState(0);
@@ -39,7 +48,7 @@ export function Payment(props: PaymentProps) {
   const total = isSplitEquallyMode ? remainingPeople * amountPerPerson : baseTotal;
   const toPay = isSplitEquallyMode
     ? amountPerPerson
-    : commandItems.reduce((sum, item) => sum + item.price * selectedQuantity[item.id], 0);
+    : commandItems.reduce((sum, item) => sum + item.price * (selectedQuantity[item.id] ?? 0), 0);
 
   function handlePay() {
     if (isSplitEquallyMode) {
@@ -90,9 +99,10 @@ export function Payment(props: PaymentProps) {
     setSelectedQuantity(newSelectedQuantity);
   }
 
-  function handlePopUpClose() {
+  async function handlePopUpClose() {
     setShowPaymentSuccess(false);
     props.onSelectPage(Pages.Tables);
+    await TableService.billTable(props.table.tableNumber);
   }
 
   return (
@@ -108,18 +118,18 @@ export function Payment(props: PaymentProps) {
         />
       </div>
       <div className="items-container">
-        {mockFoodCategories
-          .filter((category) => commandItems.some((item) => item.categoryId === category.id))
+        {Object.values(Category)
+          .filter((category) => commandItems.some((item) => item.category === category))
           .map((category) => (
-            <div key={category.id}>
-              <h2>{category.title}</h2>
+            <div key={category}>
+              <h2>{getCategoryTitle(category)}</h2>
               <div className="items-category-container">
                 {commandItems
-                  .filter((item) => item.categoryId === category.id)
+                  .filter((item) => item.category === category)
                   .map((item) => (
                     <ItemDetail
                       key={item.id}
-                      name={item.name}
+                      name={item.shortName || item.name}
                       disabled={isSplitEquallyMode}
                       quantity={item.quantity}
                       selected={selected[item.id]}
@@ -161,7 +171,11 @@ export function Payment(props: PaymentProps) {
           />
         )}
       </div>
-      <PopUp isOpen={showPaymentSuccess} onClose={handlePopUpClose} title={'Paiement terminé !'}>
+      <PopUp
+        isOpen={showPaymentSuccess}
+        onClose={async () => handlePopUpClose()}
+        title={'Paiement terminé !'}
+      >
         <p>Le paiement de la table {props.table.tableNumber} a été effectué avec succès.</p>
       </PopUp>
     </div>
@@ -170,7 +184,7 @@ export function Payment(props: PaymentProps) {
 
 function handleItemSelectChange(
   checked: boolean,
-  itemId: number,
+  itemId: string,
   selected: { [id: number]: boolean },
   setSelected: Dispatch<SetStateAction<{ [id: number]: boolean }>>,
   setSelectedQuantity: Dispatch<SetStateAction<{ [id: number]: number }>>
@@ -184,7 +198,7 @@ function handleItemSelectChange(
 
 function handleItemQuantityChange(
   value: number,
-  itemId: number,
+  itemId: string,
   setSelectedQuantity: Dispatch<SetStateAction<{ [id: number]: number }>>,
   setSelected: Dispatch<SetStateAction<{ [id: number]: boolean }>>
 ) {

@@ -1,5 +1,5 @@
 import './table.scss';
-import { OrderService, type PreparationDto } from '../../../services/order-service.tsx';
+import { OrderService, type PreparationDto } from '../../../services/order-service.ts';
 import { Pages, type PageType } from '../../../models/Pages.ts';
 import type { TableType } from '../../../models/Table.ts';
 
