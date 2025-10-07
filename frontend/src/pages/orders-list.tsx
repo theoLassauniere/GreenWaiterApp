@@ -2,7 +2,7 @@ import './orders-list.scss';
 import { Table } from '../components/tables/table/table.tsx';
 import type { TableType } from '../models/Table.ts';
 import type { PageType } from '../models/Pages.ts';
-import { type OrderDto, OrderService } from '../services/order-service.tsx';
+import { type OrderDto, OrderService } from '../services/order-service.ts';
 import { useEffect, useState } from 'react';
 
 type OrdersListProps = {
