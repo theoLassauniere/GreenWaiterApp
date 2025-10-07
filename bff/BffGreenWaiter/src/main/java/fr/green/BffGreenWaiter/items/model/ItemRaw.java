@@ -8,7 +8,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ItemDB {
+public class ItemRaw {
     private String _id;
     private String fullName;
     private String shortName;

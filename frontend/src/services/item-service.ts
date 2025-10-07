@@ -49,7 +49,7 @@ async function getListItemsNoBFF(category: Category): Promise<Item[]> {
     const items = buildItemsArray(payload).filter((i) => !category || i.category === category);
 
     for (const item of items) {
-      item.allergens = await getAllergens(item.id);
+      item.allergens = getAllergens(item.shortName);
     }
 
     return items;

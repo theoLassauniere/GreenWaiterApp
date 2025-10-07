@@ -20,6 +20,8 @@ function App() {
     if (newPage === Pages.Paiement) {
       setSelectedTable(tables.find((table) => table.tableNumber === tableNumber) ?? null);
     }
+    if (newPage === Pages.Menu) {
+    }
     setPage(newPage);
   }
 
@@ -32,7 +34,7 @@ function App() {
         {page === Pages.Tables && (
           <Tables tables={tables} setTables={setTables} onSelectPage={handleSelectPage} />
         )}
-        {page === Pages.Menu && <Menu />}
+        {page === Pages.Menu && <Menu tableId={3} />}
         {page === Pages.Commandes && <OrdersList tables={tables} onSelectPage={handleSelectPage} />}
         {page === Pages.Paiement && selectedTable && (
           <Payment table={selectedTable} onSelectPage={handleSelectPage} />

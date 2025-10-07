@@ -1,122 +1,32 @@
 [
-  {
-    "_id": "68dbf1f555cbbfbfb52a4afb",
-    "allergens": ["sulfites"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4afe",
-    "allergens": ["gluten", "oeufs", "fruits à coque"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b01",
-    "allergens": ["lait"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b04",
-    "allergens": ["poisson"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b07",
-    "allergens": ["crustacés", "soja", "sésame"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b0a",
-    "allergens": ["lait"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b0d",
-    "allergens": ["gluten", "lait"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b10",
-    "allergens": ["gluten", "lait", "oeufs"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b13",
-    "allergens": ["gluten", "lait"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b16",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b19",
-    "allergens": ["poisson", "mollusques"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b1c",
-    "allergens": ["gluten", "oeufs", "lait"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b1f",
-    "allergens": ["lait", "oeufs"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b22",
-    "allergens": ["oeufs", "lait", "sulfites"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b25",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b28",
-    "allergens": ["lait", "oeufs"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b2b",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b2e",
-    "allergens": ["gluten", "lait", "oeufs"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b31",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b34",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b37",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b3a",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b3d",
-    "allergens": ["sulfites"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b40",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b43",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b46",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b49",
-    "allergens": ["sulfites"]
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b4c",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b4f",
-    "allergens": []
-  },
-  {
-    "_id": "68dbf1f555cbbfbfb52a4b52",
-    "allergens": []
-  }
+  { "name": "foie gras", "allergens": ["sulfites"] },
+  { "name": "soft-boiled egg", "allergens": ["gluten", "oeufs", "fruits à coque"] },
+  { "name": "goat cheese", "allergens": ["lait"] },
+  { "name": "salmon", "allergens": ["poisson"] },
+  { "name": "crab maki", "allergens": ["crustacés", "soja", "sésame"] },
+  { "name": "burrata", "allergens": ["lait"] },
+  { "name": "pizza", "allergens": ["gluten", "lait"] },
+  { "name": "lasagna", "allergens": ["gluten", "lait", "oeufs"] },
+  { "name": "beef burger", "allergens": ["gluten", "lait"] },
+  { "name": "beef chuck", "allergens": [] },
+  { "name": "half cooked tuna", "allergens": ["poisson", "mollusques"] },
+  { "name": "brownie", "allergens": ["gluten", "oeufs", "lait"] },
+  { "name": "chocolate", "allergens": ["lait", "oeufs"] },
+  { "name": "lemon", "allergens": ["oeufs", "lait", "sulfites"] },
+  { "name": "rasp and peaches", "allergens": [] },
+  { "name": "strawberries", "allergens": ["lait", "oeufs"] },
+  { "name": "seasonal fruit", "allergens": [] },
+  { "name": "tiramisu", "allergens": ["gluten", "lait", "oeufs"] },
+  { "name": "coke", "allergens": [] },
+  { "name": "ice tea", "allergens": [] },
+  { "name": "bottled water", "allergens": [] },
+  { "name": "sparkling water", "allergens": [] },
+  { "name": "spritz", "allergens": ["sulfites"] },
+  { "name": "margarita", "allergens": [] },
+  { "name": "tequila", "allergens": [] },
+  { "name": "mojito", "allergens": [] },
+  { "name": "martini", "allergens": ["sulfites"] },
+  { "name": "lemonade", "allergens": [] },
+  { "name": "apple juice", "allergens": [] },
+  { "name": "café", "allergens": [] }
 ]

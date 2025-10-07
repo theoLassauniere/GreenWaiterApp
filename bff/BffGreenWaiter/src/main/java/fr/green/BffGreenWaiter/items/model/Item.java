@@ -1,6 +1,5 @@
 package fr.green.BffGreenWaiter.items.model;
 
-import fr.green.BffGreenWaiter.allergen.model.Allergen;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Item extends ItemDB{
+public class Item extends ItemRaw {
     private List<String> allergens;
 
     public Item() {

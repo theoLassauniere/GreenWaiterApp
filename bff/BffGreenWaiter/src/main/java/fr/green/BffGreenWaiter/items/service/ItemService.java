@@ -2,7 +2,7 @@ package fr.green.BffGreenWaiter.items.service;
 
 import fr.green.BffGreenWaiter.allergen.service.AllergenService;
 import fr.green.BffGreenWaiter.items.model.Item;
-import fr.green.BffGreenWaiter.items.model.ItemDB;
+import fr.green.BffGreenWaiter.items.model.ItemRaw;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +28,14 @@ public class ItemService {
                 .filter(db -> db.getCategory() != null &&
                         db.getCategory().trim().equalsIgnoreCase(searched))
                 .map(this::toItem)
-                .peek(item -> item.setAllergens(
-                        allergenService.getAllergensById(item.get_id())
-                ))
+                .map(item -> {
+                    item.setAllergens(allergenService.getAllergensByName(item.getShortName()));
+                    return item;
+                })
                 .toList();
     }
 
-    private Item toItem(ItemDB db) {
+    private Item toItem(ItemRaw db) {
         Item item = new Item();
         item.set_id(db.get_id());
         item.setFullName(db.getFullName());

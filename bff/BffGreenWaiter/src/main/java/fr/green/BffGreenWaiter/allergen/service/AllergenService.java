@@ -21,22 +21,10 @@ public class AllergenService {
         InputStream is = getClass().getClassLoader().getResourceAsStream("allergen.json");
         List<Allergen> entries = mapper.readValue(is, new TypeReference<List<Allergen>>() {});
         allergenCache = entries.stream()
-                .collect(Collectors.toMap(Allergen::getId, Allergen::getAllergens));
+                .collect(Collectors.toMap(Allergen::getName, Allergen::getAllergens));
     }
 
-    public List<String> getAllergensById(String id) {
-        return allergenCache.getOrDefault(id, List.of());
-    }
-
-    public List<Allergen> getAllergens() {
-        return allergenCache.entrySet().stream()
-                .map(entry -> {
-                    Allergen allergen = new Allergen();
-                    allergen.setId(entry.getKey());
-                    allergen.setAllergens(entry.getValue());
-                    return allergen;
-                })
-                .toList();
-
+    public List<String> getAllergensByName(String name) {
+        return allergenCache.getOrDefault(name, List.of());
     }
 }

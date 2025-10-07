@@ -7,7 +7,11 @@ import { useState } from 'react';
 import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
 
-export function Menu() {
+interface MenuProps {
+  tableId?: number;
+}
+
+export function Menu(MenuProps: Readonly<MenuProps>) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [listItems, setListItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
@@ -46,14 +50,16 @@ export function Menu() {
           ))}
         </div>
       ) : (
-        <div className="menu-grid">
-          <MenuItemSelection
-            listItems={listItems}
-            table={11}
-            onReturn={onReturn}
-            loading={loading}
-          />
-        </div>
+        typeof MenuProps.tableId === 'number' && (
+          <div className="menu-grid">
+            <MenuItemSelection
+              listItems={listItems}
+              table={MenuProps.tableId}
+              onReturn={onReturn}
+              loading={loading}
+            />
+          </div>
+        )
       )}
     </>
   );

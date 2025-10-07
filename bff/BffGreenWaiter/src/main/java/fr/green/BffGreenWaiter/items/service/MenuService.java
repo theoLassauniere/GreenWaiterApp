@@ -1,6 +1,6 @@
 package fr.green.BffGreenWaiter.items.service;
 
-import fr.green.BffGreenWaiter.items.model.ItemDB;
+import fr.green.BffGreenWaiter.items.model.ItemRaw;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -21,9 +21,9 @@ public class MenuService {
     @Value("${menu.service.url}")
     private String baseUrl;
 
-    public List<ItemDB> fetchItems() {
+    public List<ItemRaw> fetchItems() {
         try {
-            List<ItemDB> result = webClientBuilder
+            List<ItemRaw> result = webClientBuilder
                     .baseUrl(baseUrl)
                     .build()
                     .get()
@@ -36,7 +36,7 @@ public class MenuService {
                                             "Erreur menu-service: " + ex.getStatusCode() +
                                                     " - " + ex.getResponseBodyAsString(), ex))
                     )
-                    .bodyToFlux(ItemDB.class)
+                    .bodyToFlux(ItemRaw.class)
                     .timeout(Duration.ofSeconds(5))
                     .collectList()
                     .block();
