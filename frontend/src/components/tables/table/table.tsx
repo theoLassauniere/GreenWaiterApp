@@ -1,21 +1,25 @@
 import './table.scss';
-import { OrderService, type PreparationDto } from '../../../services/order-service.ts';
+import config from '../../../config.ts';
+import { OrderService, type ShortOrderDto } from '../../../services/order-service.ts';
 import { Pages, type PageType } from '../../../models/Pages.ts';
 import type { TableType } from '../../../models/Table.ts';
 import { TableService } from '../../../services/table-service.ts';
 import { useState } from 'react';
 
-function openOrderPopup(tableNumber: number) {
+function openOrderPopup(tableNumber: number): void {
   // TODO: rediriger vers la page de création de commande
-  // Mock pour l'instant, à refaire dans la page de création de commande
-  const preparation: PreparationDto = {
+  const preparation: ShortOrderDto = {
     tableNumber: tableNumber,
-    itemsToBeCooked: [
-      { menuItemShortName: 'lasagna', howMany: 2 },
-      { menuItemShortName: 'beef burger', howMany: 1 },
+    menuItems: [
+      { menuItemId: '68da3b2fdf0da1d568180535', menuItemShortName: 'foie gras', howMany: 2 },
+      { menuItemId: '68da3b2fdf0da1d568180538', menuItemShortName: 'soft-boiled egg', howMany: 3 },
     ],
   };
-  OrderService.createNewOrder(preparation).then((r) => console.log(r));
+
+  const response = config.bffFlag
+    ? OrderService.createNewOrderBFF(preparation).then(() => {})
+    : OrderService.createNewOrderNoBFF(preparation).then(() => {});
+  console.log(response);
 }
 
 export type TableProps = {
@@ -25,7 +29,6 @@ export type TableProps = {
 
 export function Table({ table, onSelectPage }: Readonly<TableProps>) {
   const [localTable, setLocalTable] = useState(table);
-
   async function handleTableClick() {
     if (localTable.occupied) return;
 
