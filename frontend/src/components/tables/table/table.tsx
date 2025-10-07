@@ -2,8 +2,9 @@ import './table.scss';
 import { CommandState } from '../../../models/CommandState.ts';
 import { PreparationPlace } from '../../../models/PreparationPlace.ts';
 import { OrderService, type ShortOrderDto } from '../../../services/order-service.tsx';
+import config from '../../../config.ts';
 
-function openOrderPopup(tableNumber: number) {
+function openOrderPopup(tableNumber: number): void {
   // TODO: rediriger vers la page de création de commande
   // Mock pour l'instant, à refaire dans la page de création de commande
   const preparation: ShortOrderDto = {
@@ -13,7 +14,12 @@ function openOrderPopup(tableNumber: number) {
       { menuItemId: '68da3b2fdf0da1d568180538', menuItemShortName: 'soft-boiled egg', howMany: 3 },
     ],
   };
-  OrderService.createNewOrder(preparation).then((r) => console.log(r));
+
+  const response = config.bffFlag
+    ? OrderService.createNewOrderBFF(preparation).then((r) => console.log(r))
+    : OrderService.createNewOrderNoBFF(preparation).then((r) => console.log(r));
+
+  console.log(response);
 }
 
 export default function Table({

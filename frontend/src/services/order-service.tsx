@@ -49,7 +49,7 @@ export const OrderService = {
   },
 
   // Creates a new order. Each menu item in the order is sent as a separate POST request.
-  async createNewOrder(order: ShortOrderDto): Promise<void> {
+  async createNewOrderNoBFF(order: ShortOrderDto): Promise<void> {
     const tableOrderId = await this.findOrderForTable(order.tableNumber);
     for (const item of order.menuItems) {
       const payload = {
@@ -64,6 +64,12 @@ export const OrderService = {
       });
       if (!response.ok) throw new Error(`Erreur création commande: ${response.statusText}`);
     }
+  },
+
+  async createNewOrderBFF(order: ShortOrderDto): Promise<void> {
+    // TODO : to implement
+    console.log(order);
+    return;
   },
 
   // Fetches all orders that are ready to be served
