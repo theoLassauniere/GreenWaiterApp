@@ -30,12 +30,5 @@
       flex-wrap: wrap;
       gap: 1rem;
     }
-
-    .categories-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(14rem, 1fr));
-      padding: 1rem;
-      height: 90vh;
-    }
   }
 }

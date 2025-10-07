@@ -16,12 +16,18 @@ type MenuItemSelectionProps = {
   loading?: boolean;
 };
 
-export default function MenuItemSelection(props: MenuItemSelectionProps) {
+export default function MenuItemSelection({
+  listItems,
+  listSelectedItems,
+  onReturn,
+  table,
+  loading,
+}: MenuItemSelectionProps) {
   const [value, setValue] = useState('');
-  const [selectedItems, setSelectedItems] = useState<CommandItem[]>(props.listSelectedItems || []);
+  const [selectedItems, setSelectedItems] = useState<CommandItem[]>(listSelectedItems || []);
 
-  const filteredList = props.listItems.filter((item: Item) =>
-    item.name.toLowerCase().includes(value.toLowerCase())
+  const filteredList = listItems.filter((item: Item) =>
+    (item.name ?? '').toLowerCase().includes(value.toLowerCase())
   );
 
   const handleAddItem = (itemToAdd: Item) => {
@@ -35,7 +41,8 @@ export default function MenuItemSelection(props: MenuItemSelectionProps) {
             : commandItem
         );
       } else {
-        return [...prevItems, { ...itemToAdd, quantity: 1 }];
+        const newCommandItem: CommandItem = { ...itemToAdd, quantity: 1 };
+        return [...prevItems, newCommandItem];
       }
     });
   };
@@ -51,43 +58,44 @@ export default function MenuItemSelection(props: MenuItemSelectionProps) {
   };
 
   return (
-    <>
-      <div className="menu-item-selection">
-        <div className="header">
-          <IconButton icon={'arrow_back'} onClick={props.onReturn} />
-          <SearchBar
-            value={value}
-            onChange={(val) => setValue(val)}
-            placeholder="Search items..."
-            className="MenuItemSearchBar"
-          />
-        </div>
-        <div className="MenuItemSelection">
-          {props.loading ? (
+    <div className="menu-item-selection">
+      <div className="menu-item-selection__header">
+        <IconButton icon="arrow_back" onClick={onReturn} />
+        <SearchBar
+          value={value}
+          onChange={setValue}
+          placeholder="Search items..."
+          className="menu-item-selection__search"
+        />
+      </div>
+
+      <div className="menu-item-selection__list">
+        {loading ? (
+          <div className="menu-item-selection__loading">
             <Loader />
-          ) : (
-            filteredList.map((item: Item) => (
-              <MenuItem
-                item={item}
-                key={item.id}
-                onClick={() => handleAddItem(item)}
-                className="item"
-              />
-            ))
-          )}
-        </div>
-        {props.table != null && (
-          <div className="footer">
-            <MenuItemBottomBar
-              tableNumber={props.table}
-              items={selectedItems}
-              onClick={(item) => handleAddItem(item)}
-              onRemoveItem={handleRemoveItem}
-              onSend={() => console.log('Send command')}
-            />
           </div>
+        ) : (
+          filteredList.map((item: Item) => (
+            <MenuItem
+              item={item}
+              key={item.id}
+              onClick={() => handleAddItem(item)}
+              className="menu-item-selection__item"
+            />
+          ))
         )}
       </div>
-    </>
+      {typeof table === 'number' && (
+        <div className="menu-item-selection__footer">
+          <MenuItemBottomBar
+            tableNumber={table}
+            items={selectedItems}
+            onClick={handleAddItem}
+            onRemoveItem={handleRemoveItem}
+            onSend={() => console.log('Send command')}
+          />
+        </div>
+      )}
+    </div>
   );
 }

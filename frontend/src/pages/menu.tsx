@@ -3,7 +3,7 @@ import { mockFoodCategories } from '../models/food-categories.ts';
 import FoodCategory from '../components/menu/food-category/food-category.tsx';
 import MenuItemSelection from '../components/menu/menu-item-selection/menu-item-selection.tsx';
 import { getListItems } from '../services/item-service.ts';
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
 
@@ -11,7 +11,11 @@ interface MenuProps {
   tableId?: number;
 }
 
-export function Menu(MenuProps: Readonly<MenuProps>) {
+export interface MenuHandle {
+  onReturn: () => void;
+}
+
+export const Menu = forwardRef<MenuHandle, MenuProps>((MenuProps, ref) => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [listItems, setListItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
@@ -20,6 +24,10 @@ export function Menu(MenuProps: Readonly<MenuProps>) {
     setSelectedCategory(null);
     setListItems([]);
   };
+
+  useImperativeHandle(ref, () => ({
+    onReturn,
+  }));
 
   const handleCategoryClick = async (category: Category) => {
     setSelectedCategory(category);
@@ -50,17 +58,15 @@ export function Menu(MenuProps: Readonly<MenuProps>) {
           ))}
         </div>
       ) : (
-        typeof MenuProps.tableId === 'number' && (
-          <div className="menu-grid">
-            <MenuItemSelection
-              listItems={listItems}
-              table={MenuProps.tableId}
-              onReturn={onReturn}
-              loading={loading}
-            />
-          </div>
-        )
+        <div className="menu-grid">
+          <MenuItemSelection
+            listItems={listItems}
+            table={MenuProps.tableId}
+            onReturn={onReturn}
+            loading={loading}
+          />
+        </div>
       )}
     </>
   );
-}
+});
