@@ -6,7 +6,6 @@ import config from '../../../config.ts';
 
 function openOrderPopup(tableNumber: number): void {
   // TODO: rediriger vers la page de création de commande
-  // Mock pour l'instant, à refaire dans la page de création de commande
   const preparation: ShortOrderDto = {
     tableNumber: tableNumber,
     menuItems: [
@@ -16,9 +15,8 @@ function openOrderPopup(tableNumber: number): void {
   };
 
   const response = config.bffFlag
-    ? OrderService.createNewOrderBFF(preparation).then((r) => console.log(r))
-    : OrderService.createNewOrderNoBFF(preparation).then((r) => console.log(r));
-
+    ? OrderService.createNewOrderBFF(preparation).then(() => {})
+    : OrderService.createNewOrderNoBFF(preparation).then(() => {});
   console.log(response);
 }
 

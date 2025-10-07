@@ -2,23 +2,6 @@ import config from '../config.ts';
 
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/dining') : '/api/dining';
 
-export type OrderDto = {
-  id: number;
-  tableNumber: number;
-  shouldBeReadyAt: string;
-  completedAt: string;
-  takenForServiceAt: string;
-  preparedItems: PreparedItemDto[];
-};
-
-export type PreparedItemDto = {
-  id: number;
-  shortName: string;
-  shouldStartAt: string;
-  startedAt: string;
-  finishedAt: string;
-};
-
 export type ShortOrderDto = {
   tableNumber: number;
   menuItems: MenuItemToOrderDto[];
@@ -36,8 +19,8 @@ export type SimplifiedOrder = {
 };
 
 export const OrderService = {
-  // Retrieves the order ID for a given table number
-  async findOrderForTable(tableNumber: number): Promise<string> {
+  // Retrieves the order ID for a given table number (web services version)
+  async findOrderForTableNoBFF(tableNumber: number): Promise<string> {
     const response = await fetch(`${baseUrl}/tableOrders`, {
       method: 'GET',
     });
@@ -50,7 +33,7 @@ export const OrderService = {
 
   // Creates a new order. Each menu item in the order is sent as a separate POST request.
   async createNewOrderNoBFF(order: ShortOrderDto): Promise<void> {
-    const tableOrderId = await this.findOrderForTable(order.tableNumber);
+    const tableOrderId = await this.findOrderForTableNoBFF(order.tableNumber);
     for (const item of order.menuItems) {
       const payload = {
         menuItemId: item.menuItemId,
@@ -64,24 +47,20 @@ export const OrderService = {
       });
       if (!response.ok) throw new Error(`Erreur création commande: ${response.statusText}`);
     }
+    console.log('Order created successfully for table ' + order.tableNumber);
   },
 
   async createNewOrderBFF(order: ShortOrderDto): Promise<void> {
-    // TODO : to implement
-    console.log(order);
-    return;
-  },
-
-  // Fetches all orders that are ready to be served
-  // TODO : move this in the kitchen service
-  /*
-  async getReadyOrders(): Promise<OrderDto[]> {
-    const response = await fetch(`${baseUrl}/preparations?state=readyToBeServed`, {
-      method: 'GET',
+    const payload = {
+      tableNumber: order.tableNumber,
+      menuItems: order.menuItems,
+    };
+    const response = await fetch(`${baseUrl}/tableOrders/newOrder`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
-    if (!response.ok)
-      throw new Error(`Erreur récupération commandes prêtes: ${response.statusText}`);
-    return response.json();
+    if (!response.ok) throw new Error(`Erreur création commande: ${response.statusText}`);
+    console.log('Order created successfully for table ' + order.tableNumber);
   },
-   */
 };

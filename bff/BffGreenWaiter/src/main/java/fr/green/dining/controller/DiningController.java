@@ -1,9 +1,7 @@
 package fr.green.dining.controller;
 
-import fr.green.dining.dto.PreparationDto;
-import fr.green.dining.dto.PreparedItemDto;
+import fr.green.dining.dto.ShortOrderDto;
 import fr.green.dining.dto.SimpleOrderDto;
-import fr.green.dining.enums.PreparationStatus;
 import fr.green.dining.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +19,13 @@ public class DiningController {
         return orderService.getOrders();
     }
 
-    @PostMapping("/preparations")
-    public PreparedItemDto createNewOrder(@RequestBody PreparationDto preparation) {
-        return orderService.createNewOrder(preparation);
+    @GetMapping("/tableOrders/{tableNumber}")
+    public String getOrderForTable(@PathVariable int tableNumber) {
+        return orderService.getOrderForTable(tableNumber);
     }
 
-    @GetMapping("/preparations")
-    public String getReadyOrders(@RequestParam("state") String state) {
-        PreparationStatus status = PreparationStatus.fromValue(state);
-        return orderService.getReadyOrders(status);
+    @PostMapping("/tableOrders/newOrder")
+    public void createNewOrder(@RequestBody ShortOrderDto order) {
+        orderService.createNewOrderFull(order);
     }
 }

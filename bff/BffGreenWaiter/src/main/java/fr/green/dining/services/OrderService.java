@@ -1,19 +1,16 @@
 package fr.green.dining.services;
 
 
-import fr.green.dining.dto.PreparationDto;
-import fr.green.dining.dto.PreparedItemDto;
-import fr.green.dining.dto.SimpleOrderDto;
-import fr.green.dining.enums.PreparationStatus;
-import fr.green.tables.dto.TableDto;
-import fr.green.tables.dto.TableWithOrderDto;
-import fr.green.tables.services.DiningServiceClient;
+import fr.green.dining.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.core.ParameterizedTypeReference;
+
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -22,19 +19,6 @@ public class OrderService {
 
     @Value("${tableOrders.service.url}")
     private String baseUrl;
-
-    public PreparedItemDto createNewOrder(PreparationDto preparation) {
-        DiningServiceClient diningServiceClient = new DiningServiceClient(webClientBuilder);
-
-        TableWithOrderDto table = diningServiceClient.getTableByNumber(preparation.getTableNumber());
-        if (!table.isTaken()) throw new RuntimeException("Table is not occupied. Cannot create order for it.");
-
-        return new PreparedItemDto();
-    }
-
-    public String getReadyOrders(PreparationStatus state) {
-        return "fetched getReadyOrders with state: " + state;
-    }
 
     public List<SimpleOrderDto> getOrders() {
         WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
@@ -45,5 +29,40 @@ public class OrderService {
                 .block();
     }
 
+    public String getOrderForTable(int tableNumber) {
+        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
 
+        List<SimpleOrderDto> response = webClient.get()
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<SimpleOrderDto>>() {})
+                .block();
+
+        if (response == null || response.isEmpty()) {
+            throw new RuntimeException("No orders found for table " + tableNumber);
+        }
+
+        Optional<SimpleOrderDto> optional = response.stream()
+                .filter(order -> order.getTableNumber() == tableNumber)
+                .findFirst();
+
+        if (optional.isPresent()) {
+            return optional.get().get_id();
+        } else {
+            throw new RuntimeException("No orders found for table " + tableNumber);
+        }
+    }
+
+    public void createNewOrderFull(ShortOrderDto order) {
+        String orderId = getOrderForTable(order.getTableNumber());
+        String url = baseUrl + "/" + orderId;
+        WebClient webClient = webClientBuilder.baseUrl(url).build();
+
+        for (MenuItemToOrderDto menuItem : order.getMenuItems()) {
+            webClient.post()
+                    .bodyValue(menuItem)
+                    .retrieve()
+                    .bodyToMono(MenuItemToOrderDto.class)
+                    .block();
+        }
+    }
 }
