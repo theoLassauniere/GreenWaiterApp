@@ -1,6 +1,6 @@
 import './table.scss';
 import config from '../../../config.ts';
-import { OrderService, type ShortOrderDto } from '../../../services/order-service.tsx';
+import { OrderService, type ShortOrderDto } from '../../../services/order-service.ts';
 import { Pages, type PageType } from '../../../models/Pages.ts';
 import type { TableType } from '../../../models/Table.ts';
 import { TableService } from '../../../services/table-service.ts';
