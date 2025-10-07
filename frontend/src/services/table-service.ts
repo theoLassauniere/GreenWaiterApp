@@ -106,8 +106,10 @@ export const TableService = {
     return await response.json();
   },
 
-  async openTable(order: StartOrderingDto) {
-    const endpoint = config.bffFlag ? `${baseUrl}/tables/open` : `${baseUrl}/dining/tableOrders`;
+  async openTableForOrders(order: StartOrderingDto) {
+    const endpoint = config.bffFlag
+      ? `${baseUrl}/tables/openForOrders`
+      : `${baseUrl}/dining/tableOrders`;
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

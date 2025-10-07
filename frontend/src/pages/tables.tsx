@@ -73,7 +73,7 @@ async function seedTablesIfEmpty(): Promise<TableType[]> {
   for (const table of mockTables) {
     await TableService.addTable({ tableNumber: table.tableNumber });
     if (table.occupied) {
-      await TableService.openTable({
+      await TableService.openTableForOrders({
         tableNumber: table.tableNumber,
         customersCount: table.capacity ?? 2,
       });
@@ -88,13 +88,13 @@ async function syncWithMocks(existing: TableType[]): Promise<void> {
 
     if (!found) {
       if (mock.occupied) {
-        await TableService.openTable({
+        await TableService.openTableForOrders({
           tableNumber: mock.tableNumber,
           customersCount: mock.capacity ?? 2,
         });
       }
     } else if (mock.occupied && !found.occupied) {
-      await TableService.openTable({
+      await TableService.openTableForOrders({
         tableNumber: mock.tableNumber,
         customersCount: mock.capacity ?? 2,
       });
