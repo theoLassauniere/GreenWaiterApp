@@ -25,17 +25,13 @@ public class OrderService {
 
         return webClient.get()
                 .retrieve()
-                .bodyToMono(List.class)
+                .bodyToMono(new ParameterizedTypeReference<List<SimpleOrderDto>>() {
+                })
                 .block();
     }
 
     public String getOrderForTable(int tableNumber) {
-        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
-
-        List<SimpleOrderDto> response = webClient.get()
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<SimpleOrderDto>>() {})
-                .block();
+        List<SimpleOrderDto> response = getOrders();
 
         if (response == null || response.isEmpty()) {
             throw new RuntimeException("No orders found for table " + tableNumber);
