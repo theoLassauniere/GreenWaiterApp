@@ -1,7 +1,7 @@
-package fr.green.tables.mapper;
+package fr.green.BffGreenWaiter.tables.mapper;
 
-import fr.green.tables.dto.TableDto;
-import fr.green.tables.dto.TableWithOrderDto;
+import fr.green.BffGreenWaiter.tables.dto.TableDto;
+import fr.green.BffGreenWaiter.tables.dto.TableWithOrderDto;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

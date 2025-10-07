@@ -1,10 +1,11 @@
-package fr.green.tables.controller;
+package fr.green.BffGreenWaiter.tables.controller;
 
-import fr.green.tables.dto.TableDto;
-import fr.green.tables.dto.TableWithOrderDto;
-import fr.green.tables.mapper.TableMapper;
-import fr.green.tables.services.DiningServiceClient;
-import fr.green.tables.services.TableOrderServiceClient;
+import fr.green.BffGreenWaiter.tables.dto.StartOrderingDto;
+import fr.green.BffGreenWaiter.tables.dto.TableDto;
+import fr.green.BffGreenWaiter.tables.dto.TableWithOrderDto;
+import fr.green.BffGreenWaiter.tables.mapper.TableMapper;
+import fr.green.BffGreenWaiter.tables.services.DiningServiceClient;
+import fr.green.BffGreenWaiter.tables.services.TableOrderServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,6 @@ public class TablesController {
             }
             table = TableMapper.toTableDto(tableBack);
             table.setCapacity(mock.getCapacity());
-            table.setCommandesPage(mock.isCommandesPage());
             table.setCommandState(mock.getCommandState());
             table.setCommandPreparationPlace(mock.getCommandPreparationPlace());
             result.add(table);
@@ -51,5 +51,14 @@ public class TablesController {
         return tablesFromBack.stream()
                 .map(TableMapper::toTableDto)
                 .toList();
+    }
+
+    @PostMapping("/openForOrders")
+    public TableDto openTable(@RequestBody StartOrderingDto dto) {
+        orderClient.openTableSafe(dto.getTableNumber(), dto.getCustomersCount());
+        var tableBack = diningClient.getTableByNumber(dto.getTableNumber());
+        var tableDto = TableMapper.toTableDto(tableBack);
+        tableDto.setCapacity(dto.getCustomersCount());
+        return tableDto;
     }
 }

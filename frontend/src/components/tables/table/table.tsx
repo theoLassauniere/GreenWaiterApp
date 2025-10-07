@@ -1,8 +1,10 @@
 import './table.scss';
-import { CommandState } from '../../../models/CommandState.ts';
-import { PreparationPlace } from '../../../models/PreparationPlace.ts';
-import { OrderService, type ShortOrderDto } from '../../../services/order-service.tsx';
 import config from '../../../config.ts';
+import { OrderService, type ShortOrderDto } from '../../../services/order-service.tsx';
+import { Pages, type PageType } from '../../../models/Pages.ts';
+import type { TableType } from '../../../models/Table.ts';
+import { TableService } from '../../../services/table-service.ts';
+import { useState } from 'react';
 
 function openOrderPopup(tableNumber: number): void {
   // TODO: rediriger vers la page de création de commande
@@ -20,49 +22,61 @@ function openOrderPopup(tableNumber: number): void {
   console.log(response);
 }
 
-export default function Table({
-  tableNumber,
-  capacity,
-  occupied,
-  isCommandesPage = false,
-  commandState,
-  commandPreparationPlace,
-}: Readonly<TableProps>) {
+export type TableProps = {
+  readonly table: TableType;
+  readonly onSelectPage: (page: PageType, tableNumber: number) => void;
+};
+
+export function Table({ table, onSelectPage }: Readonly<TableProps>) {
+  const [localTable, setLocalTable] = useState(table);
+  async function handleTableClick() {
+    if (localTable.occupied) return;
+
+    try {
+      const dto = { tableNumber: localTable.tableNumber, customersCount: localTable.capacity };
+      await TableService.openTableForOrders(dto);
+      setLocalTable({ ...localTable, occupied: true });
+    } catch (err) {
+      console.error('Erreur ouverture table :', err);
+    }
+  }
+
   return (
-    <div className={`table-card ${occupied ? 'occupied' : 'free'}`}>
-      <h3>Table {tableNumber}</h3>
+    <div
+      className={`table-card ${localTable.occupied ? 'occupied' : 'free'}`}
+      onClick={handleTableClick}
+      style={{ cursor: !localTable.occupied ? 'pointer' : 'default' }}
+    >
+      <h3>Table {localTable.tableNumber}</h3>
       <p>
-        Capacité :<strong> {capacity}</strong>
+        Capacité :<strong> {localTable.capacity}</strong>
       </p>
       <p>
-        <strong>{occupied ? 'Occupé' : 'Libre'}</strong>
+        <strong>{localTable.occupied ? 'Occupé' : 'Libre'}</strong>
       </p>
 
-      {isCommandesPage && (
-        <div className="command-actions">
-          <button onClick={() => openOrderPopup(tableNumber)}>Nouvelle commande</button>
+      <div className="command-actions">
+        {localTable.occupied && (
+          <button onClick={() => openOrderPopup(localTable.tableNumber)}>Nouvelle commande</button>
+        )}
+        {localTable.commandState === 'awaiting-service' && <button>Servi</button>}
+      </div>
 
-          {commandState === 'awaiting-service' && <button>Servi</button>}
-        </div>
+      {localTable.commandState === 'served' && (
+        <button
+          onClick={() => onSelectPage(Pages.Paiement, localTable.tableNumber)}
+          className="pay-btn"
+        >
+          Paiement
+        </button>
       )}
 
-      {commandState === 'served' && <button className="pay-btn">Paiement</button>}
-
-      {commandPreparationPlace && (
+      {localTable.commandPreparationPlace && (
         <p>
-          Commande pour : <strong>{commandPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
+          Commande pour :{' '}
+          <strong>{localTable.commandPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
         </p>
       )}
     </div>
   );
 }
-
-export type TableProps = {
-  readonly id: string;
-  readonly tableNumber: number;
-  readonly capacity: number;
-  readonly occupied: boolean;
-  readonly isCommandesPage?: boolean; // L'affichage du composant table n'est pas le même selon la page "Commandes" ou la page "Tables" d'où ce flag
-  readonly commandState?: CommandState;
-  readonly commandPreparationPlace?: PreparationPlace;
-};

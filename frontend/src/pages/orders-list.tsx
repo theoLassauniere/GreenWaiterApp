@@ -1,14 +1,17 @@
 import './orders-list.scss';
-import Table, { type TableProps } from '../components/tables/table/table.tsx';
+import { Table } from '../components/tables/table/table.tsx';
+import type { TableType } from '../models/Table.ts';
+import type { PageType } from '../models/Pages.ts';
 import { useEffect } from 'react';
 
 type OrdersListProps = {
-  readonly tables: readonly TableProps[];
+  readonly tables: TableType[];
+  readonly onSelectPage: (page: PageType, tableNumber?: number) => void;
 };
 
-export default function OrdersList({ tables }: Readonly<OrdersListProps>) {
-  const preparation = tables.filter((t) => t.commandState === 'preparing-in-kitchen');
-  const served = tables.filter((t) => t.commandState === 'served');
+export default function OrdersList(props: Readonly<OrdersListProps>) {
+  const preparation = props.tables.filter((t) => t.commandState === 'preparing-in-kitchen');
+  const served = props.tables.filter((t) => t.commandState === 'served');
 
   useEffect(() => {
     // TODO : use the kitchen service to retrieve ready orders
@@ -19,7 +22,7 @@ export default function OrdersList({ tables }: Readonly<OrdersListProps>) {
       <div className="orders-column">
         <h2>Préparation</h2>
         {preparation.map((t) => (
-          <Table key={t.id} {...t} isCommandesPage={true} />
+          <Table key={t.id} table={t} onSelectPage={props.onSelectPage} />
         ))}
       </div>
 
@@ -30,7 +33,7 @@ export default function OrdersList({ tables }: Readonly<OrdersListProps>) {
       <div className="orders-column">
         <h2>Servies / En attente</h2>
         {served.map((t) => (
-          <Table key={t.id} {...t} isCommandesPage={true} />
+          <Table key={t.id} table={t} onSelectPage={props.onSelectPage} />
         ))}
       </div>
     </div>

@@ -1,15 +1,36 @@
 import config from '../config';
 import { mockTables } from '../mocks/tables.ts';
-import type { TableProps } from '../components/tables/table/table.tsx';
+import type { TableType } from '../models/Table.ts';
 
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '') : '/api';
 
-type RawTable = {
+export type RawTable = {
   _id: string;
   number: number;
   capacity?: number;
   taken: boolean;
   tableOrderId?: string | null;
+};
+
+export type RawOrder = {
+  _id: string;
+  tableNumber: number;
+  customersCount: number;
+  opened: string;
+  lines: {
+    item: { _id: string; shortName: string };
+    howMany: number;
+    sentForPreparation: boolean;
+  }[];
+  preparations: {
+    _id: string;
+    shouldBeReadyAt: string;
+    preparedItems: {
+      _id: string;
+      shortName: string;
+    }[];
+  }[];
+  billed?: string | null;
 };
 
 export type StartOrderingDto = {
@@ -18,7 +39,7 @@ export type StartOrderingDto = {
 };
 
 export const TableService = {
-  async listAllTables(): Promise<TableProps[]> {
+  async listAllTables(): Promise<TableType[]> {
     if (config.bffFlag) {
       return this.listAllTablesFromBff();
     } else {
@@ -26,7 +47,7 @@ export const TableService = {
     }
   },
 
-  async listAllTablesFromBff(): Promise<TableProps[]> {
+  async listAllTablesFromBff(): Promise<TableType[]> {
     const url = `${baseUrl}/tables`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -35,7 +56,7 @@ export const TableService = {
     return await response.json();
   },
 
-  async listAllTablesFromDining(): Promise<TableProps[]> {
+  async listAllTablesFromDining(): Promise<TableType[]> {
     const url = `${baseUrl}/dining/tables`;
     const response = await fetch(url);
 
@@ -51,13 +72,12 @@ export const TableService = {
         capacity: mock?.capacity ?? 2,
         occupied: t.taken,
         commandState: mock?.commandState ?? undefined,
-        isCommandesPage: mock?.isCommandesPage ?? undefined,
         commandPreparationPlace: mock?.commandPreparationPlace ?? undefined,
       };
     });
   },
 
-  async seedTablesWithMocks(): Promise<TableProps[]> {
+  async seedTablesWithMocks(): Promise<TableType[]> {
     if (!config.bffFlag) {
       throw new Error('seedTablesWithMocks should only be called when BFF is enabled');
     }
@@ -86,8 +106,10 @@ export const TableService = {
     return await response.json();
   },
 
-  async openTable(order: StartOrderingDto) {
-    const endpoint = config.bffFlag ? `${baseUrl}/tables/open` : `${baseUrl}/dining/tableOrders`;
+  async openTableForOrders(order: StartOrderingDto) {
+    const endpoint = config.bffFlag
+      ? `${baseUrl}/tables/openForOrders`
+      : `${baseUrl}/dining/tableOrders`;
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -95,6 +117,33 @@ export const TableService = {
     });
     if (!response.ok) {
       throw new Error(`Erreur ouverture table: ${response.statusText}`);
+    }
+    return await response.json();
+  },
+
+  async getTableOrders() {
+    const url = `${baseUrl}/dining/tableOrders`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Erreur lors de la récupération des commandes: ${response.statusText}`);
+    }
+    return await response.json();
+  },
+
+  async getTableOrder(tableNumber: number) {
+    const tableOrders: RawOrder[] = await TableService.getTableOrders();
+    return tableOrders.find((table) => table.tableNumber === tableNumber);
+  },
+
+  async billTable(tableNumber: number) {
+    const orderId = (await this.getTableOrder(tableNumber))?._id;
+    const endpoint = `${baseUrl}/dining/tableOrders/${orderId}/bill`;
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      throw new Error(`Erreur de paiement pour la table ${tableNumber}: ${response.statusText}`);
     }
     return await response.json();
   },
