@@ -1,41 +1,72 @@
-import { mockFoodCategories } from '../mocks/food-categories.ts';
+import './menu.scss';
+import { mockFoodCategories } from '../models/food-categories.ts';
 import FoodCategory from '../components/menu/food-category/food-category.tsx';
 import MenuItemSelection from '../components/menu/menu-item-selection/menu-item-selection.tsx';
-import { mockMenuItems } from '../mocks/menu-items.ts';
+import { getListItems } from '../services/item-service.ts';
+import { forwardRef, useImperativeHandle, useState } from 'react';
+import type { Category } from '../models/Category.ts';
+import type { Item } from '../models/Item.ts';
 
-export type MenuProps = {
-  selectedCategory: number | null;
-  setSelectedCategory: (cat: number | null) => void;
-};
+interface MenuProps {
+  tableId?: number;
+}
 
-export function Menu(props: Readonly<MenuProps>) {
-  const handleCategoryClick = (id: number) => {
-    props.setSelectedCategory(id);
+export interface MenuHandle {
+  onReturn: () => void;
+}
+
+export const Menu = forwardRef<MenuHandle, MenuProps>((MenuProps, ref) => {
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [listItems, setListItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const onReturn = () => {
+    setSelectedCategory(null);
+    setListItems([]);
+  };
+
+  useImperativeHandle(ref, () => ({
+    onReturn,
+  }));
+
+  const handleCategoryClick = async (category: Category) => {
+    setSelectedCategory(category);
+    setLoading(true);
+    try {
+      const items = await getListItems(category);
+      setListItems(items);
+    } catch (e) {
+      console.error(e);
+      setListItems([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
-      {props.selectedCategory === null ? (
+      {selectedCategory === null ? (
         <div className="categories-grid">
-          {mockFoodCategories.map((cat) => (
+          {mockFoodCategories.map((cat, i) => (
             <FoodCategory
-              key={cat.id}
-              id={cat.id}
+              key={i}
+              id={cat.category}
               title={cat.title}
               imageUrl={cat.imageUrl}
-              onClick={handleCategoryClick}
+              onClick={() => handleCategoryClick(cat.category)}
             />
           ))}
         </div>
       ) : (
         <div className="menu-grid">
           <MenuItemSelection
-            listItems={mockMenuItems}
-            table={11}
-            onReturn={() => props.setSelectedCategory(null)}
+            listItems={listItems}
+            table={MenuProps.tableId}
+            onReturn={onReturn}
+            loading={loading}
           />
         </div>
       )}
     </>
   );
-}
+});

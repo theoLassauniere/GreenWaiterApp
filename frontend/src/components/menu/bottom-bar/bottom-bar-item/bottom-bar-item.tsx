@@ -14,7 +14,7 @@ export default function BottomBarItem(props: BottomBarItemProps) {
       <div className="item-quantity" onClick={() => props.onClick(props.item)}>
         {props.item.quantity}
       </div>
-      <div className="item-name">{props.item.name}</div>
+      <div className="item-name">{props.item.shortName}</div>
       <IconButton
         onClick={() => props.onRemove(props.item)}
         icon={props.item.quantity > 1 ? 'remove' : 'close'}

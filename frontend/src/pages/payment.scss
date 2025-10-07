@@ -16,6 +16,7 @@
   & .items-container {
     overflow-y: auto;
     overflow-x: hidden;
+    height: 100%;
     & .items-category-container {
       display: flex;
       flex-wrap: wrap;

@@ -17,4 +17,8 @@ export function getCategoryTitle(category: Category): string {
   return categoryTitles[category];
 }
 
+export const fromString = (value: string): Category | undefined => {
+  return Object.values(Category).includes(value as Category) ? (value as Category) : undefined;
+};
+
 export default Category;

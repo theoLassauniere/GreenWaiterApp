@@ -17,6 +17,6 @@ public class AllergenController {
     
     @GetMapping("/getAllergen/{id}")
     public List<String> getAllergen(@PathVariable String  id) {
-        return allergenService.getAllergensById(id);
+        return allergenService.getAllergensByName(id);
     }
 }
