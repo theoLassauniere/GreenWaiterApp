@@ -1,5 +1,6 @@
 package fr.green.BffGreenWaiter.tables.controller;
 
+import fr.green.BffGreenWaiter.tables.dto.StartOrderingDto;
 import fr.green.BffGreenWaiter.tables.dto.TableDto;
 import fr.green.BffGreenWaiter.tables.dto.TableWithOrderDto;
 import fr.green.BffGreenWaiter.tables.mapper.TableMapper;
@@ -50,5 +51,14 @@ public class TablesController {
         return tablesFromBack.stream()
                 .map(TableMapper::toTableDto)
                 .toList();
+    }
+
+    @PostMapping("/openForOrders")
+    public TableDto openTable(@RequestBody StartOrderingDto dto) {
+        orderClient.openTableSafe(dto.getTableNumber(), dto.getCustomersCount());
+        var tableBack = diningClient.getTableByNumber(dto.getTableNumber());
+        var tableDto = TableMapper.toTableDto(tableBack);
+        tableDto.setCapacity(dto.getCustomersCount());
+        return tableDto;
     }
 }
