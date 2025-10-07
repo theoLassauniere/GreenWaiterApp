@@ -1,7 +1,7 @@
-package fr.green.dining.services;
+package fr.green.BffGreenWaiter.dining.services;
 
 
-import fr.green.dining.dto.*;
+import fr.green.BffGreenWaiter.dining.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

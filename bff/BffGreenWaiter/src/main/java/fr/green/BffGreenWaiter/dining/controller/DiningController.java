@@ -1,8 +1,8 @@
-package fr.green.dining.controller;
+package fr.green.BffGreenWaiter.dining.controller;
 
-import fr.green.dining.dto.ShortOrderDto;
-import fr.green.dining.dto.SimpleOrderDto;
-import fr.green.dining.services.OrderService;
+import fr.green.BffGreenWaiter.dining.dto.ShortOrderDto;
+import fr.green.BffGreenWaiter.dining.dto.SimpleOrderDto;
+import fr.green.BffGreenWaiter.dining.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

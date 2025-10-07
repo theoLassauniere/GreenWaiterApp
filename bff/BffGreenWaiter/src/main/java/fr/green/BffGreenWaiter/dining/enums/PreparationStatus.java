@@ -1,4 +1,4 @@
-package fr.green.dining.enums;
+package fr.green.BffGreenWaiter.dining.enums;
 
 public enum PreparationStatus {
     READY_TO_BE_SERVED("readyToBeServed"),

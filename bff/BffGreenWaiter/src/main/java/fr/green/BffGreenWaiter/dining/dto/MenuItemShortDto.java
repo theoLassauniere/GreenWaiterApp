@@ -1,4 +1,4 @@
-package fr.green.dining.dto;
+package fr.green.BffGreenWaiter.dining.dto;
 
 public class MenuItemShortDto {
     String menuItemShortName;

@@ -1,4 +1,4 @@
-package fr.green.dining.mapper;
+package fr.green.BffGreenWaiter.dining.mapper;
 
 import lombok.experimental.UtilityClass;
 
