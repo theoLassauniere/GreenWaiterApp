@@ -69,7 +69,11 @@ export default function MenuItemSelection({
         />
       </div>
 
-      <div className="menu-item-selection__list">
+      <div
+        className={`menu-item-selection__list ${
+          loading ? 'is-loading' : listItems.length > 0 ? 'has-items' : ''
+        }`}
+      >
         {loading ? (
           <div className="menu-item-selection__loading">
             <Loader />

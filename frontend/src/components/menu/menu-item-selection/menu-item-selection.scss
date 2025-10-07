@@ -36,18 +36,21 @@
   }
 
   & .menu-item-selection__list {
-    padding: 10px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    flex: 1;
+    &.has-items {
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1;
+    }
 
-    & .menu-item-selection__loading {
+    &.is-loading {
+      height: 100%;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
 
     & .menu-item-selection__item {
