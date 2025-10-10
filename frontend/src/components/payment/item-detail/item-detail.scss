@@ -1,7 +1,7 @@
 .item-detail-card {
   border: 1px solid #000;
   border-radius: 0.5rem;
-  width: 14rem;
+  width: 17rem;
   background-color: var(--palette-gray-light);
   padding: 1rem;
 
@@ -28,7 +28,13 @@
     font-size: 1.3rem;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-top: 1rem;
+
+    .quantity-info {
+      display: flex;
+      align-items: center;
+    }
 
     .quantity-select {
       font-size: 1.2rem;
@@ -42,6 +48,36 @@
       option {
         font-size: 1.25rem;
       }
+    }
+  }
+
+  .share-btn {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    border: 0.1rem solid #000;
+    background-color: white;
+    color: var(--palette-green-dark);
+    font-size: 1.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+    transform: translateY(-1px);
+    margin-right: -0.2rem;
+    outline: none;
+
+    &:hover:not(:disabled) {
+      background-color: var(--palette-green);
+      color: white;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
     }
   }
 }

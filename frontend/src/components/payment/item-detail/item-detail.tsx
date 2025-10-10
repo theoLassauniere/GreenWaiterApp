@@ -1,5 +1,6 @@
 import './item-detail.scss';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { SplitPopup } from '../split-popup/split-popup.tsx';
 
 export type ItemDetailProps = {
   name: string;
@@ -7,11 +8,14 @@ export type ItemDetailProps = {
   quantity: number;
   selected: boolean;
   selectedQuantity: number;
+  divider?: number;
   onSelectChange: (checked: boolean) => void;
   onQuantityChange: (value: number) => void;
+  onSplitItem: (divider: number) => void;
 };
 
 export function ItemDetail(props: Readonly<ItemDetailProps>) {
+  const [showSplitPopup, setShowSplitPopup] = useState(false);
   const checkboxRef = useRef<HTMLInputElement>(null);
   const isIndeterminate = props.selectedQuantity > 0 && props.selectedQuantity < props.quantity;
 
@@ -20,6 +24,19 @@ export function ItemDetail(props: Readonly<ItemDetailProps>) {
       checkboxRef.current.indeterminate = isIndeterminate;
     }
   }, [isIndeterminate]);
+
+  const generateQuantityOptions = () => {
+    const divider = props.divider || 1;
+    const maxQuantity = props.quantity;
+    const options = [];
+
+    for (let i = 0; i <= maxQuantity * divider; i++) {
+      const value = i / divider;
+      options.push(value);
+    }
+
+    return options;
+  };
 
   return (
     <div className="item-detail-card">
@@ -35,21 +52,40 @@ export function ItemDetail(props: Readonly<ItemDetailProps>) {
         />
       </div>
       <div className="item-quantity">
-        <label htmlFor="quantity-select">Quantité :</label>
-        <select
-          className="quantity-select"
+        <div className="quantity-info">
+          <label htmlFor="quantity-select">Quantité :</label>
+          <select
+            className="quantity-select"
+            disabled={props.disabled}
+            value={props.selectedQuantity}
+            onChange={(e) => props.onQuantityChange(Number(e.target.value))}
+          >
+            {generateQuantityOptions().map((value) => (
+              <option key={value} value={value}>
+                {value % 1 === 0 ? value.toString() : value.toFixed(2)}
+              </option>
+            ))}
+          </select>
+          <span>/ {props.quantity.toFixed(2)}</span>
+        </div>
+        <button
+          className="share-btn"
           disabled={props.disabled}
-          value={props.selectedQuantity}
-          onChange={(e) => props.onQuantityChange(Number(e.target.value))}
+          onClick={() => setShowSplitPopup(true)}
+          title="Partager l'item"
         >
-          {[...new Array(props.quantity + 1).keys()].map((i) => (
-            <option key={i} value={i}>
-              {i}
-            </option>
-          ))}
-        </select>
-        <span>/ {props.quantity}</span>
+          ÷
+        </button>
       </div>
+      {showSplitPopup && (
+        <SplitPopup
+          isOpen={showSplitPopup}
+          title={'Pour combien de personnes diviser cet élément ?'}
+          splitMax={12}
+          onSplit={props.onSplitItem}
+          onClose={() => setShowSplitPopup(false)}
+        />
+      )}
     </div>
   );
 }
