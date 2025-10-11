@@ -1,4 +1,4 @@
-package fr.green.BffGreenWaiter.dining.dto;
+package fr.green.BffGreenWaiter.orders.dto;
 
 import lombok.Getter;
 

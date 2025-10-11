@@ -24,10 +24,13 @@ function App() {
     if (newPage === Pages.Menu) {
       if (page === Pages.Menu) {
         menuRef.current?.onReturn();
+        if (!tableNumber) setMenuTableNumber(null);
         return;
       }
       if (tableNumber != null) {
         setMenuTableNumber(tableNumber);
+      } else {
+        setMenuTableNumber(null);
       }
     }
     setPage(newPage);
@@ -42,8 +45,12 @@ function App() {
         {page === Pages.Tables && (
           <Tables tables={tables} setTables={setTables} onSelectPage={handleSelectPage} />
         )}
-        {page === Pages.Menu && menuTableNumber && (
-          <Menu ref={menuRef} tableId={menuTableNumber} onSelectPage={handleSelectPage} />
+        {page === Pages.Menu && (
+          <Menu
+            ref={menuRef}
+            tableId={menuTableNumber ?? undefined}
+            onSelectPage={handleSelectPage}
+          />
         )}
         {page === Pages.Commandes && <OrdersList tables={tables} onSelectPage={handleSelectPage} />}
         {page === Pages.Paiement && selectedTable && (

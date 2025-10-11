@@ -72,6 +72,7 @@ export const OrderService = {
       tableNumber: order.tableNumber,
       menuItems: order.menuItems,
     };
+
     const response = await fetch(`${baseUrl}/tableOrders/newOrder`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -84,6 +85,6 @@ export const OrderService = {
 
     const orderData = await response.json();
     console.log('Order created successfully for table ' + order.tableNumber);
-    return orderData.preparations ?? [];
+    return orderData ?? [];
   },
 };
