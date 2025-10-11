@@ -10,7 +10,7 @@ type TableFilterProps = {
 export default function TableFilter({ tables, minCapacity, onChange }: Readonly<TableFilterProps>) {
   const options = useMemo(() => {
     const maxCapacity = Math.max(...tables.map((t) => t.capacity), 1);
-    return Array.from({ length: maxCapacity }, (_, i) => i + 1);
+    return Array.from({ length: maxCapacity - 2 }, (_, i) => i + 3);
   }, [tables]);
 
   return (
