@@ -5,12 +5,15 @@ type ButtonProps = {
   icon?: string;
   onClick?: (e?: React.MouseEvent) => void;
   className?: string;
+  color?: string;
 };
 
-export default function IconButton({ onClick, icon, className }: ButtonProps): JSX.Element {
+export default function IconButton({ onClick, icon, className, color }: ButtonProps): JSX.Element {
   const content = (
     <div className="IconButton" onClick={onClick}>
-      <span className="material-icons">{icon ?? 'info'}</span>
+      <span className="material-icons" style={color ? { color } : undefined}>
+        {icon ?? 'info'}
+      </span>
     </div>
   );
 
