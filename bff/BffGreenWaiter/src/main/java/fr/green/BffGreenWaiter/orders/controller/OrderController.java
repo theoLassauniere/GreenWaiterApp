@@ -1,0 +1,38 @@
+package fr.green.BffGreenWaiter.orders.controller;
+
+import fr.green.BffGreenWaiter.orders.dto.ShortOrderDto;
+import fr.green.BffGreenWaiter.orders.dto.SimpleOrderDto;
+import fr.green.BffGreenWaiter.orders.services.OrderService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/dining")
+public class OrderController {
+    private final OrderService orderService;
+
+    @GetMapping("/tableOrders")
+    public List<SimpleOrderDto> getOrders() {
+        return orderService.getOrders();
+    }
+
+    @GetMapping("/tableOrders/{tableNumber}")
+    public String getOrderForTable(@PathVariable int tableNumber) {
+        return orderService.getOrderForTable(tableNumber);
+    }
+
+    @PostMapping("/tableOrders/newOrder")
+    public ResponseEntity<?> createNewOrder(@RequestBody ShortOrderDto order) {
+        try {
+            var preparations = orderService.createNewOrderFull(order);
+            return ResponseEntity.ok(preparations);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
+}

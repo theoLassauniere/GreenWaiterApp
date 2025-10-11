@@ -1,7 +1,7 @@
-package fr.green.BffGreenWaiter.dining.services;
+package fr.green.BffGreenWaiter.orders.services;
 
 
-import fr.green.BffGreenWaiter.dining.dto.*;
+import fr.green.BffGreenWaiter.orders.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,6 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -48,17 +49,26 @@ public class OrderService {
         }
     }
 
-    public void createNewOrderFull(ShortOrderDto order) {
+    public List<Map<String, Object>> createNewOrderFull(ShortOrderDto order) {
         String orderId = getOrderForTable(order.getTableNumber());
-        String url = baseUrl + "/" + orderId;
-        WebClient webClient = webClientBuilder.baseUrl(url).build();
+        String orderUrl = baseUrl + "/" + orderId;
+        String prepareUrl = baseUrl + "/" + orderId + "/prepare";
+
+        WebClient webClient = webClientBuilder.build();
 
         for (MenuItemToOrderDto menuItem : order.getMenuItems()) {
             webClient.post()
+                    .uri(orderUrl)
                     .bodyValue(menuItem)
                     .retrieve()
-                    .bodyToMono(MenuItemToOrderDto.class)
+                    .bodyToMono(Void.class)
                     .block();
         }
+
+        return webClient.post()
+                .uri(prepareUrl)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<Map<String, Object>>>() {})
+                .block();
     }
 }
