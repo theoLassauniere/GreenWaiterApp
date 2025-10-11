@@ -13,7 +13,7 @@ import { Pages, type PageType } from '../models/Pages.ts';
 import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-bar.tsx';
 
 export interface MenuProps {
-  tableId: number;
+  tableId?: number;
   onSelectPage: (page: PageType, tableNumber?: number) => void;
 }
 
@@ -72,6 +72,11 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
   };
 
   const handleSendOrder = async () => {
+    if (!tableId) {
+      console.warn('Aucune table sélectionnée, mode consultation. Pas de commande envoyée.');
+      return;
+    }
+
     if (selectedItems.length === 0) return;
 
     const preparation: ShortOrderDto = {
@@ -91,9 +96,9 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
       setSelectedItems([]);
       setSelectedCategory(null);
       setListItems([]);
+      onSelectPage(Pages.Tables, tableId);
 
       console.log('Commande créée avec succès :', preparations);
-      onSelectPage(Pages.Tables, tableId);
     } catch (e) {
       console.error('Erreur lors de l’envoi de la commande :', e);
     }
@@ -127,13 +132,15 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
           />
         </div>
       )}
-      <MenuItemBottomBar
-        tableNumber={tableId}
-        items={selectedItems}
-        onSend={handleSendOrder}
-        onClick={handleAddItem}
-        onRemoveItem={handleRemoveItem}
-      />
+      {tableId && (
+        <MenuItemBottomBar
+          tableNumber={tableId}
+          items={selectedItems}
+          onSend={handleSendOrder}
+          onClick={handleAddItem}
+          onRemoveItem={handleRemoveItem}
+        />
+      )}
     </>
   );
 });
