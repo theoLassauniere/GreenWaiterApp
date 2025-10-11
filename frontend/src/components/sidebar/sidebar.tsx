@@ -1,6 +1,5 @@
 import AppButton from '../common/app-button/app-button.tsx';
 import './sidebar.scss';
-import { OrderService } from '../../services/order-service.ts';
 
 type SidebarProps = {
   onSelect: (page: 'tables' | 'menu' | 'commandes' | 'paiement') => void;
@@ -15,7 +14,7 @@ export default function Sidebar({ onSelect }: Readonly<SidebarProps>) {
         label="Commandes"
         onClick={() => {
           onSelect('commandes');
-          OrderService.getReadyOrders().then((r) => console.log(r));
+          //OrderService.getReadyOrders().then((r) => console.log(r)); La fonction existait plus
         }}
       />
     </div>

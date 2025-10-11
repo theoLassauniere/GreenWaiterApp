@@ -90,6 +90,26 @@ export function Payment(props: PaymentProps) {
     handleSelectAll(true);
   }
 
+  function handleSplitItem(itemId: string, divider: number) {
+    const newCommandItems = commandItems.map((item) => {
+      if (item.id === itemId) {
+        return { ...item, divider };
+      }
+      return item;
+    });
+    setCommandItems(newCommandItems);
+
+    const fractionalQuantity = 1 / divider;
+    setSelectedQuantity((prev) => ({
+      ...prev,
+      [itemId]: fractionalQuantity,
+    }));
+    setSelected((prev) => ({
+      ...prev,
+      [itemId]: true,
+    }));
+  }
+
   function handleSelectAll(checked: boolean) {
     const newSelected = Object.fromEntries(commandItems.map((item) => [item.id, checked]));
     const newSelectedQuantity = Object.fromEntries(
@@ -132,6 +152,8 @@ export function Payment(props: PaymentProps) {
                       name={item.shortName || item.name}
                       disabled={isSplitEquallyMode}
                       quantity={item.quantity}
+                      divider={item.divider}
+                      onSplitItem={(divider) => handleSplitItem(item.id, divider)}
                       selected={selected[item.id]}
                       selectedQuantity={selectedQuantity[item.id]}
                       onSelectChange={(checked) =>
@@ -140,7 +162,8 @@ export function Payment(props: PaymentProps) {
                           item.id,
                           selected,
                           setSelected,
-                          setSelectedQuantity
+                          setSelectedQuantity,
+                          commandItems
                         )
                       }
                       onQuantityChange={(value) =>
@@ -185,22 +208,34 @@ export function Payment(props: PaymentProps) {
 function handleItemSelectChange(
   checked: boolean,
   itemId: string,
-  selected: { [id: number]: boolean },
-  setSelected: Dispatch<SetStateAction<{ [id: number]: boolean }>>,
-  setSelectedQuantity: Dispatch<SetStateAction<{ [id: number]: number }>>
+  selected: { [id: string]: boolean },
+  setSelected: Dispatch<SetStateAction<{ [id: string]: boolean }>>,
+  setSelectedQuantity: Dispatch<SetStateAction<{ [id: string]: number }>>,
+  commandItems: CommandItem[]
 ) {
   setSelected({ ...selected, [itemId]: checked });
-  setSelectedQuantity((prev: { [id: number]: number }) => ({
-    ...prev,
-    [itemId]: checked ? 1 : 0,
-  }));
+  if (checked) {
+    const item = commandItems.find((item) => item.id === itemId);
+    if (item) {
+      const quantityToSelect = Math.min(item.quantity, 1);
+      setSelectedQuantity((prev: { [id: string]: number }) => ({
+        ...prev,
+        [itemId]: quantityToSelect,
+      }));
+    }
+  } else {
+    setSelectedQuantity((prev: { [id: string]: number }) => ({
+      ...prev,
+      [itemId]: 0,
+    }));
+  }
 }
 
 function handleItemQuantityChange(
   value: number,
   itemId: string,
-  setSelectedQuantity: Dispatch<SetStateAction<{ [id: number]: number }>>,
-  setSelected: Dispatch<SetStateAction<{ [id: number]: boolean }>>
+  setSelectedQuantity: Dispatch<SetStateAction<{ [id: string]: number }>>,
+  setSelected: Dispatch<SetStateAction<{ [id: string]: boolean }>>
 ) {
   setSelectedQuantity((prev: { [id: number]: number }) => ({ ...prev, [itemId]: value }));
   setSelected((prev: { [id: number]: boolean }) => ({ ...prev, [itemId]: value >= 1 }));
