@@ -6,18 +6,28 @@ import { getListItems } from '../services/item-service.ts';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
+import type { CommandItem } from '../models/CommandItem.ts';
+import { OrderService, type ShortOrderDto } from '../services/order-service.ts';
+import config from '../config.ts';
+import { Pages, type PageType } from '../models/Pages.ts';
+import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-bar.tsx';
 
-interface MenuProps {
-  tableId?: number;
+export interface MenuProps {
+  tableId: number;
+  onSelectPage: (page: PageType, tableNumber?: number) => void;
 }
 
 export interface MenuHandle {
   onReturn: () => void;
 }
 
-export const Menu = forwardRef<MenuHandle, MenuProps>((MenuProps, ref) => {
+export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
+  { tableId, onSelectPage },
+  ref
+) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [listItems, setListItems] = useState<Item[]>([]);
+  const [selectedItems, setSelectedItems] = useState<CommandItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   const onReturn = () => {
@@ -43,6 +53,52 @@ export const Menu = forwardRef<MenuHandle, MenuProps>((MenuProps, ref) => {
     }
   };
 
+  const handleAddItem = (item: Item) => {
+    setSelectedItems((prev) => {
+      const existing = prev.find((i) => i.id === item.id);
+      if (existing) {
+        return prev.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i));
+      }
+      return [...prev, { ...item, quantity: 1 }];
+    });
+  };
+
+  const handleRemoveItem = (item: CommandItem) => {
+    setSelectedItems((prev) =>
+      prev
+        .map((i) => (i.id === item.id ? { ...i, quantity: i.quantity - 1 } : i))
+        .filter((i) => i.quantity > 0)
+    );
+  };
+
+  const handleSendOrder = async () => {
+    if (selectedItems.length === 0) return;
+
+    const preparation: ShortOrderDto = {
+      tableNumber: tableId,
+      menuItems: selectedItems.map((item) => ({
+        menuItemId: item.id,
+        menuItemShortName: item.shortName,
+        howMany: item.quantity,
+      })),
+    };
+
+    try {
+      const preparations = config.bffFlag
+        ? await OrderService.createNewOrderBFF(preparation)
+        : await OrderService.createNewOrderNoBFF(preparation);
+
+      setSelectedItems([]);
+      setSelectedCategory(null);
+      setListItems([]);
+
+      console.log('Commande créée avec succès :', preparations);
+      onSelectPage(Pages.Tables, tableId);
+    } catch (e) {
+      console.error('Erreur lors de l’envoi de la commande :', e);
+    }
+  };
+
   return (
     <>
       {selectedCategory === null ? (
@@ -61,12 +117,23 @@ export const Menu = forwardRef<MenuHandle, MenuProps>((MenuProps, ref) => {
         <div className="menu-grid">
           <MenuItemSelection
             listItems={listItems}
-            table={MenuProps.tableId}
+            table={tableId}
+            listSelectedItems={selectedItems}
+            onAddItem={handleAddItem}
+            onRemoveItem={handleRemoveItem}
+            onSend={handleSendOrder}
             onReturn={onReturn}
             loading={loading}
           />
         </div>
       )}
+      <MenuItemBottomBar
+        tableNumber={tableId}
+        items={selectedItems}
+        onSend={handleSendOrder}
+        onClick={handleAddItem}
+        onRemoveItem={handleRemoveItem}
+      />
     </>
   );
 });

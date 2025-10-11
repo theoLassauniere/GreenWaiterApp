@@ -11,6 +11,8 @@ type MenuItemBottomBarProps = {
 };
 
 export default function MenuItemBottomBar(props: MenuItemBottomBarProps) {
+  const hasItems = props.items.length > 0;
+
   return (
     <div className="MenuItemBottomBar">
       <div className="bottom-bar-table-number">Table : {props.tableNumber}</div>
@@ -24,8 +26,10 @@ export default function MenuItemBottomBar(props: MenuItemBottomBarProps) {
           />
         ))}
       </div>
-      <div onClick={props.onSend} className="send-button">
-        {' '}
+      <div
+        onClick={hasItems ? props.onSend : undefined}
+        className={`send-button ${!hasItems ? 'disabled' : ''}`}
+      >
         Envoyer
       </div>
     </div>

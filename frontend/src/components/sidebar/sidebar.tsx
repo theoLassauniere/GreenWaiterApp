@@ -14,7 +14,6 @@ export default function Sidebar({ onSelect }: Readonly<SidebarProps>) {
         label="Commandes"
         onClick={() => {
           onSelect('commandes');
-          //OrderService.getReadyOrders().then((r) => console.log(r)); La fonction existait plus
         }}
       />
     </div>

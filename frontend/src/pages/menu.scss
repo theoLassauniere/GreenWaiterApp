@@ -12,3 +12,8 @@
   justify-items: center;
   align-content: space-evenly;
 }
+
+.send-button.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

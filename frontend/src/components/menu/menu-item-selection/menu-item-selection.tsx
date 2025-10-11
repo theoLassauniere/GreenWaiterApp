@@ -10,10 +10,13 @@ import Loader from '../../common/loader/loader.tsx';
 
 type MenuItemSelectionProps = {
   listItems: Item[];
-  listSelectedItems?: CommandItem[];
+  listSelectedItems: CommandItem[];
   onReturn?: () => void;
   table?: number;
   loading?: boolean;
+  onAddItem: (item: Item) => void;
+  onRemoveItem: (item: CommandItem) => void;
+  onSend: () => void;
 };
 
 export default function MenuItemSelection({
@@ -22,40 +25,15 @@ export default function MenuItemSelection({
   onReturn,
   table,
   loading,
+  onAddItem,
+  onRemoveItem,
+  onSend,
 }: MenuItemSelectionProps) {
   const [value, setValue] = useState('');
-  const [selectedItems, setSelectedItems] = useState<CommandItem[]>(listSelectedItems || []);
 
   const filteredList = listItems.filter((item: Item) =>
     (item.name ?? '').toLowerCase().includes(value.toLowerCase())
   );
-
-  const handleAddItem = (itemToAdd: Item) => {
-    setSelectedItems((prevItems) => {
-      const existingItem = prevItems.find((commandItem) => commandItem.id === itemToAdd.id);
-
-      if (existingItem) {
-        return prevItems.map((commandItem) =>
-          commandItem.id === itemToAdd.id
-            ? { ...commandItem, quantity: commandItem.quantity + 1 }
-            : commandItem
-        );
-      } else {
-        const newCommandItem: CommandItem = { ...itemToAdd, quantity: 1 };
-        return [...prevItems, newCommandItem];
-      }
-    });
-  };
-
-  const handleRemoveItem = (itemToRemove: CommandItem) => {
-    setSelectedItems((prevItems) =>
-      prevItems
-        .map((item) =>
-          item.id === itemToRemove.id ? { ...item, quantity: item.quantity - 1 } : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
-  };
 
   return (
     <div className="menu-item-selection">
@@ -83,7 +61,7 @@ export default function MenuItemSelection({
             <MenuItem
               item={item}
               key={item.id}
-              onClick={() => handleAddItem(item)}
+              onClick={() => onAddItem(item)}
               className="menu-item-selection__item"
             />
           ))
@@ -93,10 +71,10 @@ export default function MenuItemSelection({
         <div className="menu-item-selection__footer">
           <MenuItemBottomBar
             tableNumber={table}
-            items={selectedItems}
-            onClick={handleAddItem}
-            onRemoveItem={handleRemoveItem}
-            onSend={() => console.log('Send command')}
+            items={listSelectedItems}
+            onClick={(item) => onAddItem(item)}
+            onRemoveItem={onRemoveItem}
+            onSend={onSend}
           />
         </div>
       )}
