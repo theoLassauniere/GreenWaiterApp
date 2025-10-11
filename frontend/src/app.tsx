@@ -14,15 +14,21 @@ function App() {
   const [readyNotification, setReadyNotification] = useState<string | null>(null);
   const [tables, setTables] = useState<TableType[]>([]);
   const [selectedTable, setSelectedTable] = useState<TableType | null>(null);
+  const [menuTableNumber, setMenuTableNumber] = useState<number | null>(null);
   const menuRef = useRef<MenuHandle>(null);
 
   function handleSelectPage(newPage: PageType, tableNumber?: number) {
-    setPage(newPage);
     if (newPage === Pages.Paiement) {
       setSelectedTable(tables.find((table) => table.tableNumber === tableNumber) ?? null);
     }
     if (newPage === Pages.Menu) {
-      menuRef.current?.onReturn();
+      if (page === Pages.Menu) {
+        menuRef.current?.onReturn();
+        return;
+      }
+      if (tableNumber != null) {
+        setMenuTableNumber(tableNumber);
+      }
     }
     setPage(newPage);
   }
@@ -36,7 +42,9 @@ function App() {
         {page === Pages.Tables && (
           <Tables tables={tables} setTables={setTables} onSelectPage={handleSelectPage} />
         )}
-        {page === Pages.Menu && <Menu ref={menuRef} tableId={1} />}
+        {page === Pages.Menu && menuTableNumber && (
+          <Menu ref={menuRef} tableId={menuTableNumber} onSelectPage={handleSelectPage} />
+        )}
         {page === Pages.Commandes && <OrdersList tables={tables} onSelectPage={handleSelectPage} />}
         {page === Pages.Paiement && selectedTable && (
           <Payment table={selectedTable} onSelectPage={handleSelectPage} />

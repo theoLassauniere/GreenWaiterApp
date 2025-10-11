@@ -1,26 +1,9 @@
 import './table.scss';
-import config from '../../../config.ts';
-import { OrderService, type ShortOrderDto } from '../../../services/order-service.ts';
-import { Pages, type PageType } from '../../../models/Pages.ts';
 import type { TableType } from '../../../models/Table.ts';
+import type { PageType } from '../../../models/Pages.ts';
+import { Pages } from '../../../models/Pages.ts';
 import { TableService } from '../../../services/table-service.ts';
 import { useState } from 'react';
-
-function openOrderPopup(tableNumber: number): void {
-  // TODO: rediriger vers la page de création de commande
-  const preparation: ShortOrderDto = {
-    tableNumber: tableNumber,
-    menuItems: [
-      { menuItemId: '68da3b2fdf0da1d568180535', menuItemShortName: 'foie gras', howMany: 2 },
-      { menuItemId: '68da3b2fdf0da1d568180538', menuItemShortName: 'soft-boiled egg', howMany: 3 },
-    ],
-  };
-
-  const response = config.bffFlag
-    ? OrderService.createNewOrderBFF(preparation).then(() => {})
-    : OrderService.createNewOrderNoBFF(preparation).then(() => {});
-  console.log(response);
-}
 
 export type TableProps = {
   readonly table: TableType;
@@ -57,7 +40,9 @@ export function Table({ table, onSelectPage }: Readonly<TableProps>) {
 
       <div className="command-actions">
         {localTable.occupied && (
-          <button onClick={() => openOrderPopup(localTable.tableNumber)}>Nouvelle commande</button>
+          <button onClick={() => onSelectPage(Pages.Menu, localTable.tableNumber)}>
+            Nouvelle commande
+          </button>
         )}
         {localTable.commandState === 'awaiting-service' && <button>Servi</button>}
       </div>
