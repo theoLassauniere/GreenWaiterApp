@@ -29,7 +29,7 @@ export default function MenuItem({ item, onClick, className }: Readonly<MenuItem
         </div>
         <div className="item-text-container">
           <div>
-            {name} - {price}€
+            {name} - <strong>{price}€</strong>
           </div>
         </div>
       </div>
