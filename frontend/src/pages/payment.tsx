@@ -121,8 +121,8 @@ export function Payment(props: PaymentProps) {
 
   async function handlePopUpClose() {
     setShowPaymentSuccess(false);
-    props.onSelectPage(Pages.Tables);
     await TableService.billTable(props.table.tableNumber);
+    props.onSelectPage(Pages.Tables);
   }
 
   return (
