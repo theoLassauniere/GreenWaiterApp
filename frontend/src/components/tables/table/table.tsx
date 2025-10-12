@@ -8,9 +8,10 @@ import { useState } from 'react';
 export type TableProps = {
   readonly table: TableType;
   readonly onSelectPage: (page: PageType, tableNumber: number) => void;
+  serviceFunction?: () => void;
 };
 
-export function Table({ table, onSelectPage }: Readonly<TableProps>) {
+export function Table({ table, onSelectPage, serviceFunction }: Readonly<TableProps>) {
   const [localTable, setLocalTable] = useState(table);
   async function handleTableClick() {
     if (localTable.occupied) return;
@@ -44,7 +45,9 @@ export function Table({ table, onSelectPage }: Readonly<TableProps>) {
             Nouvelle commande
           </button>
         )}
-        {localTable.commandState === 'awaiting-service' && <button>Servi</button>}
+        {localTable.commandState === 'awaiting-service' && (
+          <button onClick={serviceFunction}>Servi</button>
+        )}
       </div>
 
       {localTable.commandState === 'served' && (
