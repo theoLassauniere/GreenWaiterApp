@@ -172,18 +172,25 @@ export const OrderService = {
     });
   },
 
-  // Fonction inchangée, mais elle est maintenant appelée par `scheduleAt`
-  async finishPrep(preparation: PreparationDto): Promise<PreparationDto> {
-    const response = await fetch(
-      `${config.apiUrl}kitchen/preparedItems/${preparation._id}/finish`,
-      {
+  async finishPrep(preparation: PreparationDto): Promise<void> {
+    if (!preparation.preparedItems?.length) {
+      console.warn(`Aucun item préparé pour la préparation ${preparation._id}`);
+      return;
+    }
+
+    const finishPromises = preparation.preparedItems.map(async (item) => {
+      const response = await fetch(`${config.apiUrl}kitchen/preparedItems/${item._id}/finish`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        console.error(`Erreur fin de préparation de l'item ${item._id}: ${response.statusText}`);
+        throw new Error(`Erreur fin de préparation de l'item ${item._id}`);
       }
-    );
-    if (!response.ok) {
-      throw new Error(`Erreur service préparation: ${response.statusText}`);
-    }
+      return response.json();
+    });
+    await Promise.all(finishPromises);
     window.dispatchEvent(
       new CustomEvent('order:notify', {
         detail: {
@@ -192,10 +199,8 @@ export const OrderService = {
         },
       })
     );
-    return response.json();
   },
 
-  // Le reste des fonctions étaient correctes
   async serveToTable(id: string): Promise<PreparationDto> {
     const response = await fetch(`${config.apiUrl}kitchen/preparedItems/${id}/serveToTable`, {
       method: 'POST',
