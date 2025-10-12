@@ -15,5 +15,4 @@ public class ItemRaw {
     private double price;
     private String category;
     private String image;
-
 }

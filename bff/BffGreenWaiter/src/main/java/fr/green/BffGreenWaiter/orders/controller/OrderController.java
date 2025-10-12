@@ -1,6 +1,6 @@
 package fr.green.BffGreenWaiter.orders.controller;
 
-import fr.green.BffGreenWaiter.items.model.Item;
+import fr.green.BffGreenWaiter.orders.dto.OrderItemDTO;
 import fr.green.BffGreenWaiter.orders.dto.ShortOrderDto;
 import fr.green.BffGreenWaiter.orders.dto.SimpleOrderDto;
 import fr.green.BffGreenWaiter.orders.services.OrderService;
@@ -38,7 +38,7 @@ public class OrderController {
     }
 
     @GetMapping("/tableOrders/items/{tableNumber}")
-    public List<Item> getOrderItemsForTable(@PathVariable int tableNumber) {
+    public List<OrderItemDTO> getOrderItemsForTable(@PathVariable int tableNumber) {
         return orderService.getOrderItems(tableNumber);
     }
 

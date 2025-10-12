@@ -75,9 +75,9 @@ public class OrderService {
                 .block();
     }
 
-    public List<Item> getOrderItems(int tableNumber) {
+    public List<OrderItemDTO> getOrderItems(int tableNumber) {
         String orderId = getOrderForTable(tableNumber);
-        String orderUrl = baseUrl + "/" + orderId;
+        String orderUrl = "/" + orderId;
 
         WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
 
@@ -92,12 +92,24 @@ public class OrderService {
         }
 
         return order.getLines().stream()
-                .map(line -> menuService.fetchItemById(line.getItem().get_id())).toList();
+                .map(line -> {
+                    Item item = menuService.fetchItemById(line.getItem().get_id());
+                    return new OrderItemDTO(
+                            item.get_id(),
+                            item.getFullName(),
+                            item.getShortName(),
+                            item.getPrice(),
+                            item.getCategory(),
+                            line.getHowMany()
+                    );
+                })
+                .toList();
     }
+
 
     public String billOrder(int tableNumber) {
         String orderId = getOrderForTable(tableNumber);
-        String billUrl = baseUrl + "/dining/tableOrders/" + orderId + "/bill";
+        String billUrl = "/" + orderId + "/bill";
 
         try {
             return webClientBuilder.baseUrl(baseUrl).build()

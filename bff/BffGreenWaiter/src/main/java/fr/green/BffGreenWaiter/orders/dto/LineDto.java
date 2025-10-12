@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class LineDto {
-    private ItemDto item;
+    private ShortItemDto item;
     private int howMany;
     private boolean sentForPreparation;
 }

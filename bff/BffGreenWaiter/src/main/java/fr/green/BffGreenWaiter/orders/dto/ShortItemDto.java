@@ -3,7 +3,7 @@ package fr.green.BffGreenWaiter.orders.dto;
 import lombok.Data;
 
 @Data
-public class ItemDto {
+public class ShortItemDto {
     private String _id;
     private String shortName;
 }
