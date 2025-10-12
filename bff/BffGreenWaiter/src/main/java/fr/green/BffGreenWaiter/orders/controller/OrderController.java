@@ -1,5 +1,6 @@
 package fr.green.BffGreenWaiter.orders.controller;
 
+import fr.green.BffGreenWaiter.items.model.Item;
 import fr.green.BffGreenWaiter.orders.dto.ShortOrderDto;
 import fr.green.BffGreenWaiter.orders.dto.SimpleOrderDto;
 import fr.green.BffGreenWaiter.orders.services.OrderService;
@@ -31,6 +32,21 @@ public class OrderController {
         try {
             var preparations = orderService.createNewOrderFull(order);
             return ResponseEntity.ok(preparations);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/tableOrders/items/{tableNumber}")
+    public List<Item> getOrderItemsForTable(@PathVariable int tableNumber) {
+        return orderService.getOrderItems(tableNumber);
+    }
+
+    @PostMapping("/tableOrders/bill/{tableNumber}")
+    public ResponseEntity<?> billOrderForTable(@PathVariable int tableNumber) {
+        try {
+            var order = orderService.billOrder(tableNumber);
+            return ResponseEntity.ok(order);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
         }
