@@ -275,6 +275,16 @@ export const OrderService = {
       preparations[0]?.shouldBeReadyAt ?? Date.now() + defaultCookingTimeSec * 1000
     ).getTime();
 
+    window.dispatchEvent(
+      new CustomEvent('updateTable', {
+        detail: {
+          commandId: preparations[0]?._id ?? '',
+          tableNumber: order.tableNumber,
+          state: CommandState.PreparingInKitchen,
+        },
+      })
+    );
+
     scheduleAt(targetMs, async () => {
       try {
         await OrderService.finishPreparationBFF(preparations);
@@ -301,6 +311,16 @@ export const OrderService = {
     const tableNumber = preparations[0]?.tableNumber ?? '?';
 
     window.dispatchEvent(
+      new CustomEvent('updateTable', {
+        detail: {
+          commandId: preparations[0]?._id ?? '',
+          tableNumber,
+          state: CommandState.AwaitingService,
+        },
+      })
+    );
+
+    window.dispatchEvent(
       new CustomEvent('order:notify', {
         detail: {
           message: `Préparation terminée pour la table ${tableNumber}`,
@@ -309,7 +329,7 @@ export const OrderService = {
     );
   },
 
-  async servePreparationBFF(preparationId: string): Promise<void> {
+  async servePreparationBFF(preparationId: string, tableNumber: number): Promise<void> {
     const response = await fetch(`${baseUrl}/preparations/${preparationId}/takenToTable`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -320,8 +340,12 @@ export const OrderService = {
     }
 
     window.dispatchEvent(
-      new CustomEvent('order:notify', {
-        detail: { message: `Table servie (${preparationId})` },
+      new CustomEvent('updateTable', {
+        detail: {
+          commandId: preparationId,
+          tableNumber,
+          state: CommandState.Served,
+        },
       })
     );
   },
