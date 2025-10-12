@@ -239,11 +239,25 @@ export const OrderService = {
     }
     const preparations: PreparationDto[] = await createResponse.json();
     console.log(`Commande créée pour la table ${order.tableNumber}. Préparations en cours...`);
+    const defaultCookingTimeSec = 20;
+    const targetMs = new Date(
+      preparations[0]?.shouldBeReadyAt ?? Date.now() + defaultCookingTimeSec * 1000
+    ).getTime();
+
+    scheduleAt(targetMs, async () => {
+      try {
+        await OrderService.finishPreparationBFF(preparations);
+        console.log(`Préparations terminées pour la table ${order.tableNumber}`);
+      } catch (err) {
+        console.error('Erreur lors de la finalisation via BFF :', err);
+      }
+    });
+
     return preparations;
   },
 
   async finishPreparationBFF(preparations: PreparationDto[]): Promise<void> {
-    const response = await fetch(`${baseUrl}/tableOrders/finishPreparation`, {
+    const response = await fetch(`${baseUrl}/finishPreparation`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(preparations),
