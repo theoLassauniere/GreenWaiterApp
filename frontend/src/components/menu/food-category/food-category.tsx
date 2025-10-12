@@ -1,10 +1,11 @@
 import './food-category.scss';
+import type Category from '../../../models/Category.ts';
 
 type FoodCategoryProps = {
   id: Category;
   title: string;
   imageUrl: string;
-  onClick: (id: number) => void;
+  onClick: (id: string) => void;
 };
 
 export default function FoodCategory({

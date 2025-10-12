@@ -41,40 +41,18 @@ export type StartOrderingDto = {
 export const TableService = {
   async listAllTables(): Promise<TableType[]> {
     if (config.bffFlag) {
-      return this.listAllTablesFromBff();
+      return listAllTablesFromBff();
     } else {
-      return this.listAllTablesFromDining();
+      return listAllTablesFromDining();
     }
   },
 
-  async listAllTablesFromBff(): Promise<TableType[]> {
-    const url = `${baseUrl}/tables`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Erreur lors du fetch des tables (BFF): ${response.statusText}`);
+  async billTable(tableNumber: number): Promise<void> {
+    if (config.bffFlag) {
+      return billTableFromBff(tableNumber);
+    } else {
+      return billTableFromBack(tableNumber);
     }
-    return await response.json();
-  },
-
-  async listAllTablesFromDining(): Promise<TableType[]> {
-    const url = `${baseUrl}/dining/tables`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Erreur lors du fetch des tables (Dining): ${response.statusText}`);
-    }
-    const rawTables: RawTable[] = await response.json();
-    return rawTables.map((t) => {
-      const mock = mockTables.find((m) => m.tableNumber === t.number);
-      return {
-        id: t._id,
-        tableNumber: t.number,
-        capacity: mock?.capacity ?? 2,
-        occupied: t.taken,
-        commandState: mock?.commandState ?? undefined,
-        commandPreparationPlace: mock?.commandPreparationPlace ?? undefined,
-      };
-    });
   },
 
   async seedTablesWithMocks(): Promise<TableType[]> {
@@ -121,23 +99,62 @@ export const TableService = {
     return await response.json();
   },
 
-  async getTableOrders() {
+  async getTableOrdersFromBack(tableNumber: number): Promise<RawOrder[]> {
     const url = `${baseUrl}/dining/tableOrders`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Erreur lors de la récupération des commandes: ${response.statusText}`);
     }
-    return await response.json();
+    const tableOrders: RawOrder[] = await response.json();
+    return tableOrders.filter((table) => table.tableNumber === tableNumber);
   },
+};
 
-  async getTableOrder(tableNumber: number) {
-    const tableOrders: RawOrder[] = await TableService.getTableOrders();
-    return tableOrders.find((table) => table.tableNumber === tableNumber);
-  },
+async function listAllTablesFromBff(): Promise<TableType[]> {
+  const url = `${baseUrl}/tables`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Erreur lors du fetch des tables (BFF): ${response.statusText}`);
+  }
+  return await response.json();
+}
 
-  async billTable(tableNumber: number) {
-    const orderId = (await this.getTableOrder(tableNumber))?._id;
-    const endpoint = `${baseUrl}/dining/tableOrders/${orderId}/bill`;
+async function listAllTablesFromDining(): Promise<TableType[]> {
+  const url = `${baseUrl}/dining/tables`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Erreur lors du fetch des tables (Dining): ${response.statusText}`);
+  }
+  const rawTables: RawTable[] = await response.json();
+  return rawTables.map((t) => {
+    const mock = mockTables.find((m) => m.tableNumber === t.number);
+    return {
+      id: t._id,
+      tableNumber: t.number,
+      capacity: mock?.capacity ?? 2,
+      occupied: t.taken,
+      commandState: mock?.commandState ?? undefined,
+      commandPreparationPlace: mock?.commandPreparationPlace ?? undefined,
+    };
+  });
+}
+
+async function billTableFromBff(tableNumber: number): Promise<void> {
+  const url = `${baseUrl}/dining/tableOrders/bill/${tableNumber}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!response.ok) {
+    throw new Error(`Erreur de paiement pour la table ${tableNumber}: ${response.statusText}`);
+  }
+}
+
+async function billTableFromBack(tableNumber: number): Promise<void> {
+  const tableOrders = await TableService.getTableOrdersFromBack(tableNumber);
+  for (const order of tableOrders) {
+    const endpoint = `${baseUrl}/dining/tableOrders/${order._id}/bill`;
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -145,6 +162,5 @@ export const TableService = {
     if (!response.ok) {
       throw new Error(`Erreur de paiement pour la table ${tableNumber}: ${response.statusText}`);
     }
-    return await response.json();
-  },
-};
+  }
+}

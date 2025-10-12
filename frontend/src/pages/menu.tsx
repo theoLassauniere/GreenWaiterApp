@@ -2,7 +2,6 @@ import './menu.scss';
 import { mockFoodCategories } from '../models/food-categories.ts';
 import FoodCategory from '../components/menu/food-category/food-category.tsx';
 import MenuItemSelection from '../components/menu/menu-item-selection/menu-item-selection.tsx';
-import { getListItems } from '../services/item-service.ts';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
@@ -11,6 +10,7 @@ import { OrderService, type ShortOrderDto } from '../services/order-service.ts';
 import config from '../config.ts';
 import { Pages, type PageType } from '../models/Pages.ts';
 import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-bar.tsx';
+import { MenuService } from '../services/menu-service.ts';
 
 export interface MenuProps {
   tableId?: number;
@@ -43,7 +43,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
     setSelectedCategory(category);
     setLoading(true);
     try {
-      const items = await getListItems(category);
+      const items = await MenuService.getListItems(category);
       setListItems(items);
     } catch (e) {
       console.error(e);
@@ -108,9 +108,9 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
     <>
       {selectedCategory === null ? (
         <div className="categories-grid">
-          {mockFoodCategories.map((cat, i) => (
+          {mockFoodCategories.map((cat) => (
             <FoodCategory
-              key={i}
+              key={cat.category}
               id={cat.category}
               title={cat.title}
               imageUrl={cat.imageUrl}
