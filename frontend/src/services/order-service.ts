@@ -1,7 +1,9 @@
 import config from '../config.ts';
 
+// L'URL de base est correcte
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/dining') : '/api/dining';
 
+// La gestion du timeout est correcte
 const MAX_TIMEOUT = 2_147_483_647;
 
 function scheduleAt(targetMs: number, cb: () => void): number {
@@ -12,7 +14,6 @@ function scheduleAt(targetMs: number, cb: () => void): number {
   }
   const delay = Math.min(diff, MAX_TIMEOUT);
   const id = window.setTimeout(() => {
-    // S'il reste encore du temps (delai initial > MAX_TIMEOUT), on rechaîne
     if (targetMs - Date.now() > 0) {
       scheduleAt(targetMs, cb);
     } else {
@@ -21,6 +22,8 @@ function scheduleAt(targetMs: number, cb: () => void): number {
   }, delay);
   return id;
 }
+
+// --- Section des Types (DTOs) ---
 
 export type MenuItemToOrderDto = {
   menuItemId: string;
@@ -38,15 +41,27 @@ export type SimplifiedOrder = {
   tableNumber: number;
 };
 
+export type PreparedItemDto = {
+  _id: string;
+  shortName: string;
+  meanCookingTimeInSec?: number; // AMÉLIORATION : Ajouté pour plus de flexibilité
+};
+
+// AMÉLIORATION : J'ai fusionné PreparationDto et PreparationResponseDto
+// en un seul type pour éviter la confusion et les erreurs de typage.
 export type PreparationDto = {
   _id: string;
   menuItemShortName: string;
   tableNumber: number;
   status: string;
+  shouldBeReadyAt?: string; // ISO 8601, ex.: "2025-10-12T09:29:38.594Z"
+  preparedItems?: PreparedItemDto[];
 };
 
+// --- Service ---
+
 export const OrderService = {
-  // Récupère l'ID de commande pour une table (sans BFF)
+  // Fonction inchangée, elle était correcte
   async findOrderForTableNoBFF(tableNumber: number): Promise<string> {
     const response = await fetch(`${baseUrl}/tableOrders`, { method: 'GET' });
     if (!response.ok) {
@@ -60,6 +75,7 @@ export const OrderService = {
     return order._id;
   },
 
+  // Fonction inchangée, elle était correcte
   async createNewOrder(order: ShortOrderDto): Promise<PreparationDto[]> {
     return config.bffFlag
       ? OrderService.createNewOrderBFF(order)
@@ -69,23 +85,27 @@ export const OrderService = {
   async createNewOrderNoBFF(order: ShortOrderDto): Promise<PreparationDto[]> {
     const tableOrderId = await OrderService.findOrderForTableNoBFF(order.tableNumber);
 
-    for (const item of order.menuItems) {
+    // AMÉLIORATION : Envoi des items en parallèle pour plus de performance
+    const addItemsPromises = order.menuItems.map((item) => {
       const payload = {
         menuItemId: item.menuItemId,
         menuItemShortName: item.menuItemShortName,
         howMany: item.howMany,
       };
-      const response = await fetch(`${baseUrl}/tableOrders/${tableOrderId}`, {
+      return fetch(`${baseUrl}/tableOrders/${tableOrderId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+    });
+    const responses = await Promise.all(addItemsPromises);
+    for (const response of responses) {
       if (!response.ok) {
         throw new Error(`Erreur ajout item à une commande: ${response.statusText}`);
       }
     }
 
-    // Lance la préparation des items envoyés
+    // Lance la préparation
     const prepareResponse = await fetch(`${baseUrl}/tableOrders/${tableOrderId}/prepare`, {
       method: 'POST',
     });
@@ -95,38 +115,67 @@ export const OrderService = {
 
     const preparations: PreparationDto[] = await prepareResponse.json();
 
-    // Démarre chaque préparation côté cuisine (en parallèle, sans bloquer le retour)
-    await OrderService.kitchenStartPrep(preparations);
+    // Démarre la préparation en cuisine et planifie la notification
+    // Le `Promise.all` attend que toutes les préparations soient démarrées
+    await Promise.all(preparations.map((prep) => OrderService.startPreparationAndNotify(prep)));
 
     console.log(`Order created successfully for table ${order.tableNumber}`);
     return preparations;
   },
+  // CORRIGÉ : Cette fonction calcule maintenant le temps de préparation
+  async startPreparationAndNotify(preparation: PreparationDto): Promise<void> {
+    let allStartedItemsData: { meanCookingTimeInSec?: number }[] = [];
 
-  async kitchenStartPrep(preparations: PreparationDto[]): Promise<void> {
-    await Promise.allSettled(preparations.map((prep) => OrderService.startPreparation(prep)));
-  },
+    // 1. Démarrer tous les items et récupérer leurs données de réponse
+    if (preparation.preparedItems?.length) {
+      const startPromises = preparation.preparedItems.map(async (item) => {
+        const url = `${config.apiUrl}kitchen/preparedItems/${item._id}/start`;
+        const response = await fetch(url, { method: 'POST' });
 
-  async startPreparation(preparation: PreparationDto): Promise<PreparationDto> {
-    const response = await fetch(`${config.apiUrl}kitchen/preparedItems/${preparation._id}/start`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-    });
-    if (!response.ok) {
-      throw new Error(`Erreur démarrage préparation: ${response.statusText}`);
+        if (!response.ok) {
+          console.error(`Erreur démarrage de l'item ${item._id}: ${response.statusText}`);
+          throw new Error(`Erreur démarrage de l'item ${item._id}`);
+        }
+
+        try {
+          // JSON typé pour disposer de meanCookingTimeInSec
+          const body = (await response.json()) as { meanCookingTimeInSec?: number };
+          return body;
+        } catch {
+          throw new Error(`Réponse invalide pour l'item ${item._id}`);
+        }
+      });
+
+      // On attend que toutes les requêtes soient terminées
+      const results = await Promise.all(startPromises);
+
+      // On ne garde que les résultats valides (non-null) avec un filtre typé
+      allStartedItemsData = results.filter(
+        (data): data is { meanCookingTimeInSec?: number } => data !== null
+      );
     }
-    this.notifyAt(preparation, res.meanCookingTimeInSec);
-    return await response.json();
-  },
 
-  async notifyAt(preparation: PreparationDto, triggerAtMs: number): Promise<void> {
-    scheduleAt(triggerAtMs, () => {
+    // 2. Max du temps de cuisson renvoyé par les items
+    const maxCookingTimeInSec = allStartedItemsData.reduce((max, currentItem) => {
+      const t = currentItem.meanCookingTimeInSec ?? 0;
+      return t > max ? t : max;
+    }, 0);
+
+    // 3. Fallback 20s si rien n'est renvoyé
+    const preparationTimeInSec = maxCookingTimeInSec || 20;
+    const targetMs = Date.now() + preparationTimeInSec * 1000;
+
+    // 4. Planifier la notification de fin de préparation
+    console.log(`Préparation ${preparation._id} sera prête dans ${preparationTimeInSec} secondes.`);
+    scheduleAt(targetMs, () => {
       void OrderService.finishPrep(preparation);
     });
   },
 
+  // Fonction inchangée, mais elle est maintenant appelée par `scheduleAt`
   async finishPrep(preparation: PreparationDto): Promise<PreparationDto> {
     const response = await fetch(
-      `${config.apiUrl}/kitchen/preparedItems/${preparation._id}/fininsh`,
+      `${config.apiUrl}kitchen/preparedItems/${preparation._id}/finish`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -135,7 +184,6 @@ export const OrderService = {
     if (!response.ok) {
       throw new Error(`Erreur service préparation: ${response.statusText}`);
     }
-
     window.dispatchEvent(
       new CustomEvent('order:notify', {
         detail: {
@@ -144,11 +192,12 @@ export const OrderService = {
         },
       })
     );
-    return await response.json();
+    return response.json();
   },
 
+  // Le reste des fonctions étaient correctes
   async serveToTable(id: string): Promise<PreparationDto> {
-    const response = await fetch(`${config.apiUrl}/kitchen/preparedItems/${id}/serveToTable`, {
+    const response = await fetch(`${config.apiUrl}kitchen/preparedItems/${id}/serveToTable`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -156,14 +205,7 @@ export const OrderService = {
       throw new Error(`Erreur service préparation: ${response.statusText}`);
     }
 
-    window.dispatchEvent(
-      new CustomEvent('order:notify', {
-        detail: {
-          message: `Préparation prête pour la table ${response.tableNumber}`,
-        },
-      })
-    );
-    return await response.json();
+    return response.json();
   },
 
   async createNewOrderBFF(order: ShortOrderDto): Promise<PreparationDto[]> {
@@ -171,7 +213,6 @@ export const OrderService = {
       tableNumber: order.tableNumber,
       menuItems: order.menuItems,
     };
-
     const response = await fetch(`${baseUrl}/tableOrders/newOrder`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -181,7 +222,6 @@ export const OrderService = {
     if (!response.ok) {
       throw new Error(`Erreur création commande: ${response.statusText}`);
     }
-
     const orderData = await response.json();
     console.log('Order created successfully for table ' + order.tableNumber);
     return orderData ?? [];

@@ -12,15 +12,22 @@ type OrdersListProps = {
 
 export default function OrdersList(props: Readonly<OrdersListProps>) {
   const preparation = props.tables.filter((t) => t.commandState === 'preparing-in-kitchen');
+  const awaitingService = props.tables.filter((t) => t.commandState === 'awaiting-service');
   const served = props.tables.filter((t) => t.commandState === 'served');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const serveTable = (table) => {
+
+  const serveTable = async (table: TableType) => {
     if (!table.commandId) {
       console.error('No commandId for table', table);
       return;
     }
-    return OrderService.serveToTable(table.commandId);
+    try {
+      await OrderService.serveToTable(table.commandId);
+      // NOTE: ne pas muter directement `table`; laisser le parent rafraîchir l’état
+    } catch (err) {
+      console.error('Error serving table', err);
+    }
   };
+
   useEffect(() => {
     // TODO : use the kitchen service to retrieve ready orders
   }, []);
@@ -36,6 +43,14 @@ export default function OrdersList(props: Readonly<OrdersListProps>) {
 
       <div className="orders-column">
         <h2>À servir</h2>
+        {awaitingService.map((t) => (
+          <Table
+            key={t.id}
+            table={t}
+            onSelectPage={props.onSelectPage}
+            serviceFunction={() => serveTable(t)}
+          />
+        ))}
       </div>
 
       <div className="orders-column">
