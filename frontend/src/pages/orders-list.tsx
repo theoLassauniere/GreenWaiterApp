@@ -3,6 +3,7 @@ import { Table } from '../components/tables/table/table.tsx';
 import type { TableType } from '../models/Table.ts';
 import type { PageType } from '../models/Pages.ts';
 import { useEffect } from 'react';
+import { OrderService } from '../services/order-service.ts';
 
 type OrdersListProps = {
   readonly tables: TableType[];
@@ -13,6 +14,13 @@ export default function OrdersList(props: Readonly<OrdersListProps>) {
   const preparation = props.tables.filter((t) => t.commandState === 'preparing-in-kitchen');
   const served = props.tables.filter((t) => t.commandState === 'served');
 
+  const serveTable = (table) => {
+    if (!table.commandId) {
+      console.error('No commandId for table', table);
+      return;
+    }
+    return OrderService.serveToTable(table.commandId);
+  };
   useEffect(() => {
     // TODO : use the kitchen service to retrieve ready orders
   }, []);

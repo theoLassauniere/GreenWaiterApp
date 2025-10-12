@@ -11,9 +11,10 @@ import { OrderService, type ShortOrderDto } from '../services/order-service.ts';
 import config from '../config.ts';
 import { Pages, type PageType } from '../models/Pages.ts';
 import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-bar.tsx';
+import type { TableType } from '../models/Table.ts';
 
 export interface MenuProps {
-  tableId?: number;
+  table: TableType;
   onSelectPage: (page: PageType, tableNumber?: number) => void;
 }
 
@@ -21,10 +22,7 @@ export interface MenuHandle {
   onReturn: () => void;
 }
 
-export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
-  { tableId, onSelectPage },
-  ref
-) {
+export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onSelectPage }, ref) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [listItems, setListItems] = useState<Item[]>([]);
   const [selectedItems, setSelectedItems] = useState<CommandItem[]>([]);
@@ -72,7 +70,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
   };
 
   const handleSendOrder = async () => {
-    if (!tableId) {
+    if (!table.tableNumber) {
       console.warn('Aucune table sélectionnée, mode consultation. Pas de commande envoyée.');
       return;
     }
@@ -80,7 +78,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
     if (selectedItems.length === 0) return;
 
     const preparation: ShortOrderDto = {
-      tableNumber: tableId,
+      tableNumber: table.tableNumber,
       menuItems: selectedItems.map((item) => ({
         menuItemId: item.id,
         menuItemShortName: item.shortName,
@@ -96,12 +94,13 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
       setSelectedItems([]);
       setSelectedCategory(null);
       setListItems([]);
-      onSelectPage(Pages.Tables, tableId);
 
       console.log('Commande créée avec succès :', preparations);
+        onSelectPage(Pages.Tables, table.tableNumber, preparations[0]?._id);
     } catch (e) {
       console.error('Erreur lors de l’envoi de la commande :', e);
     }
+    table;
   };
 
   return (
@@ -122,7 +121,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
         <div className="menu-grid">
           <MenuItemSelection
             listItems={listItems}
-            table={tableId}
+            table={table.tableNumber}
             listSelectedItems={selectedItems}
             onAddItem={handleAddItem}
             onRemoveItem={handleRemoveItem}
@@ -132,9 +131,9 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
           />
         </div>
       )}
-      {tableId && (
+      {table.tableNumber && (
         <MenuItemBottomBar
-          tableNumber={tableId}
+          tableNumber={table.tableNumber}
           items={selectedItems}
           onSend={handleSendOrder}
           onClick={handleAddItem}
