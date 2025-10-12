@@ -1,4 +1,5 @@
 import config from '../config.ts';
+import { CommandState } from '../models/CommandState.ts';
 
 // L'URL de base est correcte
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/dining') : '/api/dining';
@@ -58,10 +59,7 @@ export type PreparationDto = {
   preparedItems?: PreparedItemDto[];
 };
 
-// --- Service ---
-
 export const OrderService = {
-  // Fonction inchangée, elle était correcte
   async findOrderForTableNoBFF(tableNumber: number): Promise<string> {
     const response = await fetch(`${baseUrl}/tableOrders`, { method: 'GET' });
     if (!response.ok) {
@@ -121,12 +119,20 @@ export const OrderService = {
         prep.menuItemShortName ?? order.menuItems[0]?.menuItemShortName ?? 'Inconnu',
     }));
 
-    // Démarre la préparation en cuisine et planifie la notification
-    // Le `Promise.all` attend que toutes les préparations soient démarrées
     await Promise.all(
       enrichedPreparations.map((prep: PreparationDto) =>
         OrderService.startPreparationAndNotify(prep)
       )
+    );
+
+    window.dispatchEvent(
+      new CustomEvent('updateTable', {
+        detail: {
+          commandId: tableOrderId,
+          tableNumber: order.tableNumber,
+          state: CommandState.PreparingInKitchen,
+        },
+      })
     );
 
     console.log(`Order created successfully for table ${order.tableNumber}`);
@@ -207,6 +213,16 @@ export const OrderService = {
     const tableLabel = preparation.tableNumber ?? 'inconnue';
 
     window.dispatchEvent(
+      new CustomEvent('updateTable', {
+        detail: {
+          commandId: preparation._id,
+          tableNumber: tableLabel,
+          States: CommandState.AwaitingService,
+        },
+      })
+    );
+
+    window.dispatchEvent(
       new CustomEvent('order:notify', {
         detail: {
           preparation,
@@ -225,7 +241,19 @@ export const OrderService = {
       throw new Error(`Erreur service préparation: ${response.statusText}`);
     }
 
-    return response.json();
+    const data: PreparationDto = await response.json();
+
+    window.dispatchEvent(
+      new CustomEvent('updateTable', {
+        detail: {
+          commandId: data._id,
+          tableNumber: data.tableNumber,
+          state: CommandState.Served,
+        },
+      })
+    );
+
+    return data;
   },
 
   async createNewOrderBFF(order: ShortOrderDto): Promise<PreparationDto[]> {
