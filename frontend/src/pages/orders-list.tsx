@@ -10,12 +10,14 @@ type OrdersListProps = {
   readonly tables: TableType[];
   readonly onSelectPage: (page: PageType, tableNumber?: number) => void;
   readonly refreshTables?: () => void;
+  readonly handleUpdateTable: (tableNumber: number, updates: Partial<TableType>) => void;
 };
 
 export default function OrdersList({
   tables,
   onSelectPage,
   refreshTables,
+  handleUpdateTable,
 }: Readonly<OrdersListProps>) {
   const preparation = tables.filter((t) => t.commandState === CommandState.PreparingInKitchen);
   const awaitingService = tables.filter((t) => t.commandState === CommandState.AwaitingService);
@@ -47,7 +49,12 @@ export default function OrdersList({
       <div className="orders-column">
         <h2>Préparation</h2>
         {preparation.map((t) => (
-          <Table key={t.id} table={t} onSelectPage={onSelectPage} />
+          <Table
+            key={t.id}
+            table={t}
+            onSelectPage={onSelectPage}
+            onUpdateTable={handleUpdateTable}
+          />
         ))}
       </div>
 
@@ -59,6 +66,7 @@ export default function OrdersList({
             table={t}
             onSelectPage={onSelectPage}
             serviceFunction={() => serveTable(t)}
+            onUpdateTable={handleUpdateTable}
           />
         ))}
       </div>
@@ -66,7 +74,12 @@ export default function OrdersList({
       <div className="orders-column">
         <h2>Servies / En attente</h2>
         {served.map((t) => (
-          <Table key={t.id} table={t} onSelectPage={onSelectPage} />
+          <Table
+            key={t.id}
+            table={t}
+            onSelectPage={onSelectPage}
+            onUpdateTable={handleUpdateTable}
+          />
         ))}
       </div>
     </div>

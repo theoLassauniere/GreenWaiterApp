@@ -14,9 +14,15 @@ type TablesProps = {
   tables: TableType[];
   setTables: React.Dispatch<React.SetStateAction<TableType[]>>;
   onSelectPage: (page: PageType, tableNumber?: number) => void;
+  readonly handleUpdateTable: (tableNumber: number, updates: Partial<TableType>) => void;
 };
 
-export default function Tables({ tables, setTables, onSelectPage }: Readonly<TablesProps>) {
+export default function Tables({
+  tables,
+  setTables,
+  onSelectPage,
+  handleUpdateTable,
+}: Readonly<TablesProps>) {
   const [minCapacity, setMinCapacity] = useState<number | undefined>(undefined);
   const [showOccupied, setShowOccupied] = useState<boolean>(false);
 
@@ -26,9 +32,11 @@ export default function Tables({ tables, setTables, onSelectPage }: Readonly<Tab
         const tablesFromBff = await TableService.seedTablesWithMocks();
         setTables(tablesFromBff);
       } else {
-        const existing = await seedTablesIfEmpty();
-        await syncWithMocks(existing);
-        setTables(existing);
+        if (tables.length === 0) {
+          const existing = await seedTablesIfEmpty();
+          await syncWithMocks(existing);
+          setTables(existing);
+        }
       }
     } catch (err) {
       console.error('Erreur init tables', err);
@@ -59,7 +67,12 @@ export default function Tables({ tables, setTables, onSelectPage }: Readonly<Tab
 
       <div className="tables-grid">
         {filteredTables.map((t) => (
-          <Table table={t} key={t.id} onSelectPage={onSelectPage} />
+          <Table
+            table={t}
+            key={t.id}
+            onSelectPage={onSelectPage}
+            onUpdateTable={handleUpdateTable}
+          />
         ))}
       </div>
     </div>
