@@ -24,7 +24,7 @@ export default function OrdersList({
   const serveTable = async (table: TableType) => {
     try {
       if (!table.commandId) throw new Error('No commandId for table');
-      await OrderService.servePreparationBFF(table.commandId);
+      await OrderService.serveToTable(table.commandId);
       refreshTables?.();
     } catch (err) {
       console.error('Error serving table', err);

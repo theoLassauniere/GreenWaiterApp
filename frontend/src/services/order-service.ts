@@ -232,11 +232,14 @@ export const OrderService = {
     );
   },
 
-  async serveToTable(id: string): Promise<PreparationDto> {
-    const response = await fetch(`${config.apiUrl}kitchen/preparedItems/${id}/serveToTable`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-    });
+  async serveToTable(preparationId: string): Promise<PreparationDto> {
+    const response = await fetch(
+      `${config.apiUrl}kitchen/preparations/${preparationId}/takenToTable`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
     if (!response.ok) {
       throw new Error(`Erreur service préparation: ${response.statusText}`);
     }

@@ -42,6 +42,7 @@ function App() {
           tableId?: string;
           tableNumber: number;
           state?: CommandState;
+          commandId?: string;
         }>
       ).detail;
       if (!detail) return;
@@ -50,7 +51,11 @@ function App() {
       if (!next) return;
 
       setTables((prev) =>
-        prev.map((t) => (t.tableNumber === detail.tableNumber ? { ...t, commandState: next } : t))
+        prev.map((t) =>
+          t.tableNumber === detail.tableNumber
+            ? { ...t, commandState: next, commandId: detail.commandId ?? t.commandId }
+            : t
+        )
       );
     };
 
