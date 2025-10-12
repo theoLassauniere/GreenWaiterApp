@@ -8,5 +8,5 @@ import java.util.List;
 public class ShortOrderDto {
     int tableNumber;
     List<MenuItemToOrderDto> menuItems;
-    boolean billed;
+    String billed;
 }
