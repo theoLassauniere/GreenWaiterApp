@@ -1,6 +1,6 @@
 import './app.scss';
 import Sidebar from './components/sidebar/sidebar.tsx';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Payment } from './pages/payment.tsx';
 import Tables from './pages/tables.tsx';
 import OrdersList from './pages/orders-list.tsx';
@@ -17,7 +17,21 @@ function App() {
   const [menuTableNumber, setMenuTableNumber] = useState<number | null>(null);
   const menuRef = useRef<MenuHandle>(null);
 
-  function handleSelectPage(newPage: PageType, tableNumber?: number) {
+  useEffect(() => {
+    const onNotify = (e: Event) => {
+      const { message } = (e as CustomEvent<{ message?: string }>).detail ?? {};
+      if (message) setReadyNotification(message);
+    };
+    window.addEventListener('order:notify', onNotify as EventListener);
+    return () => window.removeEventListener('order:notify', onNotify as EventListener);
+  }, []);
+
+  function handleSelectPage(newPage: PageType, tableNumber?: number, preparationId?: string) {
+    if (preparationId != null && tableNumber != null) {
+      setTables((prev) =>
+        prev.map((t) => (t.tableNumber === tableNumber ? { ...t, commandId: preparationId } : t))
+      );
+    }
     if (newPage === Pages.Paiement) {
       setSelectedTable(tables.find((table) => table.tableNumber === tableNumber) ?? null);
     }
