@@ -40,6 +40,7 @@ export type ShortOrderDto = {
 export type SimplifiedOrder = {
   _id: string;
   tableNumber: number;
+  billed?: boolean | null;
 };
 
 export type PreparedItemDto = {
@@ -66,7 +67,7 @@ export const OrderService = {
       throw new Error(`Erreur récupération commandes prêtes: ${response.statusText}`);
     }
     const orders: SimplifiedOrder[] = await response.json();
-    const order = orders.find((o) => o.tableNumber === tableNumber);
+    const order = orders.find((o) => o.tableNumber === tableNumber && !o.billed);
     if (!order) {
       throw new Error(`Aucune commande ouverte pour la table ${tableNumber}`);
     }

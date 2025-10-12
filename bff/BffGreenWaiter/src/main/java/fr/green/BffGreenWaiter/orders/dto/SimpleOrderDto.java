@@ -6,4 +6,5 @@ import lombok.Getter;
 public class SimpleOrderDto {
     String _id;
     int tableNumber;
+    boolean billed;
 }

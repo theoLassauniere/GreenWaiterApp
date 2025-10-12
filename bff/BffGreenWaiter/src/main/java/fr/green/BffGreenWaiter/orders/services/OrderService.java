@@ -45,7 +45,7 @@ public class OrderService {
         }
 
         Optional<SimpleOrderDto> optional = response.stream()
-                .filter(order -> order.getTableNumber() == tableNumber)
+                .filter(order -> order.getTableNumber() == tableNumber && !order.isBilled())
                 .findFirst();
 
         if (optional.isPresent()) {
