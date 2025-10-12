@@ -8,19 +8,31 @@ import ReadyNotification from './components/common/ready-notification/ready-noti
 import { Menu, type MenuHandle } from './pages/menu.tsx';
 import { Pages, type PageType } from './models/Pages.ts';
 import type { TableType } from './models/Table.ts';
+import type { PreparationDto } from './services/order-service.ts';
 
 function App() {
   const [page, setPage] = useState<PageType>(Pages.Tables);
-  const [readyNotification, setReadyNotification] = useState<string | null>(null);
   const [tables, setTables] = useState<TableType[]>([]);
   const [selectedTable, setSelectedTable] = useState<TableType | null>(null);
   const [menuTableNumber, setMenuTableNumber] = useState<number | null>(null);
   const menuRef = useRef<MenuHandle>(null);
+  const [readyNotification, setReadyNotification] = useState<{
+    message: string;
+    table?: number;
+    item?: string;
+  } | null>(null);
 
   useEffect(() => {
     const onNotify = (e: Event) => {
-      const { message } = (e as CustomEvent<{ message?: string }>).detail ?? {};
-      if (message) setReadyNotification(message);
+      const { message, preparation } =
+        (e as CustomEvent<{ message?: string; preparation?: PreparationDto }>).detail ?? {};
+      if (message) {
+        setReadyNotification({
+          message,
+          table: preparation?.tableNumber,
+          item: preparation?.menuItemShortName,
+        });
+      }
     };
     window.addEventListener('order:notify', onNotify as EventListener);
     return () => window.removeEventListener('order:notify', onNotify as EventListener);
@@ -76,7 +88,10 @@ function App() {
         )}
       </main>
       {readyNotification && (
-        <ReadyNotification message={readyNotification} onClose={() => setReadyNotification(null)} />
+        <ReadyNotification
+          message={`${readyNotification.message}`}
+          onClose={() => setReadyNotification(null)}
+        />
       )}
     </div>
   );
