@@ -30,8 +30,18 @@ public class OrderController {
     @PostMapping("/tableOrders/newOrder")
     public ResponseEntity<?> createNewOrder(@RequestBody ShortOrderDto order) {
         try {
-            var preparations = orderService.createNewOrderFull(order);
+            var preparations = orderService.createAndStartPreparation(order);
             return ResponseEntity.ok(preparations);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/finishPreparation")
+    public ResponseEntity<?> finishPreparation(@RequestBody List<Map<String, Object>> preparations) {
+        try {
+            var result = orderService.finishPreparation(preparations);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
         }
