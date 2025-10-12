@@ -217,7 +217,7 @@ export const OrderService = {
         detail: {
           commandId: preparation._id,
           tableNumber: tableLabel,
-          States: CommandState.AwaitingService,
+          state: CommandState.AwaitingService,
         },
       })
     );
