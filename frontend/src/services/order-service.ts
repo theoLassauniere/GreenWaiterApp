@@ -115,12 +115,23 @@ export const OrderService = {
 
     const preparations: PreparationDto[] = await prepareResponse.json();
 
+    const enrichedPreparations = preparations.map((prep) => ({
+      ...prep,
+      tableNumber: order.tableNumber, // tu l’as déjà
+      menuItemShortName:
+        prep.menuItemShortName ?? order.menuItems[0]?.menuItemShortName ?? 'Inconnu',
+    }));
+
     // Démarre la préparation en cuisine et planifie la notification
     // Le `Promise.all` attend que toutes les préparations soient démarrées
-    await Promise.all(preparations.map((prep) => OrderService.startPreparationAndNotify(prep)));
+    await Promise.all(
+      enrichedPreparations.map((prep: PreparationDto) =>
+        OrderService.startPreparationAndNotify(prep)
+      )
+    );
 
     console.log(`Order created successfully for table ${order.tableNumber}`);
-    return preparations;
+    return enrichedPreparations;
   },
   // CORRIGÉ : Cette fonction calcule maintenant le temps de préparation
   async startPreparationAndNotify(preparation: PreparationDto): Promise<void> {
@@ -168,7 +179,11 @@ export const OrderService = {
     // 4. Planifier la notification de fin de préparation
     console.log(`Préparation ${preparation._id} sera prête dans ${preparationTimeInSec} secondes.`);
     scheduleAt(targetMs, () => {
-      void OrderService.finishPrep(preparation);
+      void OrderService.finishPrep({
+        ...preparation,
+        tableNumber: preparation.tableNumber,
+        menuItemShortName: preparation.menuItemShortName,
+      });
     });
   },
 
@@ -178,24 +193,25 @@ export const OrderService = {
       return;
     }
 
-    const finishPromises = preparation.preparedItems.map(async (item) => {
-      const response = await fetch(`${config.apiUrl}kitchen/preparedItems/${item._id}/finish`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
+    await Promise.all(
+      preparation.preparedItems.map(async (item) => {
+        const response = await fetch(`${config.apiUrl}kitchen/preparedItems/${item._id}/finish`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) {
+          console.error(`Erreur fin de préparation de l'item ${item._id}: ${response.statusText}`);
+        }
+      })
+    );
 
-      if (!response.ok) {
-        console.error(`Erreur fin de préparation de l'item ${item._id}: ${response.statusText}`);
-        throw new Error(`Erreur fin de préparation de l'item ${item._id}`);
-      }
-      return response.json();
-    });
-    await Promise.all(finishPromises);
+    const tableLabel = preparation.tableNumber ?? 'inconnue';
+
     window.dispatchEvent(
       new CustomEvent('order:notify', {
         detail: {
           preparation,
-          message: `Préparation prête pour la table ${preparation.tableNumber}: ${preparation.menuItemShortName}`,
+          message: `Préparation prête pour la table ${tableLabel}`,
         },
       })
     );
