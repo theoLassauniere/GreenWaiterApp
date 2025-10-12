@@ -4,6 +4,7 @@ import type { TableType } from '../models/Table.ts';
 import type { PageType } from '../models/Pages.ts';
 import { useEffect } from 'react';
 import { OrderService } from '../services/order-service.ts';
+import { CommandState } from '../models/CommandState.ts';
 
 type OrdersListProps = {
   readonly tables: TableType[];
@@ -16,9 +17,9 @@ export default function OrdersList({
   onSelectPage,
   refreshTables,
 }: Readonly<OrdersListProps>) {
-  const preparation = tables.filter((t) => t.commandState === 'preparing-in-kitchen');
-  const awaitingService = tables.filter((t) => t.commandState === 'awaiting-service');
-  const served = tables.filter((t) => t.commandState === 'served');
+  const preparation = tables.filter((t) => t.commandState === CommandState.PreparingInKitchen);
+  const awaitingService = tables.filter((t) => t.commandState === CommandState.AwaitingService);
+  const served = tables.filter((t) => t.commandState === CommandState.Served);
 
   const serveTable = async (table: TableType) => {
     try {
