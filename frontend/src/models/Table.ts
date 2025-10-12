@@ -7,5 +7,6 @@ export interface TableType {
   readonly capacity: number;
   readonly occupied: boolean;
   readonly commandState?: CommandState;
+  readonly commandId?: string;
   readonly commandPreparationPlace?: PreparationPlace;
 }

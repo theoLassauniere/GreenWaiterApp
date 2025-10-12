@@ -1,5 +1,6 @@
 package fr.green.BffGreenWaiter.orders.controller;
 
+import fr.green.BffGreenWaiter.orders.dto.OrderItemDTO;
 import fr.green.BffGreenWaiter.orders.dto.ShortOrderDto;
 import fr.green.BffGreenWaiter.orders.dto.SimpleOrderDto;
 import fr.green.BffGreenWaiter.orders.services.OrderService;
@@ -29,8 +30,43 @@ public class OrderController {
     @PostMapping("/tableOrders/newOrder")
     public ResponseEntity<?> createNewOrder(@RequestBody ShortOrderDto order) {
         try {
-            var preparations = orderService.createNewOrderFull(order);
+            var preparations = orderService.createAndStartPreparation(order);
             return ResponseEntity.ok(preparations);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/finishPreparation")
+    public ResponseEntity<?> finishPreparation(@RequestBody List<Map<String, Object>> preparations) {
+        try {
+            var result = orderService.finishPreparation(preparations);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/tableOrders/items/{tableNumber}")
+    public List<OrderItemDTO> getOrderItemsForTable(@PathVariable int tableNumber) {
+        return orderService.getOrderItems(tableNumber);
+    }
+
+    @PostMapping("/tableOrders/bill/{tableNumber}")
+    public ResponseEntity<?> billOrderForTable(@PathVariable int tableNumber) {
+        try {
+            var order = orderService.billOrder(tableNumber);
+            return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/preparations/{preparationId}/takenToTable")
+    public ResponseEntity<?> markPreparationAsServed(@PathVariable String preparationId) {
+        try {
+            var result = orderService.markPreparationAsServed(preparationId);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
         }

@@ -14,7 +14,12 @@ import { TableService } from '../services/table-service.ts';
 
 export type PaymentProps = {
   readonly table: TableType;
-  readonly onSelectPage: (page: PageType) => void;
+  readonly onSelectPage: (
+    newPage: PageType,
+    tableNumber?: number,
+    preparationId?: string,
+    refresh?: boolean
+  ) => Promise<void>;
 };
 
 export function Payment(props: PaymentProps) {
@@ -121,8 +126,8 @@ export function Payment(props: PaymentProps) {
 
   async function handlePopUpClose() {
     setShowPaymentSuccess(false);
-    props.onSelectPage(Pages.Tables);
     await TableService.billTable(props.table.tableNumber);
+    await props.onSelectPage(Pages.Tables, undefined, undefined, true);
   }
 
   return (

@@ -3,22 +3,27 @@ import type { TableType } from '../../../models/Table.ts';
 import type { PageType } from '../../../models/Pages.ts';
 import { Pages } from '../../../models/Pages.ts';
 import { TableService } from '../../../services/table-service.ts';
-import { useState } from 'react';
 
 export type TableProps = {
   readonly table: TableType;
   readonly onSelectPage: (page: PageType, tableNumber: number) => void;
+  serviceFunction?: () => void;
+  onUpdateTable?: (tableNumber: number, updates: Partial<TableType>) => void;
 };
 
-export function Table({ table, onSelectPage }: Readonly<TableProps>) {
-  const [localTable, setLocalTable] = useState(table);
+export function Table({
+  table,
+  onSelectPage,
+  serviceFunction,
+  onUpdateTable,
+}: Readonly<TableProps>) {
   async function handleTableClick() {
-    if (localTable.occupied) return;
+    if (table.occupied) return;
 
     try {
-      const dto = { tableNumber: localTable.tableNumber, customersCount: localTable.capacity };
+      const dto = { tableNumber: table.tableNumber, customersCount: table.capacity };
       await TableService.openTableForOrders(dto);
-      setLocalTable({ ...localTable, occupied: true });
+      onUpdateTable?.(table.tableNumber, { occupied: true });
     } catch (err) {
       console.error('Erreur ouverture table :', err);
     }
@@ -26,40 +31,39 @@ export function Table({ table, onSelectPage }: Readonly<TableProps>) {
 
   return (
     <div
-      className={`table-card ${localTable.occupied ? 'occupied' : 'free'}`}
+      className={`table-card ${table.occupied ? 'occupied' : 'free'}`}
       onClick={handleTableClick}
-      style={{ cursor: !localTable.occupied ? 'pointer' : 'default' }}
+      style={{ cursor: !table.occupied ? 'pointer' : 'default' }}
     >
-      <h3>Table {localTable.tableNumber}</h3>
+      <h3>Table {table.tableNumber}</h3>
       <p>
-        Capacité :<strong> {localTable.capacity}</strong>
+        Capacité :<strong> {table.capacity}</strong>
       </p>
       <p>
-        <strong>{localTable.occupied ? 'Occupé' : 'Libre'}</strong>
+        <strong>{table.occupied ? 'Occupé' : 'Libre'}</strong>
       </p>
 
       <div className="command-actions">
-        {localTable.occupied && (
-          <button onClick={() => onSelectPage(Pages.Menu, localTable.tableNumber)}>
+        {table.occupied && (
+          <button onClick={() => onSelectPage(Pages.Menu, table.tableNumber)}>
             Nouvelle commande
           </button>
         )}
-        {localTable.commandState === 'awaiting-service' && <button>Servi</button>}
+        {table.commandState === 'awaiting-service' && (
+          <button onClick={serviceFunction}>Servi</button>
+        )}
       </div>
 
-      {localTable.commandState === 'served' && (
-        <button
-          onClick={() => onSelectPage(Pages.Paiement, localTable.tableNumber)}
-          className="pay-btn"
-        >
+      {table.commandState === 'served' && (
+        <button onClick={() => onSelectPage(Pages.Paiement, table.tableNumber)} className="pay-btn">
           Paiement
         </button>
       )}
 
-      {localTable.commandPreparationPlace && (
+      {table.commandPreparationPlace && (
         <p>
           Commande pour :{' '}
-          <strong>{localTable.commandPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
+          <strong>{table.commandPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
         </p>
       )}
     </div>
