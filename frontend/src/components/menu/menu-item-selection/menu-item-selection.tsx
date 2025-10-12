@@ -38,7 +38,7 @@ export default function MenuItemSelection({
   return (
     <div className="menu-item-selection">
       <div className="menu-item-selection__header">
-        <IconButton icon="arrow_back" onClick={onReturn} />
+        <IconButton icon="arrow_back" onClick={onReturn} color="black" />
         <SearchBar
           value={value}
           onChange={setValue}

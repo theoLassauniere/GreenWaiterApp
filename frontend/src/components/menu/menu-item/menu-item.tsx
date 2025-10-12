@@ -29,7 +29,7 @@ export default function MenuItem({ item, onClick, className }: Readonly<MenuItem
         </div>
         <div className="item-text-container">
           <div>
-            {name} - {price}€
+            {name} - <strong>{price}€</strong>
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@ export default function MenuItem({ item, onClick, className }: Readonly<MenuItem
         isOpen={isOpen}
         onClose={close}
         allergens={item.allergens}
-        title={`Allergènes - ${
+        title={`Liste d'allergènes pour : ${
           name.length > 20
             ? item.shortName && item.shortName.trim() !== ''
               ? item.shortName

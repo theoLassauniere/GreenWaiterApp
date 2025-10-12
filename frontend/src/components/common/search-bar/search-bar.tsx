@@ -44,7 +44,7 @@ export default function SearchBar(props: Readonly<SearchBarProps>) {
         }}
       />
       {clearable && value && <IconButton onClick={clear} icon={'close'} />}
-      <IconButton onClick={props.handleSearch} icon={'search'} />
+      <IconButton onClick={props.handleSearch} icon={'search'} color="black" />
     </div>
   );
 }
