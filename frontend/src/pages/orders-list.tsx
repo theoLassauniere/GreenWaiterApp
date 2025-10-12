@@ -5,6 +5,7 @@ import type { PageType } from '../models/Pages.ts';
 import { useEffect } from 'react';
 import { OrderService } from '../services/order-service.ts';
 import { CommandState } from '../models/CommandState.ts';
+import config from '../config.ts';
 
 type OrdersListProps = {
   readonly tables: TableType[];
@@ -24,7 +25,11 @@ export default function OrdersList({
   const serveTable = async (table: TableType) => {
     try {
       if (!table.commandId) throw new Error('No commandId for table');
-      await OrderService.serveToTable(table.commandId);
+      if (config.bffFlag) {
+        await OrderService.servePreparationBFF(table.commandId, table.tableNumber);
+      } else {
+        await OrderService.serveToTable(table.commandId);
+      }
       refreshTables?.();
     } catch (err) {
       console.error('Error serving table', err);
