@@ -69,7 +69,7 @@ export default function Tables({
         {filteredTables.map((t) => (
           <Table
             table={t}
-            key={t.id}
+            key={t.tableNumber}
             onSelectPage={onSelectPage}
             onUpdateTable={handleUpdateTable}
           />
