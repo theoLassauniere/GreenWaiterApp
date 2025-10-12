@@ -13,7 +13,7 @@ type OrdersListProps = {
 export default function OrdersList(props: Readonly<OrdersListProps>) {
   const preparation = props.tables.filter((t) => t.commandState === 'preparing-in-kitchen');
   const served = props.tables.filter((t) => t.commandState === 'served');
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const serveTable = (table) => {
     if (!table.commandId) {
       console.error('No commandId for table', table);

@@ -14,7 +14,7 @@ import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-ba
 import type { TableType } from '../models/Table.ts';
 
 export interface MenuProps {
-  table: TableType;
+  table?: TableType;
   onSelectPage: (page: PageType, tableNumber?: number) => void;
 }
 
@@ -52,6 +52,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onS
   };
 
   const handleAddItem = (item: Item) => {
+    if (!table) return;
     setSelectedItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
@@ -62,6 +63,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onS
   };
 
   const handleRemoveItem = (item: CommandItem) => {
+    if (!table) return;
     setSelectedItems((prev) =>
       prev
         .map((i) => (i.id === item.id ? { ...i, quantity: i.quantity - 1 } : i))
@@ -70,8 +72,8 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onS
   };
 
   const handleSendOrder = async () => {
-    if (!table.tableNumber) {
-      console.warn('Aucune table sélectionnée, mode consultation. Pas de commande envoyée.');
+    if (!table || !table.tableNumber) {
+      console.warn('Aucune table sélectionnée : mode consultation, pas de commande envoyée.');
       return;
     }
 
@@ -96,11 +98,10 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onS
       setListItems([]);
 
       console.log('Commande créée avec succès :', preparations);
-        onSelectPage(Pages.Tables, table.tableNumber, preparations[0]?._id);
+      onSelectPage(Pages.Tables, table.tableNumber);
     } catch (e) {
       console.error('Erreur lors de l’envoi de la commande :', e);
     }
-    table;
   };
 
   return (
@@ -121,7 +122,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onS
         <div className="menu-grid">
           <MenuItemSelection
             listItems={listItems}
-            table={table.tableNumber}
+            table={table?.tableNumber}
             listSelectedItems={selectedItems}
             onAddItem={handleAddItem}
             onRemoveItem={handleRemoveItem}
@@ -131,7 +132,8 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onS
           />
         </div>
       )}
-      {table.tableNumber && (
+
+      {table && table.tableNumber && (
         <MenuItemBottomBar
           tableNumber={table.tableNumber}
           items={selectedItems}
