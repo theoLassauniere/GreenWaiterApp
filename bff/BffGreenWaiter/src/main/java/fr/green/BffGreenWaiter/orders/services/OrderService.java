@@ -52,27 +52,77 @@ public class OrderService {
         }
     }
 
-    public List<Map<String, Object>> createNewOrderFull(ShortOrderDto order) {
-        String orderId = getOrderForTable(order.getTableNumber());
-        String orderUrl = baseUrl + "/" + orderId;
-        String prepareUrl = baseUrl + "/" + orderId + "/prepare";
-
+    public List<Map<String, Object>> createAndStartPreparation(ShortOrderDto order) {
         WebClient webClient = webClientBuilder.build();
 
-        for (MenuItemToOrderDto menuItem : order.getMenuItems()) {
+        String orderId = getOrderForTable(order.getTableNumber());
+        String orderUrl = baseUrl + "/" + orderId;
+        String prepareUrl = orderUrl + "/prepare";
+
+        for (MenuItemToOrderDto item : order.getMenuItems()) {
             webClient.post()
                     .uri(orderUrl)
-                    .bodyValue(menuItem)
+                    .bodyValue(item)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
         }
 
-        return webClient.post()
+        List<Map<String, Object>> preparations = webClient.post()
                 .uri(prepareUrl)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<Map<String, Object>>>() {})
                 .block();
+
+        if (preparations == null || preparations.isEmpty()) {
+            throw new RuntimeException("Aucune préparation créée");
+        }
+
+        for (Map<String, Object> prep : preparations) {
+            prep.put("tableNumber", order.getTableNumber());
+        }
+
+        for (Map<String, Object> prep : preparations) {
+            List<Map<String, Object>> preparedItems =
+                    (List<Map<String, Object>>) prep.get("preparedItems");
+
+            if (preparedItems == null) continue;
+
+            for (Map<String, Object> item : preparedItems) {
+                String itemId = (String) item.get("_id");
+                String startUrl = baseUrl.replace("/dining", "") + "/kitchen/preparedItems/" + itemId + "/start";
+                webClient.post()
+                        .uri(startUrl)
+                        .retrieve()
+                        .bodyToMono(Void.class)
+                        .block();
+            }
+        }
+
+        return preparations;
+    }
+
+    public List<Map<String, Object>> finishPreparation(List<Map<String, Object>> preparations) {
+        WebClient webClient = webClientBuilder.build();
+
+        for (Map<String, Object> prep : preparations) {
+            List<Map<String, Object>> preparedItems =
+                    (List<Map<String, Object>>) prep.get("preparedItems");
+            if (preparedItems == null) continue;
+
+            for (Map<String, Object> item : preparedItems) {
+                String itemId = (String) item.get("_id");
+                String finishUrl = baseUrl.replace("/dining", "") + "/kitchen/preparedItems/" + itemId + "/finish";
+
+                webClient.post()
+                        .uri(finishUrl)
+                        .retrieve()
+                        .bodyToMono(Void.class)
+                        .block();
+            }
+        }
+
+        return preparations;
     }
 
     public List<OrderItemDTO> getOrderItems(int tableNumber) {

@@ -7,7 +7,6 @@ import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
 import type { CommandItem } from '../models/CommandItem.ts';
 import { OrderService, type ShortOrderDto } from '../services/order-service.ts';
-import config from '../config.ts';
 import { Pages, type PageType } from '../models/Pages.ts';
 import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-bar.tsx';
 import { MenuService } from '../services/menu-service.ts';
@@ -75,12 +74,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
   };
 
   const handleSendOrder = async () => {
-    if (!table || !table.tableNumber) {
-      console.warn('Aucune table sélectionnée : mode consultation, pas de commande envoyée.');
-      return;
-    }
-
-    if (selectedItems.length === 0) return;
+    if (!table?.tableNumber || selectedItems.length === 0) return;
 
     const preparation: ShortOrderDto = {
       tableNumber: table.tableNumber,
@@ -92,15 +86,8 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
     };
 
     try {
-      const preparations = config.bffFlag
-        ? await OrderService.createNewOrderBFF(preparation)
-        : await OrderService.createNewOrderNoBFF(preparation);
+      await OrderService.createNewOrder(preparation);
 
-      setSelectedItems([]);
-      setSelectedCategory(null);
-      setListItems([]);
-
-      console.log('Commande créée avec succès :', preparations);
       onSelectPage(Pages.Tables, table.tableNumber);
     } catch (e) {
       console.error('Erreur lors de l’envoi de la commande :', e);

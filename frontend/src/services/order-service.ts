@@ -75,7 +75,6 @@ export const OrderService = {
     return order._id;
   },
 
-  // Fonction inchangée, elle était correcte
   async createNewOrder(order: ShortOrderDto): Promise<PreparationDto[]> {
     return config.bffFlag
       ? OrderService.createNewOrderBFF(order)
@@ -230,21 +229,55 @@ export const OrderService = {
   },
 
   async createNewOrderBFF(order: ShortOrderDto): Promise<PreparationDto[]> {
-    const payload = {
-      tableNumber: order.tableNumber,
-      menuItems: order.menuItems,
-    };
-    const response = await fetch(`${baseUrl}/tableOrders/newOrder`, {
+    const createResponse = await fetch(`${baseUrl}/tableOrders/newOrder`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(order),
+    });
+    if (!createResponse.ok) {
+      throw new Error(`Erreur création commande: ${createResponse.statusText}`);
+    }
+    const preparations: PreparationDto[] = await createResponse.json();
+    console.log(`Commande créée pour la table ${order.tableNumber}. Préparations en cours...`);
+    return preparations;
+  },
+
+  async finishPreparationBFF(preparations: PreparationDto[]): Promise<void> {
+    const response = await fetch(`${baseUrl}/tableOrders/finishPreparation`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(preparations),
     });
 
     if (!response.ok) {
-      throw new Error(`Erreur création commande: ${response.statusText}`);
+      throw new Error(`Erreur lors de la finalisation de la préparation: ${response.statusText}`);
     }
-    const orderData = await response.json();
-    console.log('Order created successfully for table ' + order.tableNumber);
-    return orderData ?? [];
+
+    const tableNumber = preparations[0]?.tableNumber ?? '?';
+
+    window.dispatchEvent(
+      new CustomEvent('order:notify', {
+        detail: {
+          message: `Préparation terminée pour la table ${tableNumber}`,
+        },
+      })
+    );
+  },
+
+  async servePreparationBFF(preparationId: string): Promise<void> {
+    const response = await fetch(`${baseUrl}/preparations/${preparationId}/takenToTable`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur lors du service de la préparation: ${response.statusText}`);
+    }
+
+    window.dispatchEvent(
+      new CustomEvent('order:notify', {
+        detail: { message: `Table servie (${preparationId})` },
+      })
+    );
   },
 };
