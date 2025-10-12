@@ -61,4 +61,14 @@ public class OrderController {
             return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @PostMapping("/preparations/{preparationId}/takenToTable")
+    public ResponseEntity<?> markPreparationAsServed(@PathVariable String preparationId) {
+        try {
+            var result = orderService.markPreparationAsServed(preparationId);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

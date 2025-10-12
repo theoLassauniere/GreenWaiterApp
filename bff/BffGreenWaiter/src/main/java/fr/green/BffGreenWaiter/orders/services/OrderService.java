@@ -24,6 +24,9 @@ public class OrderService {
     @Value("${tableOrders.service.url}")
     private String baseUrl;
 
+    @Value("${kitchen.service.url}")
+    private String kitchenBaseUrl;
+
     public List<SimpleOrderDto> getOrders() {
         WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
 
@@ -90,8 +93,9 @@ public class OrderService {
 
             for (Map<String, Object> item : preparedItems) {
                 String itemId = (String) item.get("_id");
-                String startUrl = baseUrl.replace("/dining", "") + "/kitchen/preparedItems/" + itemId + "/start";
-                webClient.post()
+                String startUrl = kitchenBaseUrl + "/preparedItems/" + itemId + "/start";
+                webClientBuilder.build()
+                        .post()
                         .uri(startUrl)
                         .retrieve()
                         .bodyToMono(Void.class)
@@ -103,8 +107,6 @@ public class OrderService {
     }
 
     public List<Map<String, Object>> finishPreparation(List<Map<String, Object>> preparations) {
-        WebClient webClient = webClientBuilder.build();
-
         for (Map<String, Object> prep : preparations) {
             List<Map<String, Object>> preparedItems =
                     (List<Map<String, Object>>) prep.get("preparedItems");
@@ -112,9 +114,9 @@ public class OrderService {
 
             for (Map<String, Object> item : preparedItems) {
                 String itemId = (String) item.get("_id");
-                String finishUrl = baseUrl.replace("/dining", "") + "/kitchen/preparedItems/" + itemId + "/finish";
-
-                webClient.post()
+                String finishUrl = kitchenBaseUrl + "/preparedItems/" + itemId + "/finish";
+                webClientBuilder.build()
+                        .post()
                         .uri(finishUrl)
                         .retrieve()
                         .bodyToMono(Void.class)
@@ -156,6 +158,15 @@ public class OrderService {
                 .toList();
     }
 
+    public Map<String, Object> markPreparationAsServed(String preparationId) {
+        WebClient webClient = webClientBuilder.baseUrl(kitchenBaseUrl).build();
+
+        return webClient.post()
+                .uri("/preparations/" + preparationId + "/takenToTable")
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .block();
+    }
 
     public String billOrder(int tableNumber) {
         String orderId = getOrderForTable(tableNumber);

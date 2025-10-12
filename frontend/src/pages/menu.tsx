@@ -21,10 +21,7 @@ export interface MenuHandle {
   onReturn: () => void;
 }
 
-export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu(
-  { table, onSelectPage },
-  ref
-) {
+export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onSelectPage }, ref) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [listItems, setListItems] = useState<Item[]>([]);
   const [selectedItems, setSelectedItems] = useState<CommandItem[]>([]);
