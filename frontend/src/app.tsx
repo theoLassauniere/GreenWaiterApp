@@ -10,7 +10,6 @@ import { Pages, type PageType } from './models/Pages.ts';
 import type { TableType } from './models/Table.ts';
 import type { PreparationDto } from './services/order-service.ts';
 import type { CommandState } from './models/CommandState.ts';
-import { TableService } from './services/table-service.ts';
 
 function App() {
   const [page, setPage] = useState<PageType>(Pages.Tables);
@@ -69,14 +68,17 @@ function App() {
     };
   }, []);
 
+  const handleUpdateTable = (tableNumber: number, updates: Partial<TableType>) => {
+    setTables((prev) =>
+      prev.map((t) => (t.tableNumber === tableNumber ? { ...t, ...updates } : t))
+    );
+  };
+
   async function handleSelectPage(newPage: PageType, tableNumber?: number, preparationId?: string) {
     if (preparationId != null && tableNumber != null) {
       setTables((prev) =>
         prev.map((t) => (t.tableNumber === tableNumber ? { ...t, commandId: preparationId } : t))
       );
-    }
-    if (newPage === Pages.Tables) {
-      setTables(await TableService.listAllTables());
     }
     if (newPage === Pages.Paiement) {
       setSelectedTable(tables.find((table) => table.tableNumber === tableNumber) ?? null);
@@ -103,7 +105,12 @@ function App() {
       </div>
       <main>
         {page === Pages.Tables && (
-          <Tables tables={tables} setTables={setTables} onSelectPage={handleSelectPage} />
+          <Tables
+            tables={tables}
+            setTables={setTables}
+            onSelectPage={handleSelectPage}
+            handleUpdateTable={handleUpdateTable}
+          />
         )}
         {page === Pages.Menu && (
           <Menu
@@ -116,7 +123,13 @@ function App() {
             onSelectPage={handleSelectPage}
           />
         )}
-        {page === Pages.Commandes && <OrdersList tables={tables} onSelectPage={handleSelectPage} />}
+        {page === Pages.Commandes && (
+          <OrdersList
+            tables={tables}
+            onSelectPage={handleSelectPage}
+            handleUpdateTable={handleUpdateTable}
+          />
+        )}
         {page === Pages.Paiement && selectedTable && (
           <Payment table={selectedTable} onSelectPage={handleSelectPage} />
         )}
