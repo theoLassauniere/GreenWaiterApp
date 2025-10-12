@@ -4,7 +4,8 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: #242424;
+  background-color: var(--palette-gray-light);
+  color: black;
 
   & .menu-item-selection__header {
     display: flex;
