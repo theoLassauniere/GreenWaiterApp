@@ -62,7 +62,11 @@ function App() {
         {page === Pages.Menu && (
           <Menu
             ref={menuRef}
-            tableId={menuTableNumber ?? undefined}
+            table={
+              menuTableNumber !== null && menuTableNumber !== undefined
+                ? tables.find((t) => t.tableNumber === menuTableNumber)
+                : undefined
+            }
             onSelectPage={handleSelectPage}
           />
         )}
