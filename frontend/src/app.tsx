@@ -9,6 +9,7 @@ import { Menu, type MenuHandle } from './pages/menu.tsx';
 import { Pages, type PageType } from './models/Pages.ts';
 import type { TableType } from './models/Table.ts';
 import type { PreparationDto } from './services/order-service.ts';
+import type { CommandState } from './models/CommandState.ts';
 
 function App() {
   const [page, setPage] = useState<PageType>(Pages.Tables);
@@ -34,8 +35,32 @@ function App() {
         });
       }
     };
+
+    const onUpdateTable = (e: Event) => {
+      const detail = (
+        e as CustomEvent<{
+          tableId?: string;
+          tableNumber: number;
+          state?: CommandState;
+        }>
+      ).detail;
+      if (!detail) return;
+
+      const next = detail.state;
+      if (!next) return;
+
+      setTables((prev) =>
+        prev.map((t) => (t.tableNumber === detail.tableNumber ? { ...t, commandState: next } : t))
+      );
+    };
+
     window.addEventListener('order:notify', onNotify as EventListener);
-    return () => window.removeEventListener('order:notify', onNotify as EventListener);
+    window.addEventListener('updateTable', onUpdateTable as EventListener);
+
+    return () => {
+      window.removeEventListener('order:notify', onNotify as EventListener);
+      window.removeEventListener('updateTable', onUpdateTable as EventListener);
+    };
   }, []);
 
   function handleSelectPage(newPage: PageType, tableNumber?: number, preparationId?: string) {
