@@ -1,6 +1,8 @@
 package fr.green.BffGreenWaiter.orders.services;
 
 
+import fr.green.BffGreenWaiter.items.model.Item;
+import fr.green.BffGreenWaiter.items.service.MenuService;
 import fr.green.BffGreenWaiter.orders.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderService {
     private final WebClient.Builder webClientBuilder;
+    private final MenuService menuService;
 
     @Value("${tableOrders.service.url}")
     private String baseUrl;
@@ -70,5 +73,41 @@ public class OrderService {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<Map<String, Object>>>() {})
                 .block();
+    }
+
+    public List<Item> getOrderItems(int tableNumber) {
+        String orderId = getOrderForTable(tableNumber);
+        String orderUrl = baseUrl + "/" + orderId;
+
+        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+
+        OrderLineDto order = webClient.get()
+                .uri(orderUrl)
+                .retrieve()
+                .bodyToMono(OrderLineDto.class)
+                .block();
+
+        if (order == null || order.getLines() == null) {
+            throw new RuntimeException("No order lines found for table " + tableNumber);
+        }
+
+        return order.getLines().stream()
+                .map(line -> menuService.fetchItemById(line.getItem().get_id())).toList();
+    }
+
+    public String billOrder(int tableNumber) {
+        String orderId = getOrderForTable(tableNumber);
+        String billUrl = baseUrl + "/dining/tableOrders/" + orderId + "/bill";
+
+        try {
+            return webClientBuilder.baseUrl(baseUrl).build()
+                    .post()
+                    .uri(billUrl)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la facturation de la table " + tableNumber, e);
+        }
     }
 }
