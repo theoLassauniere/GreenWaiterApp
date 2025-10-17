@@ -1,0 +1,13 @@
+package fr.green.BffGreenWaiter.dto.table;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class StartOrderingDto {
+    private int tableNumber;
+    private int customersCount;
+}
