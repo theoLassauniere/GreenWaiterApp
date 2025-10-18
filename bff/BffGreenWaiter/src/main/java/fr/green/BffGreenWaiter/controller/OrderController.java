@@ -69,7 +69,7 @@ public class OrderController {
             var result = orderService.markPreparationAsServed(preparationId);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
-        }
+        return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+    }
     }
 }

@@ -25,15 +25,19 @@ public class DiningClient {
     private final WebClient.Builder webClientBuilder;
     private final String tableUrl;
     private final String baseUrl;
+    private final String orderUrl;
+
 
     public DiningClient(WebClient.Builder webClientBuilder, @Value("${dining.service.url}") String baseUrl) {
         this.webClientBuilder = webClientBuilder;
         this.baseUrl = baseUrl;
         this.tableUrl = baseUrl + "/tables";
+        this.orderUrl = baseUrl + "/tableOrders";
+
     }
 
     public List<SimpleOrderDto> getOrders() {
-        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+        WebClient webClient = webClientBuilder.baseUrl(orderUrl).build();
 
         List<SimpleOrderDto> orders =  webClient.get()
                 .retrieve()
@@ -47,7 +51,7 @@ public class DiningClient {
     }
 
     public Mono<Void> addItemToOrder(String orderId, MenuItemToOrderDto item) {
-        return webClientBuilder.baseUrl(tableUrl).build()
+        return webClientBuilder.baseUrl(orderUrl).build()
                 .post()
                 .uri("/{orderId}", orderId)
                 .bodyValue(item)
@@ -56,7 +60,7 @@ public class DiningClient {
     }
 
     public List<Map<String, Object>> prepareOrder(String orderId) {
-        List<Map<String, Object>> preparations = webClientBuilder.baseUrl(baseUrl).build()
+        List<Map<String, Object>> preparations = webClientBuilder.baseUrl(orderUrl).build()
                 .post()
                 .uri("/{orderId}/prepare", orderId)
                 .retrieve()
@@ -70,7 +74,7 @@ public class DiningClient {
     }
 
     public OrderLineDto getOrderById(String orderId) {
-        OrderLineDto order = webClientBuilder.baseUrl(baseUrl).build()
+        OrderLineDto order = webClientBuilder.baseUrl(orderUrl).build()
                 .get()
                 .uri("/{orderId}", orderId)
                 .retrieve()
@@ -84,7 +88,7 @@ public class DiningClient {
     }
 
     public void addTable(int tableNumber) {
-        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+        WebClient webClient = webClientBuilder.baseUrl(tableUrl).build();
 
         webClient.post()
                 .bodyValue(new TableDtoRequest(tableNumber))
@@ -94,7 +98,7 @@ public class DiningClient {
     }
 
     public List<TableWithOrderDto> listAllTables() {
-        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+        WebClient webClient = webClientBuilder.baseUrl(tableUrl).build();
 
         TableWithOrderDto[] response = webClient.get()
                 .retrieve()
@@ -105,7 +109,7 @@ public class DiningClient {
     }
 
     public TableWithOrderDto getTableByNumber(int number) {
-        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+        WebClient webClient = webClientBuilder.baseUrl(tableUrl).build();
 
         return webClient.get()
                 .uri("/{number}", number)
@@ -115,7 +119,7 @@ public class DiningClient {
     }
 
     public void openTableSafe(StartOrderingDto dto ) {
-        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+        WebClient webClient = webClientBuilder.baseUrl(tableUrl).build();
 
         try {
             webClient.post()
@@ -134,7 +138,7 @@ public class DiningClient {
 
     public String billOrder(String orderId ) {
         try {
-            return webClientBuilder.baseUrl(baseUrl).build()
+            return webClientBuilder.baseUrl(orderUrl).build()
                     .post()
                     .uri("/{orderId}/bill", orderId)
                     .retrieve()

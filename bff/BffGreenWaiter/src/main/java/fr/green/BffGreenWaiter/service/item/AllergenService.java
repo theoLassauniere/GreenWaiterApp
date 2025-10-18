@@ -2,7 +2,7 @@ package fr.green.BffGreenWaiter.service.item;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.green.BffGreenWaiter.allergen.model.Allergen;
+import fr.green.BffGreenWaiter.model.Allergen;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
