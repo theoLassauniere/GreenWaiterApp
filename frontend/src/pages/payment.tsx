@@ -158,6 +158,7 @@ export function Payment(props: PaymentProps) {
                       disabled={isSplitEquallyMode}
                       quantity={item.quantity}
                       divider={item.divider}
+                      tableCapacity={props.table.capacity}
                       onSplitItem={(divider) => handleSplitItem(item.id, divider)}
                       selected={selected[item.id]}
                       selectedQuantity={selectedQuantity[item.id]}
