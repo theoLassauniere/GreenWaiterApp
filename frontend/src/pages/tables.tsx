@@ -41,7 +41,7 @@ export default function Tables({
     } catch (err) {
       console.error('Erreur init tables', err);
     }
-  }, [setTables]);
+  }, [setTables, tables.length]);
 
   useEffect(() => {
     void loadTables();
