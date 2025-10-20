@@ -9,6 +9,7 @@ export type ItemDetailProps = {
   selected: boolean;
   selectedQuantity: number;
   divider?: number;
+  tableCapacity: number;
   onSelectChange: (checked: boolean) => void;
   onQuantityChange: (value: number) => void;
   onSplitItem: (divider: number) => void;
@@ -81,7 +82,7 @@ export function ItemDetail(props: Readonly<ItemDetailProps>) {
         <SplitPopup
           isOpen={showSplitPopup}
           title={'Pour combien de personnes diviser cet élément ?'}
-          splitMax={12}
+          splitMax={props.tableCapacity}
           onSplit={props.onSplitItem}
           onClose={() => setShowSplitPopup(false)}
         />
