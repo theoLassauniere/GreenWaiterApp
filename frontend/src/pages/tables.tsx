@@ -47,6 +47,23 @@ export default function Tables({
     void loadTables();
   }, [loadTables]);
 
+  const handleGroupUpdate = (tableNumber: number, updates: Partial<TableType>) => {
+    setTables((prevTables) => {
+      const clicked = prevTables.find((t) => t.tableNumber === tableNumber);
+      if (!clicked) return prevTables;
+      let updated: TableType[];
+      if (clicked.groupNumber && updates.occupied) {
+        updated = prevTables.map((t) =>
+          t.groupNumber === clicked.groupNumber ? { ...t, ...updates } : t
+        );
+      } else {
+        updated = prevTables.map((t) => (t.tableNumber === tableNumber ? { ...t, ...updates } : t));
+      }
+      handleUpdateTable(tableNumber, updates);
+      return updated;
+    });
+  };
+
   const filteredTables = tables.filter((t) => {
     const capacityOk = minCapacity ? t.capacity >= minCapacity : true;
     const occupiedOk = showOccupied ? t.occupied : true;
@@ -71,7 +88,7 @@ export default function Tables({
             table={t}
             key={t.tableNumber}
             onSelectPage={onSelectPage}
-            onUpdateTable={handleUpdateTable}
+            onUpdateTable={handleGroupUpdate}
           />
         ))}
       </div>

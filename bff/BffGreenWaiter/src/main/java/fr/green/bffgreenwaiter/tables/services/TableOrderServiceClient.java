@@ -14,12 +14,12 @@ public class TableOrderServiceClient {
     private final WebClient.Builder webClientBuilder;
 
     @Value("${tableOrders.service.url}")
-    private String baseUrl;
+    private String tableOrdersUrl;
 
     public void openTableSafe(int tableNumber, int customersCount) {
         StartOrderingDto dto = new StartOrderingDto(tableNumber, customersCount);
 
-        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+        WebClient webClient = webClientBuilder.baseUrl(tableOrdersUrl).build();
 
         try {
             webClient.post()
