@@ -47,7 +47,7 @@ export default function Tables({
     void loadTables();
   }, [loadTables]);
 
-  const handleGroupUpdate = (tableNumber: number, updates: Partial<TableType>) => {
+  const handleGroupUpdate = async (tableNumber: number, updates: Partial<TableType>) => {
     setTables((prevTables) => {
       const clicked = prevTables.find((t) => t.tableNumber === tableNumber);
       if (!clicked) return prevTables;
@@ -62,6 +62,30 @@ export default function Tables({
       handleUpdateTable(tableNumber, updates);
       return updated;
     });
+    try {
+      const clicked = tables.find((t) => t.tableNumber === tableNumber);
+      if (!clicked) return;
+      if (updates.occupied) {
+        if (clicked.groupNumber) {
+          const groupTables = tables.filter((t) => t.groupNumber === clicked.groupNumber);
+          await Promise.all(
+            groupTables.map((t) =>
+              TableService.openTableForOrders({
+                tableNumber: t.tableNumber,
+                customersCount: t.capacity ?? 2,
+              })
+            )
+          );
+        } else {
+          await TableService.openTableForOrders({
+            tableNumber,
+            customersCount: clicked.capacity ?? 2,
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Erreur lors de l'ouverture des tables du groupe :", err);
+    }
   };
 
   const filteredTables = tables.filter((t) => {
