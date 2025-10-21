@@ -21,20 +21,33 @@ export function Table({
     if (table.occupied) return;
 
     try {
-      const dto = { tableNumber: table.tableNumber, customersCount: table.capacity };
-      await TableService.openTableForOrders(dto);
+      if (!table.groupNumber) {
+        const dto = { tableNumber: table.tableNumber, customersCount: table.capacity };
+        await TableService.openTableForOrders(dto);
+        onUpdateTable?.(table.tableNumber, { occupied: true });
+        return;
+      }
       onUpdateTable?.(table.tableNumber, { occupied: true });
     } catch (err) {
       console.error('Erreur ouverture table :', err);
     }
   }
 
+  const className = table.groupNumber
+    ? table.occupied
+      ? 'table-card group-occupied'
+      : 'table-card group-free'
+    : table.occupied
+      ? 'table-card occupied'
+      : 'table-card free';
+
   return (
     <div
-      className={`table-card ${table.occupied ? 'occupied' : 'free'}`}
+      className={className}
       onClick={handleTableClick}
       style={{ cursor: !table.occupied ? 'pointer' : 'default' }}
     >
+      {table.groupNumber !== null && <h3>Groupe {table.groupNumber}</h3>}
       <h3>Table {table.tableNumber}</h3>
       <p>
         Capacité :<strong> {table.capacity}</strong>

@@ -47,6 +47,47 @@ export default function Tables({
     void loadTables();
   }, [loadTables]);
 
+  const handleGroupUpdate = async (tableNumber: number, updates: Partial<TableType>) => {
+    setTables((prevTables) => {
+      const clicked = prevTables.find((t) => t.tableNumber === tableNumber);
+      if (!clicked) return prevTables;
+      let updated: TableType[];
+      if (clicked.groupNumber && updates.occupied) {
+        updated = prevTables.map((t) =>
+          t.groupNumber === clicked.groupNumber ? { ...t, ...updates } : t
+        );
+      } else {
+        updated = prevTables.map((t) => (t.tableNumber === tableNumber ? { ...t, ...updates } : t));
+      }
+      handleUpdateTable(tableNumber, updates);
+      return updated;
+    });
+    try {
+      const clicked = tables.find((t) => t.tableNumber === tableNumber);
+      if (!clicked) return;
+      if (updates.occupied) {
+        if (clicked.groupNumber) {
+          const groupTables = tables.filter((t) => t.groupNumber === clicked.groupNumber);
+          await Promise.all(
+            groupTables.map((t) =>
+              TableService.openTableForOrders({
+                tableNumber: t.tableNumber,
+                customersCount: t.capacity ?? 2,
+              })
+            )
+          );
+        } else {
+          await TableService.openTableForOrders({
+            tableNumber,
+            customersCount: clicked.capacity ?? 2,
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Erreur lors de l'ouverture des tables du groupe :", err);
+    }
+  };
+
   const filteredTables = tables.filter((t) => {
     const capacityOk = minCapacity ? t.capacity >= minCapacity : true;
     const occupiedOk = showOccupied ? t.occupied : true;
@@ -71,7 +112,7 @@ export default function Tables({
             table={t}
             key={t.tableNumber}
             onSelectPage={onSelectPage}
-            onUpdateTable={handleUpdateTable}
+            onUpdateTable={handleGroupUpdate}
           />
         ))}
       </div>
