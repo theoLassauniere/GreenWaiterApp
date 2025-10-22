@@ -2,17 +2,29 @@
   "name": "Menu1",
   "price": 25.0,
   "itemsByCategory": {
-    "starters": [
-      "foie gras",
-      "burrata"
+    "Entrées": [
+      {
+        "shortName": "foie gras"
+      },
+      {
+        "shortName": "burrata"
+      }
     ],
-    "mainCourses": [
-      "pizza",
-      "half cooked tuna"
+    "Plats": [
+      {
+        "shortName": "pizza"
+      },
+      {
+        "shortName": "half cooked tuna"
+      }
     ],
-    "desserts": [
-      "brownie",
-      "tiramisu"
+    "Desserts": [
+      {
+        "shortName": "Tiramisu"
+      },
+      {
+        "shortName": "brownie"
+      }
     ]
   }
 }

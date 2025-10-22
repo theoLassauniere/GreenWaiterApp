@@ -1,6 +1,7 @@
 package fr.green.bffgreenwaiter.items.model;
 
 
+import fr.green.bffgreenwaiter.items.enums.FoodCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +15,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class GroupMenu {
-    private String _id;
     private String name;
     private double price;
-    private Map<String, List<Item>> itemsByCategory;
+    private Map<FoodCategory, List<Item>> itemsByCategory;
 }
