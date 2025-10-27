@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,10 +20,13 @@ public class MenuApiClient {
 
     private final WebClient webClient;
 
+    private final List<ItemRaw> itemCache;
+
     @Value("${menu.service.url}")
     private String baseUrl;
 
     public List<ItemRaw> fetchItems() {
+        if (!itemCache.isEmpty()) return new ArrayList<>(itemCache);
         try {
             List<ItemRaw> result = webClient.get()
                     .uri(baseUrl + "/menus")
@@ -39,7 +43,12 @@ public class MenuApiClient {
                     .collectList()
                     .block();
 
-            return result != null ? result : Collections.emptyList();
+            if (result != null) {
+                itemCache.clear();
+                itemCache.addAll(result);
+                return result;
+            }
+            return Collections.emptyList();
         } catch (WebClientResponseException e) {
             throw new IllegalStateException("Erreur HTTP menu-service: " + e.getStatusCode()
                     + " - " + e.getResponseBodyAsString(), e);
@@ -75,5 +84,9 @@ public class MenuApiClient {
         } catch (Exception e) {
             throw new IllegalStateException("Impossible de récupérer l'item avec l'ID: " + id, e);
         }
+    }
+
+    public List<ItemRaw> getCachedItems() {
+        return new ArrayList<>(itemCache);
     }
 }
