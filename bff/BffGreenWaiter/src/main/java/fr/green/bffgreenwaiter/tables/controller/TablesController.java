@@ -6,10 +6,10 @@ import fr.green.bffgreenwaiter.tables.dto.TableWithOrderDto;
 import fr.green.bffgreenwaiter.tables.mapper.TableMapper;
 import fr.green.bffgreenwaiter.tables.services.DiningApiClient;
 import fr.green.bffgreenwaiter.tables.services.TableOrderServiceClient;
+import fr.green.bffgreenwaiter.tables.services.TableService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,31 +18,11 @@ import java.util.List;
 public class TablesController {
     private final DiningApiClient diningClient;
     private final TableOrderServiceClient orderClient;
+    private final TableService tableService;
 
     @PostMapping("/seed")
     public List<TableDto> seedTables(@RequestBody List<TableDto> mocks) {
-        List<TableDto> result = new ArrayList<>();
-        for (TableDto mock : mocks) {
-            TableDto table;
-            TableWithOrderDto tableBack;
-            try {
-                tableBack = diningClient.getTableByNumber(mock.getTableNumber());
-            } catch (Exception e) {
-                diningClient.addTable(mock.getTableNumber());
-                tableBack = diningClient.getTableByNumber(mock.getTableNumber());
-            }
-
-            if (mock.isOccupied() && (mock.getCommandState() == null || !tableBack.isTaken())) {
-                orderClient.openTableSafe(mock.getTableNumber(), mock.getCapacity());
-                tableBack = diningClient.getTableByNumber(mock.getTableNumber());
-            }
-            table = TableMapper.toTableDto(tableBack);
-            table.setCapacity(mock.getCapacity());
-            table.setCommandState(mock.getCommandState());
-            table.setCommandPreparationPlace(mock.getCommandPreparationPlace());
-            result.add(table);
-        }
-        return result;
+        return tableService.seedTables(mocks);
     }
 
     @GetMapping
