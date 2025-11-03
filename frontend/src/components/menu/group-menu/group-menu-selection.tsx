@@ -1,4 +1,3 @@
-import React from 'react';
 import './group-menu-selection.css';
 import type { GroupMenu } from '../../../models/GroupMenu.ts';
 import CategoryItem from '../category-item/category-item.tsx';
