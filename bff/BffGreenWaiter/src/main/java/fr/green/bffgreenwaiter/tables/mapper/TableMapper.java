@@ -17,5 +17,13 @@ public class TableMapper {
         dto.setCommandPreparationPlace(null);
         return dto;
     }
-}
 
+    public static TableDto fromMock(TableDto mock, TableWithOrderDto tableBack) {
+        TableDto dto = toTableDto(tableBack);
+        dto.setGroupNumber(mock.getGroupNumber());
+        dto.setCapacity(mock.getCapacity());
+        dto.setCommandState(mock.getCommandState());
+        dto.setCommandPreparationPlace(mock.getCommandPreparationPlace());
+        return dto;
+    }
+}
