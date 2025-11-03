@@ -2,8 +2,7 @@ import type { GroupMenu } from '../models/GroupMenu.ts';
 import type { TableType } from '../models/Table.ts';
 import type { PageType } from '../models/Pages.ts';
 import GroupMenuSelection from '../components/menu/group-menu/group-menu-selection.tsx';
-import { useState } from 'react';
-import type { Item } from '../models/Item.ts';
+import { useMemo, useState } from 'react';
 import type { CommandItem } from '../models/CommandItem.ts';
 import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-bar.tsx';
 
@@ -32,25 +31,26 @@ function mergeItems(a: CommandItem[], b: CommandItem[]): CommandItem[] {
 //TODO géré les MenuItemBottomBar, il faut géré le truc de mix de group menu et de extra mais le mélangé dans MenuItemBottomBar, trouvé comment faire ça proprement
 // TODO ENVOYÉ au back les items selectionnés
 export default function GroupMenu(props: GroupMenuProps) {
-  const [GroupMenu, setGroupMenu] = useState<CommandItem[]>([]);
-  const [Extra, setExtra] = useState<CommandItem[]>([]);
-  const [selectedItems, setSelectedItems] = useState<CommandItem[]>([]);
-
+  const [groupMenuItems, setGroupMenuItems] = useState<CommandItem[]>([]);
+  const [extraItems, setExtraItems] = useState<CommandItem[]>([]);
 
   const mergedItems = useMemo(
     () => mergeItems(groupMenuItems, extraItems),
     [groupMenuItems, extraItems]
   );
 
-
-  return <div className="GroupMenu">{
-    <GroupMenuSelection groupMenu={props.GroupMenu} />
-    <MenuItemBottomBar
-    tableNumber={props.table.tableNumber}
-    items={mergedItems}
-    onSend={handleSendOrder}
-    onClick={handleAddItem}
-    onRemoveItem={handleRemoveItem}
-  />
-  }</div>;
+  return (
+    <div className="GroupMenu">
+      <GroupMenuSelection groupMenu={props.GroupMenu} />
+      {props.table?.tableNumber && (
+        <MenuItemBottomBar
+          tableNumber={props.table.tableNumber}
+          items={mergedItems}
+          onSend={handleSendOrder}
+          onClick={handleAddItem}
+          onRemoveItem={handleRemoveItem}
+        />
+      )}
+    </div>
+  );
 }
