@@ -3,18 +3,11 @@ import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
 import { ItemBuilder } from '../models/item-builder.ts';
 import getAllergens from './service-allergen.ts';
+import type { GroupMenu } from '../models/GroupMenu.ts';
+import type { RawMenuItem } from '../models/RawMenuItem.ts';
 
 const baseUrl = config.bffFlag ? `${config.bffApi}/menus` : `${config.apiUrl}menu/menus`;
 const cacheMap = new Map<Category, Item[]>();
-
-export type RawMenuItem = {
-  _id: string;
-  fullName: string;
-  shortName: string;
-  price: number;
-  category: string;
-  image: string;
-};
 
 export const MenuService = {
   async getListItems(category: Category): Promise<Item[]> {
@@ -37,6 +30,38 @@ export const MenuService = {
       );
     }
     return response.json();
+  },
+
+  async getGroupMenu(): Promise<GroupMenu | null> {
+    try {
+      const res = await fetch(`${config.bffApi}item/getMenu`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) {
+        console.error('Erreur HTTP lors de la récupération du menu groupé', res.status);
+        return null;
+      }
+      const payload = await res.json();
+
+      const itemsByCategory: Record<string, Item[]> = {};
+      if (payload && payload.itemsByCategory && typeof payload.itemsByCategory === 'object') {
+        for (const category in payload.itemsByCategory) {
+          if (Object.prototype.hasOwnProperty.call(payload.itemsByCategory, category)) {
+            itemsByCategory[category] = buildItemsArray(payload.itemsByCategory[category]);
+          }
+        }
+      }
+
+      return {
+        name: payload.name ?? '',
+        price: payload.price ?? 0,
+        itemsByCategory,
+      };
+    } catch (e) {
+      console.error('Erreur réseau lors de la récupération du menu groupé', e);
+      return null;
+    }
   },
 };
 
