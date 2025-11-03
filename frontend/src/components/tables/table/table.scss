@@ -36,4 +36,16 @@
   p {
     line-height: 0.15rem;
   }
+
+  .command-actions {
+    button {
+      background-color: var(--palette-light-grey);
+      color: black;
+    }
+  }
+
+  .pay-btn {
+    background-color: var(--palette-green);
+    color: white;
+  }
 }

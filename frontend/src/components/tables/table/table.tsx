@@ -58,12 +58,14 @@ export function Table({
 
       <div className="command-actions">
         {table.occupied && (
-          <button onClick={() => onSelectPage(Pages.Menu, table.tableNumber)}>
+          <button className="new-order" onClick={() => onSelectPage(Pages.Menu, table.tableNumber)}>
             Nouvelle commande
           </button>
         )}
         {table.commandState === 'awaiting-service' && (
-          <button onClick={serviceFunction}>Servi</button>
+          <button className="served" onClick={serviceFunction}>
+            Servi
+          </button>
         )}
       </div>
 
