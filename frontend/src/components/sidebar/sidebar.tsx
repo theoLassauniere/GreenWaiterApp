@@ -10,12 +10,7 @@ export default function Sidebar({ onSelect }: Readonly<SidebarProps>) {
     <div className="sidebar-container">
       <AppButton label="Tables" onClick={() => onSelect('tables')} />
       <AppButton label="Menu" onClick={() => onSelect('menu')} />
-      <AppButton
-        label="Commandes"
-        onClick={() => {
-          onSelect('commandes');
-        }}
-      />
+      <AppButton label="Commandes" onClick={() => onSelect('commandes')} />
     </div>
   );
 }
