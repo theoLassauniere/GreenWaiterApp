@@ -33,6 +33,11 @@ export function Table({
     }
   }
 
+  function handleNewOrderClick() {
+    if (table?.groupNumber) onSelectPage(Pages.MenuGroupe, table.tableNumber);
+    else onSelectPage(Pages.Menu, table.tableNumber);
+  }
+
   const className = table.groupNumber
     ? table.occupied
       ? 'table-card group-occupied'
@@ -57,11 +62,7 @@ export function Table({
       </p>
 
       <div className="command-actions">
-        {table.occupied && (
-          <button onClick={() => onSelectPage(Pages.Menu, table.tableNumber)}>
-            Nouvelle commande
-          </button>
-        )}
+        {table.occupied && <button onClick={() => handleNewOrderClick()}>Nouvelle commande</button>}
         {table.commandState === 'awaiting-service' && (
           <button onClick={serviceFunction}>Servi</button>
         )}

@@ -1,7 +1,5 @@
-import './GroupMenu.css';
+import './group-menu.scss';
 
-type GroupMenuProps = {};
-
-export default function GroupMenu(props: GroupMenuProps) {
+export default function GroupMenu() {
   return <div className="GroupMenu">{/* TODO */}</div>;
 }
