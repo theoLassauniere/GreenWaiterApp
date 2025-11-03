@@ -7,22 +7,22 @@
   transition: background-color 0.3s ease;
 
   &.occupied {
-    background-color: #b62e2e;
+    background-color: var(--palette-dark-green);
     color: white;
   }
 
   &.free {
-    background-color: #77b559;
+    background-color: var(--palette-light-green);
     color: white;
   }
 
   &.group-free {
-    background-color: #d5b7ff;
-    color: #000;
+    background-color: var(--palette-light-brown);
+    color: white;
   }
 
   &.group-occupied {
-    background-color: #6a0dad;
+    background-color: var(--palette-dark-brown);
     color: white;
   }
 
@@ -35,5 +35,17 @@
 
   p {
     line-height: 0.15rem;
+  }
+
+  .command-actions {
+    button {
+      background-color: var(--palette-light-grey);
+      color: black;
+    }
+  }
+
+  .pay-btn {
+    background-color: var(--palette-green);
+    color: white;
   }
 }
