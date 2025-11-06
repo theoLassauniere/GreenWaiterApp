@@ -32,16 +32,17 @@ export default function Tables({
         const tablesFromBff = await TableService.seedTablesWithMocks();
         setTables(tablesFromBff);
       } else {
-        if (tables.length === 0) {
+        const existing = await TableService.listAllTables();
+        if (existing.length === 0) {
           const existing = await seedTablesIfEmpty();
           await syncWithMocks(existing);
           setTables(existing);
         }
       }
     } catch (err) {
-      console.error('Erreur init tables', err);
+      console.error("Erreur d'initialisation des tables :", err);
     }
-  }, [setTables, tables.length]);
+  }, [setTables]);
 
   useEffect(() => {
     void loadTables();
