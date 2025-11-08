@@ -5,7 +5,7 @@ import MenuItemSelection from '../components/menu/menu-item-selection/menu-item-
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
-import type { CommandItem } from '../models/CommandItem.ts';
+import type { OrderItem } from '../models/OrderItem.ts';
 import { OrderService, type ShortOrderDto } from '../services/order-service.ts';
 import { Pages, type PageType } from '../models/Pages.ts';
 import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-bar.tsx';
@@ -24,7 +24,7 @@ export interface MenuHandle {
 export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onSelectPage }, ref) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [listItems, setListItems] = useState<Item[]>([]);
-  const [selectedItems, setSelectedItems] = useState<CommandItem[]>([]);
+  const [selectedItems, setSelectedItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   const onReturn = () => {
@@ -61,7 +61,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function Menu({ table, onS
     });
   };
 
-  const handleRemoveItem = (item: CommandItem) => {
+  const handleRemoveItem = (item: OrderItem) => {
     if (!table) return;
     setSelectedItems((prev) =>
       prev

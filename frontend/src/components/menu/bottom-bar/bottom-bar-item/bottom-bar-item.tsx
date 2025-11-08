@@ -1,11 +1,11 @@
 import './bottom-bar-item.scss';
 import IconButton from '../../../common/icon-button/icon-button.tsx';
-import type { CommandItem } from '../../../../models/CommandItem.ts';
+import type { OrderItem } from '../../../../models/OrderItem.ts';
 
 type BottomBarItemProps = {
-  item: CommandItem;
-  onClick: (item: CommandItem) => void;
-  onRemove: (item: CommandItem) => void;
+  item: OrderItem;
+  onClick: (item: OrderItem) => void;
+  onRemove: (item: OrderItem) => void;
 };
 
 export default function BottomBarItem(props: BottomBarItemProps) {

@@ -1,7 +1,7 @@
-export const CommandState = {
+export const OrderState = {
   PreparingInKitchen: 'preparing-in-kitchen',
   AwaitingService: 'awaiting-service',
   Served: 'served',
 } as const;
 
-export type CommandState = (typeof CommandState)[keyof typeof CommandState];
+export type OrderState = (typeof OrderState)[keyof typeof OrderState];

@@ -1,5 +1,5 @@
 import { TableService } from './table-service.ts';
-import type { CommandItem } from '../models/CommandItem.ts';
+import type { OrderItem } from '../models/OrderItem.ts';
 import { MenuService } from './menu-service.ts';
 import type Category from '../models/Category.ts';
 import config from '../config.ts';
@@ -7,16 +7,16 @@ import config from '../config.ts';
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '') : '/api';
 
 export const PaymentService = {
-  async getCommandItems(tableNumber: number): Promise<CommandItem[]> {
+  async getOrderItems(tableNumber: number): Promise<OrderItem[]> {
     if (config.bffFlag) {
-      return getCommandItemsFromBff(tableNumber);
+      return getOrderItemsFromBff(tableNumber);
     } else {
-      return getCommandItemsFromBack(tableNumber);
+      return getOrderItemsFromBack(tableNumber);
     }
   },
 };
 
-async function getCommandItemsFromBff(tableNumber: number): Promise<CommandItem[]> {
+async function getOrderItemsFromBff(tableNumber: number): Promise<OrderItem[]> {
   const url = `${baseUrl}/dining/tableOrders/items/${tableNumber}`;
   const response = await fetch(url);
   if (!response.ok) {
@@ -27,7 +27,7 @@ async function getCommandItemsFromBff(tableNumber: number): Promise<CommandItem[
   return await response.json();
 }
 
-async function getCommandItemsFromBack(tableNumber: number): Promise<CommandItem[]> {
+async function getOrderItemsFromBack(tableNumber: number): Promise<OrderItem[]> {
   const orders = await TableService.getTableOrdersFromBack(tableNumber);
   const allLines = orders.flatMap((order) => order.lines);
 
