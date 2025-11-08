@@ -3,20 +3,15 @@ import type { TableType } from '../../../models/Table.ts';
 import type { PageType } from '../../../models/Pages.ts';
 import { Pages } from '../../../models/Pages.ts';
 import { TableService } from '../../../services/table-service.ts';
+import { OrderService } from '../../../services/order-service.ts';
 
 export type TableProps = {
   readonly table: TableType;
   readonly onSelectPage: (page: PageType, tableNumber: number) => void;
-  serviceFunction?: () => void;
   onUpdateTable?: (tableNumber: number, updates: Partial<TableType>) => void;
 };
 
-export function Table({
-  table,
-  onSelectPage,
-  serviceFunction,
-  onUpdateTable,
-}: Readonly<TableProps>) {
+export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProps>) {
   async function handleTableClick() {
     if (table.occupied) return;
 
@@ -63,7 +58,7 @@ export function Table({
           </button>
         )}
         {table.orderState === 'awaiting-service' && (
-          <button className="served" onClick={serviceFunction}>
+          <button className="served" onClick={async () => OrderService.serveTable(table)}>
             Servi
           </button>
         )}
