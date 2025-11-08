@@ -3,7 +3,7 @@ import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
 import { ItemBuilder } from '../models/item-builder.ts';
 import getAllergens from './service-allergen.ts';
-import type { GroupMenu } from '../models/GroupMenu.ts';
+import type { GroupMenu } from '../models/group-menu.ts';
 import type { RawMenuItem } from '../models/RawMenuItem.ts';
 
 const baseUrl = config.bffFlag ? `${config.bffApi}/menus` : `${config.apiUrl}menu/menus`;
@@ -15,8 +15,8 @@ export const MenuService = {
       return cacheMap.get(category)!;
     }
     const items = config.bffFlag
-      ? await getListItemsBFF(category)
-      : await getListItemsNoBFF(category);
+      ? await this.getListItemsBFF(category)
+      : await this.getListItemsNoBFF(category);
     cacheMap.set(category, items);
     return items;
   },
@@ -32,7 +32,7 @@ export const MenuService = {
     return response.json();
   },
 
-  async getGroupMenu(): Promise<GroupMenu | null> {
+  async getGroupMenu(_tableNumber: number | undefined): Promise<GroupMenu | undefined> {
     try {
       const res = await fetch(`${config.bffApi}item/getMenu`, {
         method: 'GET',
@@ -40,15 +40,17 @@ export const MenuService = {
       });
       if (!res.ok) {
         console.error('Erreur HTTP lors de la récupération du menu groupé', res.status);
-        return null;
+        return undefined;
       }
       const payload = await res.json();
 
-      const itemsByCategory: Record<string, Item[]> = {};
+      const itemsByCategory: Record<Category, Item[]> = {} as Record<Category, Item[]>;
       if (payload && payload.itemsByCategory && typeof payload.itemsByCategory === 'object') {
         for (const category in payload.itemsByCategory) {
           if (Object.prototype.hasOwnProperty.call(payload.itemsByCategory, category)) {
-            itemsByCategory[category] = buildItemsArray(payload.itemsByCategory[category]);
+            itemsByCategory[category as Category] = this.buildItemsArray(
+              payload.itemsByCategory[category]
+            );
           }
         }
       }
@@ -59,61 +61,85 @@ export const MenuService = {
         itemsByCategory,
       };
     } catch (e) {
-      console.error('Erreur réseau lors de la récupération du menu groupé', e);
-      return null;
+      console.error(
+        'Erreur réseau lors de la récupération du menu groupé ',
+        e,
+        'sur la table ',
+        _tableNumber
+      );
+      return undefined;
     }
   },
-};
 
-async function getListItemsBFF(category: Category): Promise<Item[]> {
-  try {
-    const res = await fetch(`${config.bffApi}item/getItems/${category}`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
+  async sendGroupMenuOrder(groupMenuItems: Item[], extraItems: Item[]): Promise<void> {
+    const orderData = {
+      menuItem: { GroupMenu: groupMenuItems },
+      extra: { extraItems },
+    };
+
+    const res = await fetch(`${baseUrl}/groupMenu`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData),
     });
+
     if (!res.ok) {
-      console.error('Erreur HTTP menus', res.status);
-      return [];
+      throw new Error(`Erreur lors de l'envoi de la commande : ${res.statusText}`);
     }
-    const payload = await res.json();
-    return buildItemsArray(payload);
-  } catch (e) {
-    console.error('Erreur réseau menus', e);
-    return [];
-  }
-}
+  },
 
-async function getListItemsNoBFF(category: Category): Promise<Item[]> {
-  try {
-    const res = await fetch(`${config.apiUrl}menu/menus`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-    });
-    if (!res.ok) {
-      console.error('Erreur HTTP menus', res.status);
-      return [];
-    }
-    const payload = await res.json();
-    const items = buildItemsArray(payload).filter((i) => !category || i.category === category);
-
-    for (const item of items) {
-      item.allergens = getAllergens(item.shortName);
-    }
-
-    return items;
-  } catch (e) {
-    console.error('Erreur réseau menus', e);
-    return [];
-  }
-}
-
-function buildItemsArray(raw: unknown): Item[] {
-  if (!Array.isArray(raw)) return [];
-  return raw.flatMap((r) => {
+  async getListItemsBFF(category: Category): Promise<Item[]> {
     try {
-      return ItemBuilder.fromJson(r);
-    } catch {
+      const res = await fetch(`${config.bffApi}item/getItems/${category}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) {
+        console.error('Erreur HTTP menus', res.status);
+        return [];
+      }
+      const payload = await res.json();
+      return this.buildItemsArray(payload);
+    } catch (e) {
+      console.error('Erreur réseau menus', e);
       return [];
     }
-  });
-}
+  },
+
+  async getListItemsNoBFF(category: Category): Promise<Item[]> {
+    try {
+      const res = await fetch(`${config.apiUrl}menu/menus`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) {
+        console.error('Erreur HTTP menus', res.status);
+        return [];
+      }
+      const payload = await res.json();
+      const items = this.buildItemsArray(payload).filter(
+        (i: Item) => !category || i.category === category
+      );
+
+      for (const item of items) {
+        item.allergens = getAllergens(item.shortName);
+      }
+
+      return items;
+    } catch (e) {
+      console.error('Erreur réseau menus', e);
+      return [];
+    }
+  },
+
+  buildItemsArray(raw: unknown): Item[] {
+    if (!Array.isArray(raw)) return [];
+    return raw.flatMap((r) => {
+      try {
+        return ItemBuilder.fromJson(r);
+      } catch {
+        return [];
+      }
+    });
+  },
+};
