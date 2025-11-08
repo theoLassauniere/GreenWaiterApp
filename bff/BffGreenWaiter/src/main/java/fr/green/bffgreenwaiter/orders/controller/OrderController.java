@@ -1,6 +1,6 @@
 package fr.green.bffgreenwaiter.orders.controller;
 
-import fr.green.bffgreenwaiter.orders.dto.OrderItemDto;
+import fr.green.bffgreenwaiter.orders.dto.ItemDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
 import fr.green.bffgreenwaiter.orders.services.OrderServiceFacade;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class OrderController {
     }
 
     @GetMapping("/tableOrders/items/{tableNumber}")
-    public List<OrderItemDto> getOrderItemsForTable(@PathVariable int tableNumber) {
+    public List<ItemDto> getOrderItemsForTable(@PathVariable int tableNumber) {
         return orderServiceFacade.getOrderItems(tableNumber);
     }
 

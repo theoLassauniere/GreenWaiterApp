@@ -33,6 +33,7 @@ export type MenuItemToOrderDto = {
 };
 
 export type ShortOrderDto = {
+  _id?: string;
   tableNumber: number;
   menuItems: MenuItemToOrderDto[];
 };
@@ -268,7 +269,7 @@ export const OrderService = {
     });
     if (!createResponse.ok) {
       throw new Error(`Erreur création commande: ${createResponse.statusText}`);
-    }
+    } // Error ici
     const preparations: PreparationDto[] = await createResponse.json();
     console.log(`Commande créée pour la table ${order.tableNumber}. Préparations en cours...`);
     const defaultCookingTimeSec = 20;

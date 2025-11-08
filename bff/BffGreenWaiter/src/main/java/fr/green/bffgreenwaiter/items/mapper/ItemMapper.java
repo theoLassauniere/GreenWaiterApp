@@ -9,7 +9,6 @@ public class ItemMapper {
 
     public ItemWithAllergens toItem(ItemRaw raw) {
         if (raw == null) return null;
-
         ItemWithAllergens itemWithAllergens = new ItemWithAllergens();
         itemWithAllergens.set_id(raw.get_id());
         itemWithAllergens.setFullName(raw.getFullName());

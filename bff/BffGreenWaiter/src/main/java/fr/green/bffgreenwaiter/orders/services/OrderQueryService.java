@@ -43,7 +43,7 @@ public class OrderQueryService {
                 .orElseThrow(() -> new RuntimeException("No active order for table " + tableNumber));
     }
 
-    public List<OrderItemDto> getOrderItems(int tableNumber) {
+    public List<ItemDto> getOrderItems(int tableNumber) {
         String orderId = getOrderForTable(tableNumber);
         String orderUrl = "/" + orderId;
 
@@ -62,13 +62,13 @@ public class OrderQueryService {
         return order.getLines().stream()
                 .map(line -> {
                     ItemWithAllergens itemWithAllergens = menuApiClient.fetchItemById(line.getItem().get_id());
-                    return new OrderItemDto(
+                    return new ItemDto(
                             itemWithAllergens.get_id(),
                             itemWithAllergens.getFullName(),
                             itemWithAllergens.getShortName(),
                             itemWithAllergens.getPrice(),
                             itemWithAllergens.getCategory(),
-                            line.getHowMany()
+                            line.getItem().getHowMany()
                     );
                 })
                 .toList();

@@ -8,6 +8,6 @@ import java.util.List;
 public class ShortOrderDto {
     String _id;
     int tableNumber;
-    List<MenuItemToOrderDto> menuItems;
+    List<MenuItemDto> menuItems;
     String billed;
 }

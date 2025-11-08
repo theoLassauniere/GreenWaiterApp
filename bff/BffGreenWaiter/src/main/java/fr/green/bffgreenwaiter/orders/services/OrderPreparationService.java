@@ -1,6 +1,6 @@
 package fr.green.bffgreenwaiter.orders.services;
 
-import fr.green.bffgreenwaiter.orders.dto.MenuItemToOrderDto;
+import fr.green.bffgreenwaiter.orders.dto.MenuItemDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class OrderPreparationService {
         String prepareUrl = orderUrl + "/prepare";
 
         // Envoi des items à la commande
-        for (MenuItemToOrderDto item : order.getMenuItems()) {
+        for (MenuItemDto item : order.getMenuItems()) {
             webClient.post()
                     .uri(orderUrl)
                     .bodyValue(item)

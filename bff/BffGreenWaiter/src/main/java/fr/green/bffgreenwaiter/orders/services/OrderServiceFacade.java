@@ -1,6 +1,6 @@
 package fr.green.bffgreenwaiter.orders.services;
 
-import fr.green.bffgreenwaiter.orders.dto.OrderItemDto;
+import fr.green.bffgreenwaiter.orders.dto.ItemDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class OrderServiceFacade {
         return queryService.getOrderForTable(tableNumber);
     }
 
-    public List<OrderItemDto> getOrderItems(int tableNumber) {
+    public List<ItemDto> getOrderItems(int tableNumber) {
         return queryService.getOrderItems(tableNumber);
     }
 

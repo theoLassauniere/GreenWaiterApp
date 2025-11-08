@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MenuItemToOrderDto {
-    String menuItemId;
-    String menuItemShortName;
+public class MenuItemDto {
+    String _id;
+    String shortName;
     int howMany;
 }
