@@ -1,30 +1,63 @@
-{
-  "name": "Menu1",
-  "price": 25.0,
-  "itemsByCategory": {
-    "Entrées": [
-      {
-        "shortName": "foie gras"
-      },
-      {
-        "shortName": "burrata"
-      }
-    ],
-    "Plats": [
-      {
-        "shortName": "pizza"
-      },
-      {
-        "shortName": "half cooked tuna"
-      }
-    ],
-    "Desserts": [
-      {
-        "shortName": "Tiramisu"
-      },
-      {
-        "shortName": "brownie"
-      }
-    ]
+[
+  {
+    "name": "Menu1",
+    "price": 25.0,
+    "itemsByCategory": {
+      "Entrées": [
+        {
+          "shortName": "foie gras"
+        },
+        {
+          "shortName": "burrata"
+        }
+      ],
+      "Plats": [
+        {
+          "shortName": "pizza"
+        },
+        {
+          "shortName": "half cooked tuna"
+        }
+      ],
+      "Desserts": [
+        {
+          "shortName": "Tiramisu"
+        },
+        {
+          "shortName": "brownie"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Menu2",
+    "price": 30.0,
+    "itemsByCategory": {
+      "Entrées": [
+        {
+          "shortName": "crab maki"
+        },
+        {
+          "shortName": "goat cheese"
+        }
+      ],
+      "Plats": [
+        {
+          "shortName": "lasagna"
+        },
+        {
+          "shortName": "beef burger"
+        }
+      ],
+      "Desserts": [
+        {
+          "shortName": "rasp and peaches"
+        },
+        {
+          "shortName": "seasonal fruit"
+        }
+      ]
+    }
   }
-}
+]
+

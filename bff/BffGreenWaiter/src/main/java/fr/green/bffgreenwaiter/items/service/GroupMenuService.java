@@ -10,16 +10,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class GroupMenuService {
-
-
     private final String menuFileName;
     private final MenuApiClient menuApiClient;
 
-    private GroupMenu menuCache;
+    private List<GroupMenu> menusCache;
 
     public GroupMenuService(
             MenuApiClient menuApiClient,
@@ -33,14 +32,17 @@ public class GroupMenuService {
     public void init() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         InputStream is = getClass().getClassLoader().getResourceAsStream(menuFileName);
-        menuCache = mapper.readValue(is, new TypeReference<>() {
+        menusCache = mapper.readValue(is, new TypeReference<>() {
         });
-        List<Item> itemNames = menuCache.getItemsByCategory().values().stream().flatMap(List::stream).toList();
-        assignIdsToItems(itemNames);
+        menusCache.forEach(menu -> {
+            List<Item> itemNames = menu.getItemsByCategory()
+                    .values().stream().flatMap(List::stream).toList();
+            assignIdsToItems(itemNames);
+        });
     }
 
-    public GroupMenu getMenu() {
-        return menuCache;
+    public List<GroupMenu> getMenus() {
+        return new ArrayList<>(menusCache);
     }
 
     private void assignIdsToItems(List<Item> items) {

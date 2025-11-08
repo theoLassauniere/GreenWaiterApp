@@ -23,6 +23,6 @@ public class ItemController {
 
     @GetMapping("/getMenu")
     public GroupMenu getMenu() {
-        return groupMenuService.getMenu();
+        return groupMenuService.getMenus().getFirst();
     }
 }
