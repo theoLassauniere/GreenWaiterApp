@@ -110,8 +110,8 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
       <div className="tables-grid">
         {filteredTables.map((t) => (
           <Table
+            key={t.id}
             table={t}
-            key={t.tableNumber}
             onSelectPage={onSelectPage}
             onUpdateTable={handleGroupUpdate}
           />
