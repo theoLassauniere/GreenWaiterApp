@@ -21,16 +21,16 @@ public class OrderQueryService {
     @Value("${tableOrders.service.url}")
     private String tablesUrl;
 
-    public List<SimpleOrderDto> getOrders() {
+    public List<ShortOrderDto> getOrders() {
         return webClientBuilder.baseUrl(tablesUrl).build()
                 .get()
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<SimpleOrderDto>>() {})
+                .bodyToMono(new ParameterizedTypeReference<List<ShortOrderDto>>() {})
                 .block();
     }
 
     public String getOrderForTable(int tableNumber) {
-        List<SimpleOrderDto> response = getOrders();
+        List<ShortOrderDto> response = getOrders();
 
         if (response == null || response.isEmpty()) {
             throw new RuntimeException("No orders found for table " + tableNumber);
@@ -38,7 +38,7 @@ public class OrderQueryService {
 
         return response.stream()
                 .filter(order -> order.getTableNumber() == tableNumber && order.getBilled() == null)
-                .map(SimpleOrderDto::get_id)
+                .map(ShortOrderDto::get_id)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No active order for table " + tableNumber));
     }

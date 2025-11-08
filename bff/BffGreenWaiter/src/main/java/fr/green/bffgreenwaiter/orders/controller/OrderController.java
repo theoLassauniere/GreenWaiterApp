@@ -2,7 +2,6 @@ package fr.green.bffgreenwaiter.orders.controller;
 
 import fr.green.bffgreenwaiter.orders.dto.OrderItemDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
-import fr.green.bffgreenwaiter.orders.dto.SimpleOrderDto;
 import fr.green.bffgreenwaiter.orders.services.OrderServiceFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ public class OrderController {
     private final OrderServiceFacade orderServiceFacade;
 
     @GetMapping("/tableOrders")
-    public List<SimpleOrderDto> getOrders() {
+    public List<ShortOrderDto> getOrders() {
         return orderServiceFacade.getOrders();
     }
 

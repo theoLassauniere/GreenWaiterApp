@@ -6,6 +6,7 @@ import java.util.List;
 
 @Getter
 public class ShortOrderDto {
+    String _id;
     int tableNumber;
     List<MenuItemToOrderDto> menuItems;
     String billed;
