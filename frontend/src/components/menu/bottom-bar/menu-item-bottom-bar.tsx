@@ -1,13 +1,13 @@
 import './menu-item-bottom-bar.scss';
 import BottomBarItem from './bottom-bar-item/bottom-bar-item.tsx';
-import type { CommandItem } from '../../../models/CommandItem.ts';
+import type { OrderItem } from '../../../models/OrderItem.ts';
 
 type MenuItemBottomBarProps = {
   tableNumber: number;
-  items: CommandItem[];
+  items: OrderItem[];
   onSend: () => void;
-  onClick: (item: CommandItem) => void;
-  onRemoveItem(item: CommandItem): void;
+  onClick: (item: OrderItem) => void;
+  onRemoveItem(item: OrderItem): void;
 };
 
 export default function MenuItemBottomBar(props: MenuItemBottomBarProps) {

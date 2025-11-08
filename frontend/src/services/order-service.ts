@@ -1,5 +1,5 @@
 import config from '../config.ts';
-import { CommandState } from '../models/CommandState.ts';
+import { OrderState } from '../models/OrderState.ts';
 
 // L'URL de base est correcte
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/dining') : '/api/dining';
@@ -129,9 +129,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: tableOrderId,
+          orderId: tableOrderId,
           tableNumber: order.tableNumber,
-          state: CommandState.PreparingInKitchen,
+          state: OrderState.PreparingInKitchen,
         },
       })
     );
@@ -216,9 +216,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: preparation._id,
+          orderId: preparation._id,
           tableNumber: tableLabel,
-          state: CommandState.AwaitingService,
+          state: OrderState.AwaitingService,
         },
       })
     );
@@ -250,9 +250,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: data._id,
+          orderId: data._id,
           tableNumber: data.tableNumber,
-          state: CommandState.Served,
+          state: OrderState.Served,
         },
       })
     );
@@ -279,9 +279,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: preparations[0]?._id ?? '',
+          orderId: preparations[0]?._id ?? '',
           tableNumber: order.tableNumber,
-          state: CommandState.PreparingInKitchen,
+          state: OrderState.PreparingInKitchen,
         },
       })
     );
@@ -314,9 +314,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: preparations[0]?._id ?? '',
+          orderId: preparations[0]?._id ?? '',
           tableNumber,
-          state: CommandState.AwaitingService,
+          state: OrderState.AwaitingService,
         },
       })
     );
@@ -343,9 +343,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: preparationId,
+          orderId: preparationId,
           tableNumber,
-          state: CommandState.Served,
+          state: OrderState.Served,
         },
       })
     );

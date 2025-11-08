@@ -5,41 +5,38 @@ import TableFilter from '../components/tables/tables-filter/tables-filter.tsx';
 import SelectItemsCheckbox from '../components/common/select-items-checkbox/select-items-checkbox.tsx';
 import { TableService } from '../services/table-service.ts';
 import { mockTables } from '../mocks/tables.ts';
-import * as React from 'react';
 import config from '../config.ts';
 import type { PageType } from '../models/Pages.ts';
 import type { TableType } from '../models/Table.ts';
+import { useTablesContext } from '../contexts/use-tables.ts';
 
 type TablesProps = {
-  tables: TableType[];
-  setTables: React.Dispatch<React.SetStateAction<TableType[]>>;
   onSelectPage: (page: PageType, tableNumber?: number) => void;
   readonly handleUpdateTable: (tableNumber: number, updates: Partial<TableType>) => void;
 };
 
-export default function Tables({
-  tables,
-  setTables,
-  onSelectPage,
-  handleUpdateTable,
-}: Readonly<TablesProps>) {
+export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<TablesProps>) {
   const [minCapacity, setMinCapacity] = useState<number | undefined>(undefined);
   const [showOccupied, setShowOccupied] = useState<boolean>(false);
+  const { tables, setTables } = useTablesContext();
 
   const loadTables = useCallback(async () => {
     try {
       if (config.bffFlag) {
-        const tablesFromBff = await TableService.seedTablesWithMocks();
-        setTables(tablesFromBff);
-      } else {
         if (tables.length === 0) {
+          const tablesFromBff = await TableService.seedTablesWithMocks();
+          setTables(tablesFromBff);
+        }
+      } else {
+        const existing = await TableService.listAllTables();
+        if (existing.length === 0) {
           const existing = await seedTablesIfEmpty();
           await syncWithMocks(existing);
           setTables(existing);
         }
       }
     } catch (err) {
-      console.error('Erreur init tables', err);
+      console.error("Erreur d'initialisation des tables :", err);
     }
   }, [setTables, tables.length]);
 
@@ -47,29 +44,34 @@ export default function Tables({
     void loadTables();
   }, [loadTables]);
 
+  // A simplifier si possible
   const handleGroupUpdate = async (tableNumber: number, updates: Partial<TableType>) => {
-    setTables((prevTables) => {
-      const clicked = prevTables.find((t) => t.tableNumber === tableNumber);
-      if (!clicked) return prevTables;
-      let updated: TableType[];
-      if (clicked.groupNumber && updates.occupied) {
-        updated = prevTables.map((t) =>
-          t.groupNumber === clicked.groupNumber ? { ...t, ...updates } : t
-        );
-      } else {
-        updated = prevTables.map((t) => (t.tableNumber === tableNumber ? { ...t, ...updates } : t));
-      }
-      handleUpdateTable(tableNumber, updates);
-      return updated;
-    });
+    const clicked = tables.find((t: TableType) => t.tableNumber === tableNumber);
+    if (!clicked) return;
+
+    let updatedTables: TableType[];
+
+    if (clicked.groupNumber && updates.occupied) {
+      updatedTables = tables.map((t: TableType) =>
+        t.groupNumber === clicked.groupNumber ? { ...t, ...updates } : t
+      );
+    } else {
+      updatedTables = tables.map((t: TableType) =>
+        t.tableNumber === tableNumber ? { ...t, ...updates } : t
+      );
+    }
+
+    setTables(updatedTables);
+    handleUpdateTable(tableNumber, updates);
+
     try {
-      const clicked = tables.find((t) => t.tableNumber === tableNumber);
-      if (!clicked) return;
       if (updates.occupied) {
         if (clicked.groupNumber) {
-          const groupTables = tables.filter((t) => t.groupNumber === clicked.groupNumber);
+          const groupTables = tables.filter(
+            (t: TableType) => t.groupNumber === clicked.groupNumber
+          );
           await Promise.all(
-            groupTables.map((t) =>
+            groupTables.map((t: TableType) =>
               TableService.openTableForOrders({
                 tableNumber: t.tableNumber,
                 customersCount: t.capacity ?? 2,
@@ -88,7 +90,7 @@ export default function Tables({
     }
   };
 
-  const filteredTables = tables.filter((t) => {
+  const filteredTables = tables.filter((t: TableType) => {
     const capacityOk = minCapacity ? t.capacity >= minCapacity : true;
     const occupiedOk = showOccupied ? t.occupied : true;
     return capacityOk && occupiedOk;
@@ -105,7 +107,6 @@ export default function Tables({
           onChange={setShowOccupied}
         />
       </div>
-
       <div className="tables-grid">
         {filteredTables.map((t) => (
           <Table

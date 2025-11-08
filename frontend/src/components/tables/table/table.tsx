@@ -62,23 +62,23 @@ export function Table({
             Nouvelle commande
           </button>
         )}
-        {table.commandState === 'awaiting-service' && (
+        {table.orderState === 'awaiting-service' && (
           <button className="served" onClick={serviceFunction}>
             Servi
           </button>
         )}
       </div>
 
-      {table.commandState === 'served' && (
+      {table.orderState === 'served' && (
         <button onClick={() => onSelectPage(Pages.Paiement, table.tableNumber)} className="pay-btn">
           Paiement
         </button>
       )}
 
-      {table.commandPreparationPlace && (
+      {table.orderPreparationPlace && (
         <p>
           Commande pour :{' '}
-          <strong>{table.commandPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
+          <strong>{table.orderPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
         </p>
       )}
     </div>

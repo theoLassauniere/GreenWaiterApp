@@ -1,5 +1,5 @@
-import { CommandState } from './CommandState.ts';
-import { PreparationPlace } from './PreparationPlace.ts';
+import type { PreparationPlace } from './PreparationPlace.ts';
+import type { OrderState } from './OrderState.ts';
 
 export interface TableType {
   readonly id: string;
@@ -7,7 +7,7 @@ export interface TableType {
   readonly tableNumber: number;
   readonly capacity: number;
   readonly occupied: boolean;
-  readonly commandState?: CommandState;
-  readonly commandId?: string;
-  readonly commandPreparationPlace?: PreparationPlace;
+  readonly orderState?: OrderState;
+  readonly orderId?: string;
+  readonly orderPreparationPlace?: PreparationPlace;
 }
