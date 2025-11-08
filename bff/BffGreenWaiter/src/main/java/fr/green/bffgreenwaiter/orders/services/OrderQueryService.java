@@ -1,6 +1,6 @@
 package fr.green.bffgreenwaiter.orders.services;
 
-import fr.green.bffgreenwaiter.items.model.Item;
+import fr.green.bffgreenwaiter.items.model.ItemWithAllergens;
 import fr.green.bffgreenwaiter.items.service.MenuApiClient;
 import fr.green.bffgreenwaiter.orders.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -61,13 +61,13 @@ public class OrderQueryService {
 
         return order.getLines().stream()
                 .map(line -> {
-                    Item item = menuApiClient.fetchItemById(line.getItem().get_id());
+                    ItemWithAllergens itemWithAllergens = menuApiClient.fetchItemById(line.getItem().get_id());
                     return new OrderItemDto(
-                            item.get_id(),
-                            item.getFullName(),
-                            item.getShortName(),
-                            item.getPrice(),
-                            item.getCategory(),
+                            itemWithAllergens.get_id(),
+                            itemWithAllergens.getFullName(),
+                            itemWithAllergens.getShortName(),
+                            itemWithAllergens.getPrice(),
+                            itemWithAllergens.getCategory(),
                             line.getHowMany()
                     );
                 })

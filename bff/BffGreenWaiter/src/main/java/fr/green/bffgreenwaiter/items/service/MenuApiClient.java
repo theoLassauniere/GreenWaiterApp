@@ -1,6 +1,6 @@
 package fr.green.bffgreenwaiter.items.service;
 
-import fr.green.bffgreenwaiter.items.model.Item;
+import fr.green.bffgreenwaiter.items.model.ItemWithAllergens;
 import fr.green.bffgreenwaiter.items.model.ItemRaw;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,9 +57,11 @@ public class MenuApiClient {
         }
     }
 
-    public Item fetchItemById(String id) {
+    public ItemWithAllergens fetchItemById(String id) {
+        if (!itemCache.isEmpty()) {
+        }
         try {
-            Item result = webClient.get()
+            ItemWithAllergens result = webClient.get()
                     .uri(baseUrl + "/menus/{id}", id)
                     .retrieve()
                     .onStatus(
@@ -69,7 +71,7 @@ public class MenuApiClient {
                                             "Erreur HTTP menu-service: " + ex.getStatusCode() +
                                                     " - " + ex.getResponseBodyAsString(), ex))
                     )
-                    .bodyToMono(Item.class)
+                    .bodyToMono(ItemWithAllergens.class)
                     .timeout(Duration.ofSeconds(5))
                     .block();
 

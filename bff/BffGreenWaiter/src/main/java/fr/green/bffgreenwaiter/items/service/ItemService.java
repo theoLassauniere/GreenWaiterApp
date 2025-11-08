@@ -1,7 +1,7 @@
 package fr.green.bffgreenwaiter.items.service;
 
 import fr.green.bffgreenwaiter.items.mapper.ItemMapper;
-import fr.green.bffgreenwaiter.items.model.Item;
+import fr.green.bffgreenwaiter.items.model.ItemWithAllergens;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class ItemService {
     private final MenuApiClient menuApiClient;
     private final ItemMapper itemMapper;
 
-    public List<Item> getItemsByCategory(String category) {
+    public List<ItemWithAllergens> getItemsByCategory(String category) {
         if (category == null || category.isBlank()) {
             return Collections.emptyList();
         }

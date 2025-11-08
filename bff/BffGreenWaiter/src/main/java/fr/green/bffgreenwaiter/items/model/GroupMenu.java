@@ -17,5 +17,5 @@ import java.util.Map;
 public class GroupMenu {
     private String name;
     private double price;
-    private Map<FoodCategory, List<Item>> itemsByCategory;
+    private Map<FoodCategory, List<ItemWithAllergens>> itemsByCategory;
 }
