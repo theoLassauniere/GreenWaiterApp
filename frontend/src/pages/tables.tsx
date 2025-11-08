@@ -38,7 +38,7 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
     } catch (err) {
       console.error("Erreur d'initialisation des tables :", err);
     }
-  }, [setTables]);
+  }, [setTables, tables.length]);
 
   useEffect(() => {
     void loadTables();

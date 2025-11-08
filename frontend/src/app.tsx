@@ -12,7 +12,7 @@ import type { OrderState } from './models/OrderState.ts';
 import { useTablesContext } from './contexts/use-tables.ts';
 
 function App() {
-  const { tables, setTables, getTable, updateTable } = useTablesContext();
+  const { tables, getTable, updateTable } = useTablesContext();
   const [page, setPage] = useState<PageType>(Pages.Tables);
   const [currentTable, setCurrentTable] = useState<number | null>(null);
   const menuRef = useRef<MenuHandle>(null);
@@ -49,13 +49,7 @@ function App() {
       const next = detail.state;
       if (!next) return;
 
-      setTables(
-        tables.map((t) =>
-          t.tableNumber === detail.tableNumber
-            ? { ...t, orderState: next, orderId: detail.orderId }
-            : t
-        )
-      );
+      updateTable(detail.tableNumber, { orderState: next, orderId: detail.orderId });
     };
 
     globalThis.addEventListener('order:notify', onNotify as EventListener);
@@ -65,7 +59,7 @@ function App() {
       globalThis.removeEventListener('order:notify', onNotify as EventListener);
       globalThis.removeEventListener('updateTable', onUpdateTable as EventListener);
     };
-  }, [setTables, tables]);
+  }, [tables]);
 
   async function handleSelectPage(newPage: PageType, tableNumber?: number) {
     if (newPage === Pages.Menu) {
