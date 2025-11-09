@@ -9,6 +9,7 @@ import config from '../config.ts';
 import type { PageType } from '../models/Pages.ts';
 import type { TableType } from '../models/Table.ts';
 import { useTablesContext } from '../contexts/use-tables.ts';
+import { Pages } from '../models/Pages.ts';
 
 type TablesProps = {
   onSelectPage: (page: PageType, tableNumber?: number) => void;
@@ -88,6 +89,17 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
     }
   };
 
+  const groupsServed = Object.entries(
+    tables.reduce<Record<number, TableType[]>>((acc, table) => {
+      if (!table.groupNumber) return acc;
+      acc[table.groupNumber] = acc[table.groupNumber] || [];
+      acc[table.groupNumber].push(table);
+      return acc;
+    }, {})
+  )
+    .filter(([, groupTables]) => groupTables.every((t) => t.orderState === 'served'))
+    .map(([groupNumber]) => Number(groupNumber));
+
   const filteredTables = tables.filter((t: TableType) => {
     const capacityOk = minCapacity ? t.capacity >= minCapacity : true;
     const occupiedOk = showOccupied ? t.occupied : true;
@@ -105,15 +117,37 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
           onChange={setShowOccupied}
         />
       </div>
-      <div className="tables-grid">
-        {filteredTables.map((t) => (
-          <Table
-            key={t.id}
-            table={t}
-            onSelectPage={onSelectPage}
-            onUpdateTable={handleGroupUpdate}
-          />
-        ))}
+      <div className="tables-grid-container">
+        <div className="tables-grid">
+          {filteredTables.map((t) => (
+            <div key={t.id} className="table-wrapper">
+              <Table table={t} onSelectPage={onSelectPage} onUpdateTable={handleGroupUpdate} />
+            </div>
+          ))}
+        </div>
+
+        {groupsServed.map((groupNumber) => {
+          const groupTables = filteredTables.filter((t) => t.groupNumber === groupNumber);
+          if (groupTables.length === 0) return null;
+
+          const firstTable = groupTables[0];
+          return (
+            <div
+              key={groupNumber}
+              className="group-pay-button"
+              style={{
+                gridColumn: '1 / -1',
+              }}
+            >
+              <button
+                className="pay-btn"
+                onClick={() => onSelectPage(Pages.Paiement, firstTable.tableNumber)}
+              >
+                Paiement du groupe G{groupNumber}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
