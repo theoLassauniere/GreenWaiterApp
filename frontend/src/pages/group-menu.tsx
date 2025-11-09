@@ -5,7 +5,7 @@ import type { PageType } from '../models/Pages.ts';
 import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
 import GroupMenuSelection from '../components/menu/group-menu/group-menu-selection.tsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-bar.tsx';
 import MenuItemSelection from '../components/menu/menu-item-selection/menu-item-selection.tsx';
 import { MenuService } from '../services/menu-service.ts';
@@ -24,7 +24,24 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [groupMenu, setGroupMenu] = useState<GroupMenu | undefined>(undefined);
+  const fullState = useMemo<Record<Category, boolean>>(() => {
+    if (!groupMenu) return {} as Record<Category, boolean>;
 
+    const state = {} as Record<Category, boolean>;
+    const maxMenuCount = Math.min(
+      groupMenu.maxMembers - groupMenu.menuCount,
+      props.table?.capacity || 0
+    );
+    for (const category in groupMenu.itemsByCategory) {
+      const commandedInCategory = orderGroupMenuItems
+        .filter((ci) => ci.category === (category as Category))
+        .reduce((sum, ci) => sum + ci.quantity, 0);
+
+      state[category as Category] = commandedInCategory >= maxMenuCount;
+    }
+
+    return state;
+  }, [groupMenu, orderGroupMenuItems, props.table?.capacity]);
   useEffect(() => {
     const loadGroupMenu = async () => {
       try {
@@ -143,6 +160,7 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
               groupMenu={groupMenu}
               clickExtra={handleCategoryClick}
               onClickItem={handleAddItem}
+              fullState={fullState}
             />
           </div>
         ) : (

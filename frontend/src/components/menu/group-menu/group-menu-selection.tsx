@@ -1,7 +1,7 @@
 import './group-menu-selection.scss';
 import type { GroupMenu } from '../../../models/group-menu.ts';
 import CategoryItem from '../category-item/category-item.tsx';
-import type Category from '../../../models/Category.ts';
+import Category from '../../../models/Category.ts';
 import type { Item } from '../../../models/Item.ts';
 import Loader from '../../common/loader/loader.tsx';
 
@@ -10,6 +10,7 @@ type GroupMenuSelectionProps = {
   groupMenu?: GroupMenu;
   clickExtra: (category: Category) => void;
   onClickItem?: (item: Item) => void;
+  fullState?: Record<Category, boolean>;
 };
 
 export default function GroupMenuSelection({
@@ -17,6 +18,7 @@ export default function GroupMenuSelection({
   className,
   clickExtra,
   onClickItem,
+  fullState = {} as Record<Category, boolean>,
 }: Readonly<GroupMenuSelectionProps>) {
   return (
     <div className={`group-menu-selection ${className ?? ''}`}>
@@ -25,13 +27,14 @@ export default function GroupMenuSelection({
           <Loader />
         </div>
       ) : (
-        (Object.keys(groupMenu.itemsByCategory) as Category[]).map((category) => (
+        Object.values(Category).map((category) => (
           <CategoryItem
             key={category}
             category={category}
-            items={groupMenu.itemsByCategory[category]}
+            items={groupMenu.itemsByCategory[category] || []}
             clickExtra={() => clickExtra(category)}
             onClickItem={onClickItem}
+            isCategoryFull={fullState[category] || false}
           />
         ))
       )}

@@ -8,6 +8,7 @@ type CategoryItemProps = {
   items: Item[];
   onClickItem?: (item: Item) => void;
   clickExtra: (c: Category) => void;
+  isCategoryFull: boolean;
 };
 
 export default function CategoryItem({
@@ -15,6 +16,7 @@ export default function CategoryItem({
   items,
   clickExtra,
   onClickItem,
+  isCategoryFull,
 }: Readonly<CategoryItemProps>) {
   return (
     <div className="category-item">
@@ -25,6 +27,7 @@ export default function CategoryItem({
             <MenuItem
               key={item.id}
               item={item}
+              disabled={isCategoryFull}
               onClick={
                 onClickItem
                   ? () => onClickItem(item)
@@ -35,9 +38,9 @@ export default function CategoryItem({
             />
           ))}
         </div>
-        <span onClick={() => clickExtra(category)} className={'category-open-extra'}>
+        <div onClick={() => clickExtra(category)} className={'category-open-extra'}>
           Extra
-        </span>
+        </div>
       </div>
     </div>
   );
