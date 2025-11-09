@@ -15,6 +15,7 @@ import type { OrderItem } from '../models/OrderItem.ts';
 type GroupMenuProps = {
   table?: TableType;
   onSelectPage: (page: PageType, tableNumber?: number) => void;
+  onReturn: () => void;
 };
 
 export function GroupMenu(props: Readonly<GroupMenuProps>) {
@@ -61,6 +62,9 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
         items: orderGroupMenuItems,
         extras: orderGroupMenuExtras,
       });
+      setOrderGroupMenuItems([]);
+      setOrderGroupMenuExtras([]);
+      props.onReturn();
       console.log('Commande envoyée avec succès');
     } catch (error) {
       console.error("Erreur lors de l'envoi", error);
