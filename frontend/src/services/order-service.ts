@@ -39,6 +39,12 @@ export type ShortOrderDto = {
   menuItems: MenuItemToOrderDto[];
 };
 
+export type ShortGroupOrderDto = {
+  tableNumber: number;
+  groupMenuItems: MenuItemToOrderDto[];
+  groupMenuExtra: MenuItemToOrderDto[];
+};
+
 export type SimplifiedOrder = {
   _id: string;
   tableNumber: number;
@@ -273,29 +279,41 @@ export const OrderService = {
 
   async sendGroupMenuOrder(
     tableNumber: number | undefined,
-    groupNumber: number | undefined,
-    listItem: OrderItem[]
+    groupId: number | undefined,
+    listItem: {
+      items: OrderItem[];
+      extras: OrderItem[];
+    }
   ): Promise<PreparationDto[]> {
     if (!tableNumber) {
       throw new Error('Numéro de table manquant pour la commande de menu groupé');
     }
 
     // Convertir les CommandItem en MenuItemToOrderDto
-    const menuItems: MenuItemToOrderDto[] = [
-      ...listItem.map((item) => ({
+    const groupMenuItems: MenuItemToOrderDto[] = [
+      ...listItem.items.map((item) => ({
         menuItemId: item.id,
         menuItemShortName: item.shortName,
         howMany: item.quantity,
       })),
     ];
 
-    // Créer l'objet ShortOrderDto
-    const order: ShortOrderDto = {
+    const groupMenuExtras: MenuItemToOrderDto[] = [
+      ...listItem.extras.map((item) => ({
+        menuItemId: item.id,
+        menuItemShortName: item.shortName,
+        howMany: item.quantity,
+      })),
+    ];
+
+    // Créer l'objet ShortGroupOrderDto
+    const order: ShortGroupOrderDto = {
       tableNumber,
-      menuItems,
+      groupMenuItems: groupMenuItems,
+      groupMenuExtra: groupMenuExtras,
     };
 
-    const createResponse = await fetch(`${baseUrl}/tableOrders/newOrder/${groupNumber}`, {
+    const createResponse = await fetch(`${baseUrl}/tableOrders/newOrder/${groupId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),

@@ -5,6 +5,7 @@ import fr.green.bffgreenwaiter.items.model.GroupMenu;
 import fr.green.bffgreenwaiter.items.model.Item;
 import fr.green.bffgreenwaiter.items.service.GroupMenuService;
 import fr.green.bffgreenwaiter.orders.dto.MenuItemToOrderDto;
+import fr.green.bffgreenwaiter.orders.dto.ShortGroupOrderDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,33 +32,36 @@ public class OrderPreparationService {
     @Value("${kitchen.service.url}")
     private String kitchenBaseUrl;
 
-    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order, int groupId) {
+    public List<Map<String, Object>> createAndStartPreparationOrder(ShortGroupOrderDto groupOrder, int groupId) {
+        // TODO : handle extras
         GroupMenu menu = groupMenuService.getMenuByGroupId(groupId);
         if (menu == null) {
             throw new RuntimeException("Menu not found: " + groupId);
         }
-
         // HashMap pour compter les items par catégorie
-        Map<FoodCategory, Integer> itemCountByCategory = countItemsByCategory(order, menu);
+        Map<FoodCategory, Integer> itemCountByCategory = countItemsByCategory(groupOrder, menu);
 
         // Calculer combien de menus complets on peut former
         int completeMenus = calculateCompleteMenus(menu, itemCountByCategory);
         // Augmenter le menuCount
         menu.setMenuCount(menu.getMenuCount() + completeMenus);
-        return createAndStartPreparation(order);
+
+        ShortOrderDto finalOrder = new ShortOrderDto(
+                groupOrder.getTableNumber(),
+                groupOrder.getGroupMenuItems(),
+                groupOrder.getBilled());
+        return createAndStartPreparation(finalOrder);
     }
 
-
     // a modifié si y'a plusieurs items par catégorie dans le menu
-    private Map<FoodCategory, Integer> countItemsByCategory(ShortOrderDto order, GroupMenu menu) {
+    private Map<FoodCategory, Integer> countItemsByCategory(ShortGroupOrderDto groupOrder, GroupMenu menu) {
         Map<FoodCategory, Integer> itemCountByCategory = new HashMap<>();
 
         // Vérifier chaque item de la commande
-        for (MenuItemToOrderDto orderItem : order.getMenuItems()) {
+        for (MenuItemToOrderDto orderItem : groupOrder.getGroupMenuItems()) {
             // Chercher l'item dans le menu
             Item foundItem = null;
             FoodCategory itemCategory = null;
-
             for (Map.Entry<FoodCategory, List<Item>> entry : menu.getItemsByCategory().entrySet()) {
                 for (Item menuItem : entry.getValue()) {
                     if (menuItem.getShortName().equalsIgnoreCase(orderItem.getMenuItemShortName())) {
@@ -73,7 +77,6 @@ public class OrderPreparationService {
                 itemCountByCategory.merge(itemCategory, orderItem.getHowMany(), Integer::sum);
             }
         }
-
         return itemCountByCategory;
     }
 

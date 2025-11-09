@@ -51,9 +51,9 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
 
     let updatedTables: TableType[];
 
-    if (clicked.groupNumber && updates.occupied) {
+    if (clicked.groupId && updates.occupied) {
       updatedTables = tables.map((t: TableType) =>
-        t.groupNumber === clicked.groupNumber ? { ...t, ...updates } : t
+        t.groupId === clicked.groupId ? { ...t, ...updates } : t
       );
     } else {
       updatedTables = tables.map((t: TableType) =>
@@ -66,9 +66,9 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
 
     try {
       if (updates.occupied) {
-        if (clicked.groupNumber) {
+        if (clicked.groupId) {
           const groupTables = tables.filter(
-            (t: TableType) => t.groupNumber === clicked.groupNumber
+            (t: TableType) => t.groupId === clicked.groupId
           );
           await Promise.all(
             groupTables.map((t: TableType) =>

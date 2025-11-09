@@ -3,7 +3,7 @@ import type { OrderState } from './OrderState.ts';
 
 export interface TableType {
   readonly id: string;
-  readonly groupNumber?: number;
+  readonly groupId?: number;
   readonly tableNumber: number;
   readonly capacity: number;
   readonly occupied: boolean;

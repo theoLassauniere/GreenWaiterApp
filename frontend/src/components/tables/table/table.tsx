@@ -16,7 +16,7 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
     if (table.occupied) return;
 
     try {
-      if (!table.groupNumber) {
+      if (!table.groupId) {
         const dto = { tableNumber: table.tableNumber, customersCount: table.capacity };
         await TableService.openTableForOrders(dto);
         onUpdateTable?.(table.tableNumber, { occupied: true });
@@ -29,11 +29,11 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
   }
 
   function handleNewOrderClick() {
-    if (table?.groupNumber) onSelectPage(Pages.MenuGroupe, table.tableNumber);
+    if (table?.groupId) onSelectPage(Pages.MenuGroupe, table.tableNumber);
     else onSelectPage(Pages.Menu, table.tableNumber);
   }
 
-  const className = table.groupNumber
+  const className = table.groupId
     ? table.occupied
       ? 'table-card group-occupied'
       : 'table-card group-free'
@@ -47,7 +47,7 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
       onClick={handleTableClick}
       style={{ cursor: !table.occupied ? 'pointer' : 'default' }}
     >
-      {table.groupNumber !== undefined && table.groupNumber !== null && (
+      {table.groupId !== null && (
         <div className="group-badge">G{table.groupNumber}</div>
       )}
       <h3>Table {table.tableNumber}</h3>

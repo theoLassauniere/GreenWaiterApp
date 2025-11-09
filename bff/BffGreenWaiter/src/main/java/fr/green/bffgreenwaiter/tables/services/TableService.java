@@ -19,9 +19,9 @@ public class TableService {
     public List<TableDto> seedTables(List<TableDto> mocks) {
         Map<Integer, List<TableDto>> grouped = mocks.stream()
                 .collect(Collectors.groupingBy(
-                        t -> (t.getGroupNumber() == null || t.getGroupNumber() == 0)
+                        t -> (t.getGroupId() == null || t.getGroupId() == 0)
                                 ? t.getTableNumber()
-                                : t.getGroupNumber(),
+                                : t.getGroupId(),
                         LinkedHashMap::new,
                         Collectors.toList()
                 ));

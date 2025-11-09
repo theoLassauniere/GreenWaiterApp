@@ -1,14 +1,13 @@
 package fr.green.bffgreenwaiter.orders.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
-public class ShortOrderDto {
+public class ShortGroupOrderDto {
     int tableNumber;
-    List<MenuItemToOrderDto> menuItems;
+    List<MenuItemToOrderDto> groupMenuItems;
+    List<MenuItemToOrderDto> groupMenuExtras;
     String billed;
 }
