@@ -42,7 +42,7 @@ export type ShortOrderDto = {
 export type ShortGroupOrderDto = {
   tableNumber: number;
   groupMenuItems: MenuItemToOrderDto[];
-  groupMenuExtra: MenuItemToOrderDto[];
+  groupMenuExtras: MenuItemToOrderDto[];
 };
 
 export type SimplifiedOrder = {
@@ -301,7 +301,7 @@ export const OrderService = {
     const groupMenuExtras: MenuItemToOrderDto[] = [
       ...listItem.extras.map((item) => ({
         menuItemId: item.id,
-        menuItemShortName: item.shortName,
+        menuItemShortName: item.shortName.replace('_extra', ''),
         howMany: item.quantity,
       })),
     ];
@@ -310,7 +310,7 @@ export const OrderService = {
     const order: ShortGroupOrderDto = {
       tableNumber,
       groupMenuItems: groupMenuItems,
-      groupMenuExtra: groupMenuExtras,
+      groupMenuExtras: groupMenuExtras,
     };
 
     const createResponse = await fetch(`${baseUrl}/tableOrders/newOrder/${groupId}`, {

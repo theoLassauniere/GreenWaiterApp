@@ -88,7 +88,6 @@ public class OrderPreparationService {
 
         // Démarrage de chaque item
         startPreparedItems(preparations);
-
         return preparations;
     }
 
