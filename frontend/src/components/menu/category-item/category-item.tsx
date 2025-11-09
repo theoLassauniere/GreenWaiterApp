@@ -18,7 +18,7 @@ export default function CategoryItem({
 }: Readonly<CategoryItemProps>) {
   return (
     <div className="category-item">
-      <h2 className="category-title">{getCategoryTitle(category)}</h2>
+      <p className="category-title">{getCategoryTitle(category)}</p>
       <div className="items-buttons">
         <div className="items-container">
           {items.map((item) => (

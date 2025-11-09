@@ -1,2 +1,11 @@
 .GroupMenu {
+  .item-selection {
+    overflow-y: auto;
+  }
+}
+
+.bottom-bar {
+  position: fixed;
+  width: 80%;
+  bottom: 0;
 }

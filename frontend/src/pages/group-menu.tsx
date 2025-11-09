@@ -125,13 +125,15 @@ export default function GroupMenu(props: GroupMenuProps) {
         )}
       </div>
       {props.table && (
-        <MenuItemBottomBar
-          tableNumber={props.table.tableNumber}
-          items={commandItems}
-          onSend={handleSendOrder}
-          onClick={handleAddItem}
-          onRemoveItem={handleRemoveItem}
-        />
+        <div className="bottom-bar">
+          <MenuItemBottomBar
+            tableNumber={props.table.tableNumber}
+            items={commandItems}
+            onSend={handleSendOrder}
+            onClick={handleAddItem}
+            onRemoveItem={handleRemoveItem}
+          />
+        </div>
       )}
     </div>
   );
