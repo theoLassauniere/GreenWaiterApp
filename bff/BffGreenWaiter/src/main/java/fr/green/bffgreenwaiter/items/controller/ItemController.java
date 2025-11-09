@@ -21,15 +21,8 @@ public class ItemController {
         return itemService.getItemsByCategory(category);
     }
 
-    @GetMapping("/getMenu")
-    public GroupMenu getMenu() {
-        return groupMenuService.getMenus().getFirst();
-        // TODO: adjust to return menu according to groupId
-    }
-
     @GetMapping("/getMenu/{groupId}")
     public GroupMenu getMenuByGroupId(@PathVariable int groupId) {
-        // TODO: getMenuByGroupId instead
         return groupMenuService.getMenuByGroupId(groupId);
     }
 }

@@ -32,9 +32,9 @@ export const MenuService = {
     return response.json();
   },
 
-  async getGroupMenu(_tableNumber: number | undefined): Promise<GroupMenu | undefined> {
+  async getGroupMenu(groupId: number | undefined): Promise<GroupMenu | undefined> {
     try {
-      const res = await fetch(`${config.bffApi}item/getMenu`, {
+      const res = await fetch(`${config.bffApi}item/getMenu/${groupId}`, {
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
@@ -67,7 +67,7 @@ export const MenuService = {
         'Erreur réseau lors de la récupération du menu groupé ',
         e,
         'sur la table ',
-        _tableNumber
+        groupId
       );
       return undefined;
     }
