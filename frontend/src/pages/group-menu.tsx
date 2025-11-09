@@ -10,6 +10,7 @@ import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-ba
 import MenuItemSelection from '../components/menu/menu-item-selection/menu-item-selection.tsx';
 import { MenuService } from '../services/menu-service.ts';
 import { OrderService } from '../services/order-service.ts';
+import type { OrderItem } from '../models/OrderItem.ts';
 
 type GroupMenuProps = {
   table?: TableType;
@@ -17,8 +18,8 @@ type GroupMenuProps = {
 };
 
 export function GroupMenu(props: Readonly<GroupMenuProps>) {
-  const [commandGroupMenuItems, setCommandGroupMenuItems] = useState<CommandItem[]>([]);
-  const [commandGroupMenuExtras, setCommandGroupMenuExtras] = useState<CommandItem[]>([]);
+  const [orderGroupMenuItems, setOrderGroupMenuItems] = useState<OrderItem[]>([]);
+  const [orderGroupMenuExtras, setOrderGroupMenuExtras] = useState<OrderItem[]>([]);
   const [listItems, setListItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -35,13 +36,13 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
     };
 
     loadGroupMenu();
-  }, [props.table?.tableNumber]);
+  }, [props.table?.groupId, props.table?.tableNumber]);
 
   const handleSendOrder = async () => {
     try {
       await OrderService.sendGroupMenuOrder(props.table?.tableNumber, props.table?.groupId, {
-        items: commandGroupMenuItems,
-        extras: commandGroupMenuExtras,
+        items: orderGroupMenuItems,
+        extras: orderGroupMenuExtras,
       });
       console.log('Commande envoyée avec succès');
     } catch (error) {
@@ -69,7 +70,7 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
       return prevMenu;
     });
     if (!extra) {
-      setCommandGroupMenuItems((prevItems) => {
+      setOrderGroupMenuItems((prevItems) => {
         const existingItem = prevItems.find((ci) => ci.id === item.id);
         if (existingItem) {
           return prevItems.map((ci) =>
@@ -80,7 +81,7 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
         }
       });
     } else {
-      setCommandGroupMenuExtras((prevItems) => {
+      setOrderGroupMenuExtras((prevItems) => {
         const existingItem = prevItems.find((ci) => ci.id === item.id);
         if (existingItem) {
           return prevItems.map((ci) =>
@@ -98,7 +99,7 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
       if (prevMenu && item.category === 'MAIN') prevMenu.menuCount--;
       return prevMenu;
     });
-    setCommandGroupMenuItems((prevItems) => {
+    setOrderGroupMenuItems((prevItems) => {
       const existingItem = prevItems.find((ci) => ci.id === item.id);
       if (existingItem) {
         if (existingItem.quantity > 1) {
@@ -139,7 +140,7 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
             <MenuItemSelection
               listItems={listItems}
               table={props.table?.tableNumber}
-              listSelectedItems={commandGroupMenuItems}
+              listSelectedItems={orderGroupMenuItems}
               onRemoveItem={handleRemoveItem}
               onSend={handleSendOrder}
               onReturn={handleReturn}
@@ -153,7 +154,7 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
         <div className="bottom-bar">
           <MenuItemBottomBar
             tableNumber={props.table.tableNumber}
-            items={commandGroupMenuItems}
+            items={orderGroupMenuItems}
             onSend={handleSendOrder}
             onClick={handleAddItem}
             onRemoveItem={handleRemoveItem}

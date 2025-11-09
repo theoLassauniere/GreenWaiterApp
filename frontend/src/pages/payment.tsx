@@ -130,7 +130,7 @@ export function Payment(props: PaymentProps) {
     setShowPaymentSuccess(false);
     await TableService.billTable(props.table.tableNumber);
     updateTable(props.table.tableNumber, {
-      groupNumber: undefined,
+      groupId: undefined,
       occupied: false,
       orderState: undefined,
       orderId: undefined,

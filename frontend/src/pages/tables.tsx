@@ -67,9 +67,7 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
     try {
       if (updates.occupied) {
         if (clicked.groupId) {
-          const groupTables = tables.filter(
-            (t: TableType) => t.groupId === clicked.groupId
-          );
+          const groupTables = tables.filter((t: TableType) => t.groupId === clicked.groupId);
           await Promise.all(
             groupTables.map((t: TableType) =>
               TableService.openTableForOrders({
