@@ -1,3 +1,4 @@
+
 package fr.green.bffgreenwaiter.tables.dto;
 
 import lombok.Data;

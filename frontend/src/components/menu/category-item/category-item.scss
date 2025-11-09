@@ -1,2 +1,11 @@
 .category-item {
+  display: flex;
+  flex-direction: column;
+
+  .items-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
 }

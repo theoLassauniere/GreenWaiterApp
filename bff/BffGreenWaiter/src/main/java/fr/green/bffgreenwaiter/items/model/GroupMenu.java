@@ -17,5 +17,7 @@ import java.util.Map;
 public class GroupMenu {
     private String name;
     private double price;
+    private int maxMembers;
+    private int menuCount;
     private Map<FoodCategory, List<Item>> itemsByCategory;
 }

@@ -3,6 +3,7 @@ package fr.green.bffgreenwaiter.orders.services;
 import fr.green.bffgreenwaiter.orders.dto.OrderItemDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
 import fr.green.bffgreenwaiter.orders.dto.SimpleOrderDto;
+import fr.green.bffgreenwaiter.tables.services.TableService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,11 @@ public class OrderServiceFacade {
     }
 
     public List<Map<String, Object>> createAndStartPreparation(ShortOrderDto order) {
-        return preparationService.createAndStartPreparation(order);
+        preparationService.createAndStartPreparation(order);
+    }
+
+    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order) {
+        preparationService.createAndStartPreparationOrder(order);
     }
 
     public List<Map<String, Object>> finishPreparation(List<Map<String, Object>> preparations) {

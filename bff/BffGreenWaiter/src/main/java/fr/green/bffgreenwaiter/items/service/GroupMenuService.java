@@ -17,14 +17,17 @@ import java.util.List;
 public class GroupMenuService {
     private final String menuFileName;
     private final MenuApiClient menuApiClient;
+    private final AllergenService allergenService;
 
     private List<GroupMenu> menusCache;
 
     public GroupMenuService(
             MenuApiClient menuApiClient,
+            AllergenService allergenService,
             @Value("${menu.file.name}") String menuFileName
     ) {
         this.menuApiClient = menuApiClient;
+        this.allergenService = allergenService;
         this.menuFileName = menuFileName;
     }
 
@@ -35,9 +38,10 @@ public class GroupMenuService {
         menusCache = mapper.readValue(is, new TypeReference<>() {
         });
         menusCache.forEach(menu -> {
+            menu.setMenuCount(0);
             List<Item> itemNames = menu.getItemsByCategory()
                     .values().stream().flatMap(List::stream).toList();
-            assignIdsToItems(itemNames);
+            fillItem(itemNames);
         });
     }
 
@@ -45,15 +49,32 @@ public class GroupMenuService {
         return new ArrayList<>(menusCache);
     }
 
-    private void assignIdsToItems(List<Item> items) {
-        List<ItemRaw> menuCache = menuApiClient.getCachedItems().isEmpty() ?
+    public GroupMenu  getMenuByName(String  name) {
+        return menusCache.stream()
+                .filter(menu -> menu.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void fillItem(List<Item> items) {
+        List<ItemRaw> itemsFromApi = menuApiClient.getCachedItems().isEmpty() ?
                 menuApiClient.fetchItems() : menuApiClient.getCachedItems();
         for (Item item : items) {
-            item.set_id(menuCache.stream()
+            itemsFromApi.stream()
                     .filter(dbItem -> dbItem.getShortName().equalsIgnoreCase(item.getShortName()))
                     .findFirst()
-                    .map(ItemRaw::get_id)
-                    .orElse(null));
+                    .ifPresent(dbItem -> {
+                        item.set_id(dbItem.get_id());
+                        item.setFullName(dbItem.getFullName());
+                        item.setPrice(dbItem.getPrice());
+                        item.setCategory(dbItem.getCategory());
+                        item.setImage(dbItem.getImage());
+                        item.setAllergens(allergenService.getAllergensByName(dbItem.getShortName()));
+                    });
         }
     }
+
+
+
+
 }

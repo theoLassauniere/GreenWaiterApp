@@ -2,8 +2,9 @@
   {
     "name": "Menu1",
     "price": 25.0,
+    "maxMembers": 15,
     "itemsByCategory": {
-      "Entrées": [
+      "STARTER": [
         {
           "shortName": "foie gras"
         },
@@ -11,7 +12,7 @@
           "shortName": "burrata"
         }
       ],
-      "Plats": [
+      "MAIN": [
         {
           "shortName": "pizza"
         },
@@ -19,7 +20,7 @@
           "shortName": "half cooked tuna"
         }
       ],
-      "Desserts": [
+      "DESSERT": [
         {
           "shortName": "Tiramisu"
         },
@@ -32,8 +33,9 @@
   {
     "name": "Menu2",
     "price": 30.0,
+    "maxMembers": 15,
     "itemsByCategory": {
-      "Entrées": [
+      "STARTER": [
         {
           "shortName": "crab maki"
         },
@@ -41,7 +43,7 @@
           "shortName": "goat cheese"
         }
       ],
-      "Plats": [
+      "MAIN": [
         {
           "shortName": "lasagna"
         },
@@ -49,7 +51,7 @@
           "shortName": "beef burger"
         }
       ],
-      "Desserts": [
+      "DESSERT": [
         {
           "shortName": "rasp and peaches"
         },

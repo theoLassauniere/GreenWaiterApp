@@ -9,11 +9,9 @@ import ReadyNotification from './components/common/ready-notification/ready-noti
 import { Menu, type MenuHandle } from './pages/menu.tsx';
 import { Pages, type PageType } from './models/Pages.ts';
 import type { TableType } from './models/Table.ts';
-import type { GroupMenu as GroupMenuType } from './models/group-menu.ts';
 import type { PreparationDto } from './services/order-service.ts';
 import type { CommandState } from './models/CommandState.ts';
 import { TableService } from './services/table-service.ts';
-import { MenuService } from './services/menu-service.ts';
 
 function App() {
   const [page, setPage] = useState<PageType>(Pages.Tables);
@@ -27,7 +25,6 @@ function App() {
     item?: string;
   } | null>(null);
 
-  const [groupMenu, setGroupMenu] = useState<GroupMenuType | undefined>(undefined);
   useEffect(() => {
     const onNotify = (e: Event) => {
       const { message, preparation } =
@@ -93,25 +90,27 @@ function App() {
     if (refresh) {
       setTables(await TableService.listAllTables());
     }
-    if (newPage === Pages.Paiement) {
-      setSelectedTable(tables.find((table) => table.tableNumber === tableNumber) ?? null);
-    }
-    if (newPage === Pages.Menu) {
-      if (page === Pages.Menu) {
-        menuRef.current?.onReturn();
-        if (!tableNumber) setMenuTableNumber(null);
-        return;
+
+    switch (newPage) {
+      case Pages.Paiement:
+        setSelectedTable(tables.find((table) => table.tableNumber === tableNumber) ?? null);
+        break;
+
+      case Pages.Menu:
+        if (page === Pages.Menu) {
+          menuRef.current?.onReturn();
+          if (!tableNumber) setMenuTableNumber(null);
+          return;
+        }
+        setMenuTableNumber(tableNumber ?? null);
+        break;
+
+      case Pages.MenuGroupe: {
+        setSelectedTable(tableNumber);
+        break;
       }
-      if (tableNumber != null) {
-        setMenuTableNumber(tableNumber);
-      } else {
-        setMenuTableNumber(null);
-      }
     }
-    if (newPage === Pages.MenuGroupe) {
-      const menu = await MenuService.getGroupMenu(tableNumber);
-      setGroupMenu(menu);
-    }
+
     setPage(newPage);
   }
 
@@ -151,7 +150,7 @@ function App() {
           <Payment table={selectedTable} onSelectPage={handleSelectPage} />
         )}
         {page === Pages.MenuGroupe && selectedTable && (
-          <GroupMenu GroupMenu={groupMenu} table={selectedTable} onSelectPage={handleSelectPage} />
+          <GroupMenu table={selectedTable} onSelectPage={handleSelectPage} />
         )}
       </main>
       {readyNotification && (

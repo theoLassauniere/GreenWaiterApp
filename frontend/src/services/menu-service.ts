@@ -71,23 +71,6 @@ export const MenuService = {
     }
   },
 
-  async sendGroupMenuOrder(groupMenuItems: Item[], extraItems: Item[]): Promise<void> {
-    const orderData = {
-      menuItem: { GroupMenu: groupMenuItems },
-      extra: { extraItems },
-    };
-
-    const res = await fetch(`${baseUrl}/groupMenu`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData),
-    });
-
-    if (!res.ok) {
-      throw new Error(`Erreur lors de l'envoi de la commande : ${res.statusText}`);
-    }
-  },
-
   async getListItemsBFF(category: Category): Promise<Item[]> {
     try {
       const res = await fetch(`${config.bffApi}item/getItems/${category}`, {
