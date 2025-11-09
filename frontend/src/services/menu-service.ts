@@ -56,6 +56,9 @@ export const MenuService = {
       }
 
       return {
+        // TODO : définir les bonnes valeurs pour maxMembers et menuCount
+        maxMembers: 0,
+        menuCount: 0,
         name: payload.name ?? '',
         price: payload.price ?? 0,
         itemsByCategory,

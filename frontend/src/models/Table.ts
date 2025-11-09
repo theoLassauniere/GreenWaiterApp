@@ -1,5 +1,5 @@
-import { CommandState } from './CommandState.ts';
 import { PreparationPlace } from './PreparationPlace.ts';
+import type { CommandState } from './CommandState.ts';
 
 export interface TableType {
   readonly id: string;
