@@ -9,6 +9,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+
   & .popup-content {
     background: #fff;
     padding: 20px;
@@ -17,6 +18,7 @@
     max-width: 90%;
     max-height: 90%;
     overflow-y: auto;
+    text-align: left;
 
     & .popup-header {
       font-size: 1.5em;

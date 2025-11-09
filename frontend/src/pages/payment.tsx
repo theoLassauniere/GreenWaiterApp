@@ -160,9 +160,9 @@ export function Payment(props: PaymentProps) {
               <div className="items-category-container">
                 {orderItems
                   .filter((item) => item.category === category)
-                  .map((item, index) => (
+                  .map((item) => (
                     <ItemDetail
-                      key={`${item.id}-${category}-${index}`}
+                      key={item.id}
                       name={item.shortName || item.name}
                       disabled={isSplitEquallyMode}
                       quantity={item.quantity}

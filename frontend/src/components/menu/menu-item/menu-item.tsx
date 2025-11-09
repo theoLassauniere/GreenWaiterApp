@@ -38,7 +38,7 @@ export default function MenuItem({ item, onClick, className }: Readonly<MenuItem
         isOpen={isOpen}
         onClose={close}
         allergens={item.allergens}
-        title={`Liste d'allergènes pour : ${
+        title={`Liste d'allergènes pour ${
           name.length > 20
             ? item.shortName && item.shortName.trim() !== ''
               ? item.shortName

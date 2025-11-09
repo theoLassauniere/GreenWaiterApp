@@ -1,5 +1,5 @@
 .table-card {
-  padding: 0.5rem 1rem 0.3rem 1rem;
+  padding: 0.5rem 1rem 1rem 1rem;
   border-radius: 0.625rem;
   transition: background-color 0.3s ease;
   min-height: 12rem;
@@ -7,6 +7,25 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+
+  .group-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: var(--palette-light-grey);
+    color: black;
+    font-weight: bold;
+    font-size: 0.9rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
 
   &.occupied {
     background-color: var(--palette-dark-green);
@@ -37,6 +56,10 @@
     font-size: 1.1rem;
     line-height: 1.1;
     margin: 0.1rem 0;
+
+    &:first-of-type {
+      margin-top: 0.3rem;
+    }
   }
 
   button {
@@ -67,23 +90,5 @@
   .pay-btn {
     background-color: var(--palette-light-green);
     margin: 0.5rem 0 0.5rem 0;
-  }
-
-  .group-badge {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background-color: white;
-    color: black;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 0.9rem;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-    z-index: 10;
   }
 }
