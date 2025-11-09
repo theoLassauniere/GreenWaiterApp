@@ -106,7 +106,8 @@ function App() {
         break;
 
       case Pages.MenuGroupe: {
-        setSelectedTable(tableNumber);
+        const table = tables.find((t) => t.tableNumber === tableNumber);
+        setSelectedTable(table ?? null);
         break;
       }
     }

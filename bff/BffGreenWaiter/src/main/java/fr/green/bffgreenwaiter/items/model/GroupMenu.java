@@ -15,7 +15,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class GroupMenu {
-    private String groupId;
+    private int groupId;
     private String name;
     private double price;
     private int maxMembers;

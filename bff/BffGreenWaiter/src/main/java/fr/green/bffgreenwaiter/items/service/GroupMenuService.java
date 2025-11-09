@@ -56,9 +56,9 @@ public class GroupMenuService {
                 .orElse(null);
     }
 
-    public GroupMenu getMenuByGroupId(String groupId) {
+    public GroupMenu getMenuByGroupId(int groupId) {
         return menusCache.stream()
-                .filter(menu -> menu.getGroupId().equalsIgnoreCase(groupId))
+                .filter(menu -> menu.getGroupId() == groupId)
                 .findFirst()
                 .orElse(null);
     }

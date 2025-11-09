@@ -35,8 +35,8 @@ public class OrderServiceFacade {
         return preparationService.createAndStartPreparation(order);
     }
 
-    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order, String groupName) {
-        return preparationService.createAndStartPreparationOrder(order, groupName);
+    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order, int groupId) {
+        return preparationService.createAndStartPreparationOrder(order, groupId);
     }
 
     public List<Map<String, Object>> finishPreparation(List<Map<String, Object>> preparations) {

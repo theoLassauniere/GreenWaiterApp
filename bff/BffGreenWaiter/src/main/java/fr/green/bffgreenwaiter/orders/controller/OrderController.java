@@ -37,10 +37,10 @@ public class OrderController {
         }
     }
 
-    @PostMapping("/tableOrders/newOrder/{groupOrderName}")
-    public ResponseEntity<?> createNewOrder(@RequestBody ShortOrderDto order, @PathVariable String groupOrderName) {
+    @PostMapping("/tableOrders/newOrder/{groupOrderId}")
+    public ResponseEntity<?> createNewOrder(@RequestBody ShortOrderDto order, @PathVariable int groupOrderId) {
         try {
-            var preparations = orderServiceFacade.createAndStartPreparationOrder(order, groupOrderName);
+            var preparations = orderServiceFacade.createAndStartPreparationOrder(order, groupOrderId);
             return ResponseEntity.ok(preparations);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));

@@ -28,7 +28,7 @@ public class ItemController {
     }
 
     @GetMapping("/getMenu/{groupId}")
-    public GroupMenu getMenuByGroupId(@PathVariable String groupId) {
+    public GroupMenu getMenuByGroupId(@PathVariable int groupId) {
         // TODO: getMenuByGroupId instead
         return groupMenuService.getMenuByGroupId(groupId);
     }

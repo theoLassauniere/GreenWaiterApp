@@ -31,10 +31,10 @@ public class OrderPreparationService {
     @Value("${kitchen.service.url}")
     private String kitchenBaseUrl;
 
-    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order, String menuName) {
-        GroupMenu menu = groupMenuService.getMenuByName(menuName);
+    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order, int groupId) {
+        GroupMenu menu = groupMenuService.getMenuByGroupId(groupId);
         if (menu == null) {
-            throw new RuntimeException("Menu not found: " + menuName);
+            throw new RuntimeException("Menu not found: " + groupId);
         }
 
         // HashMap pour compter les items par catégorie
