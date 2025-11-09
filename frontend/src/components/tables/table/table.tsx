@@ -47,7 +47,7 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
       onClick={handleTableClick}
       style={{ cursor: !table.occupied ? 'pointer' : 'default' }}
     >
-      {table.groupId !== null && <div className="group-badge">G{table.groupId}</div>}
+      {table.groupId && <div className="group-badge">G{table.groupId}</div>}
       <h3>Table {table.tableNumber}</h3>
       <p>Capacité : {table.capacity}</p>
       <p>{table.occupied ? 'Occupé' : 'Libre'}</p>
