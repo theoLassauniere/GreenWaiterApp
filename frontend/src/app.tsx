@@ -62,7 +62,7 @@ function App() {
     };
   }, [tables, updateTable]);
 
-  async function handleSelectPage(newPage: PageType, tableNumber?: number, preparationId?: string,) {
+  async function handleSelectPage(newPage: PageType, tableNumber?: number, preparationId?: string) {
     if (newPage === Pages.Menu) {
       if (page === Pages.Menu) {
         menuRef.current?.onReturn();
@@ -72,7 +72,7 @@ function App() {
       setCurrentTable(tableNumber);
     }
     if (tableNumber && preparationId) {
-      updateTable(tableNumber, { orderId: preparationId })
+      updateTable(tableNumber, { orderId: preparationId });
     }
     setPage(newPage);
   }
@@ -104,7 +104,7 @@ function App() {
           <Payment table={getTable(currentTable)} onSelectPage={handleSelectPage} />
         )}
         {page === Pages.MenuGroupe && currentTable && (
-          <GroupMenu table={currentTable} onSelectPage={handleSelectPage} />
+          <GroupMenu table={getTable(currentTable)} onSelectPage={handleSelectPage} />
         )}
       </main>
       {readyNotification && (

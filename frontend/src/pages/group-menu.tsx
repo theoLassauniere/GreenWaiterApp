@@ -6,19 +6,19 @@ import type { Category } from '../models/Category.ts';
 import type { Item } from '../models/Item.ts';
 import GroupMenuSelection from '../components/menu/group-menu/group-menu-selection.tsx';
 import { useEffect, useState } from 'react';
-import type { CommandItem } from '../models/CommandItem.ts';
 import MenuItemBottomBar from '../components/menu/bottom-bar/menu-item-bottom-bar.tsx';
 import MenuItemSelection from '../components/menu/menu-item-selection/menu-item-selection.tsx';
 import { MenuService } from '../services/menu-service.ts';
 import { OrderService } from '../services/order-service.ts';
+import type { OrderItem } from '../models/OrderItem.ts';
 
 type GroupMenuProps = {
   table?: TableType;
   onSelectPage: (page: PageType, tableNumber?: number) => void;
 };
 
-export default function GroupMenu(props: GroupMenuProps) {
-  const [commandItems, setCommandItems] = useState<CommandItem[]>([]);
+export function GroupMenu(props: Readonly<GroupMenuProps>) {
+  const [commandItems, setCommandItems] = useState<OrderItem[]>([]);
   const [listItems, setListItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -36,7 +36,7 @@ export default function GroupMenu(props: GroupMenuProps) {
     };
 
     loadGroupMenu();
-  }, [props.table?.tableNumber]);
+  }, [props.table, props.table?.tableNumber]);
 
   const handleSendOrder = async () => {
     try {
