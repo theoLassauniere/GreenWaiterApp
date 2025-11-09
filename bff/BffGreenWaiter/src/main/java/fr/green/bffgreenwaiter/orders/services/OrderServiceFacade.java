@@ -1,6 +1,7 @@
 package fr.green.bffgreenwaiter.orders.services;
 
 import fr.green.bffgreenwaiter.orders.dto.OrderItemDto;
+import fr.green.bffgreenwaiter.orders.dto.ShortGroupOrderDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
 import fr.green.bffgreenwaiter.orders.dto.SimpleOrderDto;
 import fr.green.bffgreenwaiter.tables.services.TableService;
@@ -35,8 +36,8 @@ public class OrderServiceFacade {
         return preparationService.createAndStartPreparation(order);
     }
 
-    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order, int groupId) {
-        return preparationService.createAndStartPreparationOrder(order, groupId);
+    public List<Map<String, Object>> createAndStartPreparationOrder(ShortGroupOrderDto groupOrder, int groupId) {
+        return preparationService.createAndStartPreparationOrder(groupOrder, groupId);
     }
 
     public List<Map<String, Object>> finishPreparation(List<Map<String, Object>> preparations) {

@@ -52,10 +52,8 @@ export default function Tables({
       const clicked = prevTables.find((t) => t.tableNumber === tableNumber);
       if (!clicked) return prevTables;
       let updated: TableType[];
-      if (clicked.groupNumber && updates.occupied) {
-        updated = prevTables.map((t) =>
-          t.groupNumber === clicked.groupNumber ? { ...t, ...updates } : t
-        );
+      if (clicked.groupId && updates.occupied) {
+        updated = prevTables.map((t) => (t.groupId === clicked.groupId ? { ...t, ...updates } : t));
       } else {
         updated = prevTables.map((t) => (t.tableNumber === tableNumber ? { ...t, ...updates } : t));
       }
@@ -66,8 +64,8 @@ export default function Tables({
       const clicked = tables.find((t) => t.tableNumber === tableNumber);
       if (!clicked) return;
       if (updates.occupied) {
-        if (clicked.groupNumber) {
-          const groupTables = tables.filter((t) => t.groupNumber === clicked.groupNumber);
+        if (clicked.groupId) {
+          const groupTables = tables.filter((t) => t.groupId === clicked.groupId);
           await Promise.all(
             groupTables.map((t) =>
               TableService.openTableForOrders({
