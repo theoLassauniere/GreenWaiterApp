@@ -40,7 +40,7 @@ public class OrderController {
     @PostMapping("/tableOrders/newOrder/{groupOrderName}")
     public ResponseEntity<?> createNewOrder(@RequestBody ShortOrderDto order, @PathVariable String groupOrderName) {
         try {
-            var preparations = orderServiceFacade.createAndStartPreparationGroup(order, groupOrderName);
+            var preparations = orderServiceFacade.createAndStartPreparationOrder(order, groupOrderName);
             return ResponseEntity.ok(preparations);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));

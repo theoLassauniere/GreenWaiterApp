@@ -31,7 +31,7 @@ public class OrderPreparationService {
     @Value("${kitchen.service.url}")
     private String kitchenBaseUrl;
 
-    public List<Map<String, Object>> createAndStartPreparation(ShortOrderDto order, String menuName) {
+    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order, String menuName) {
         GroupMenu menu = groupMenuService.getMenuByName(menuName);
         if (menu == null) {
             throw new RuntimeException("Menu not found: " + menuName);
@@ -164,8 +164,5 @@ public class OrderPreparationService {
         return preparations;
     }
 
-    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order) {
-        // TODO : implement method
-        return new ArrayList<>();
-    }
+
 }
