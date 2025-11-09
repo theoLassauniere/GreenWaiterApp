@@ -160,17 +160,17 @@ export function Payment(props: PaymentProps) {
               <div className="items-category-container">
                 {orderItems
                   .filter((item) => item.category === category)
-                  .map((item) => (
+                  .map((item, idx) => (
                     <ItemDetail
-                      key={item.id}
+                      key={`${item.id}-${item.name}-${item.quantity}-${idx}`}
                       name={item.shortName || item.name}
                       disabled={isSplitEquallyMode}
                       quantity={item.quantity}
                       divider={item.divider}
                       tableCapacity={props.table.capacity}
                       onSplitItem={(divider) => handleSplitItem(item.id, divider)}
-                      selected={selected[item.id]}
-                      selectedQuantity={selectedQuantity[item.id]}
+                      selected={selected[item.id] ?? false}
+                      selectedQuantity={selectedQuantity[item.id] ?? 0}
                       onSelectChange={(checked) =>
                         handleItemSelectChange(
                           checked,
@@ -232,10 +232,9 @@ function handleItemSelectChange(
   if (checked) {
     const item = orderItems.find((item) => item.id === itemId);
     if (item) {
-      const quantityToSelect = Math.min(item.quantity, 1);
       setSelectedQuantity((prev: { [id: string]: number }) => ({
         ...prev,
-        [itemId]: quantityToSelect,
+        [itemId]: item.quantity,
       }));
     }
   } else {
