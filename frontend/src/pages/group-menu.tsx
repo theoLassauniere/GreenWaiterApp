@@ -140,12 +140,13 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
             <MenuItemSelection
               listItems={listItems}
               table={props.table?.tableNumber}
-              listSelectedItems={orderGroupMenuItems}
+              listSelectedItems={orderGroupMenuExtras}
               onRemoveItem={handleRemoveItem}
               onSend={handleSendOrder}
               onReturn={handleReturn}
               loading={loading}
               onAddItem={(item) => handleAddItem(item, true)}
+              disabled={true}
             />
           </div>
         )}
@@ -154,7 +155,7 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
         <div className="bottom-bar">
           <MenuItemBottomBar
             tableNumber={props.table.tableNumber}
-            items={orderGroupMenuItems}
+            items={[...orderGroupMenuItems, ...orderGroupMenuExtras]}
             onSend={handleSendOrder}
             onClick={handleAddItem}
             onRemoveItem={handleRemoveItem}
