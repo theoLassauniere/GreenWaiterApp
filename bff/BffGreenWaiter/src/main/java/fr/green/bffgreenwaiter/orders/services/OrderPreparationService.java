@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,15 +34,20 @@ public class OrderPreparationService {
     private String kitchenBaseUrl;
 
     public List<Map<String, Object>> createAndStartPreparationOrder(ShortGroupOrderDto groupOrder, int groupId) {
-        // TODO : handle extras
         GroupMenu menu = groupMenuService.getMenuByGroupId(groupId);
         if (menu == null) {
             throw new RuntimeException("Menu not found: " + groupId);
         }
 
-        int mainItemCount = countMainItem(groupOrder.getGroupMenuItems());
-        // Augmenter le menuCount
-        menu.setMenuCount(menu.getMenuCount() + mainItemCount);
+        int mainItemCount = menu.getMenuCount() + countMainItem(groupOrder.getGroupMenuItems());
+
+        if (mainItemCount > menu.getMaxMembers()) {
+            int leftOver = mainItemCount - menu.getMaxMembers();
+            List<MenuItemToOrderDto> extraItems = redistributeExcessItems(groupOrder, menu, leftOver);
+            groupOrder.getGroupMenuExtras().addAll(extraItems);
+        }
+
+        menu.setMenuCount(menu.getMenuCount() + Math.min(mainItemCount, menu.getMaxMembers()));
 
         ShortOrderDto finalOrder = new ShortOrderDto(
                 groupOrder.getTableNumber(),
@@ -52,6 +56,42 @@ public class OrderPreparationService {
         return createAndStartPreparation(finalOrder);
     }
 
+    private List<MenuItemToOrderDto> redistributeExcessItems(ShortGroupOrderDto groupOrder, GroupMenu menu, int leftOver) {
+        List<MenuItemToOrderDto> menuItems = groupOrder.getGroupMenuItems();
+        List<MenuItemToOrderDto> extraItems = new ArrayList<>();
+
+        // Récupère les catégories du menu
+        Map<FoodCategory, List<Item>> itemsByCategory = menu.getItemsByCategory();
+
+        for (FoodCategory category : itemsByCategory.keySet()) {
+            int toRemove = leftOver;
+
+            // Parcourt les items en ordre inverse
+            for (int i = menuItems.size() - 1; i >= 0 && toRemove > 0; i--) {
+                MenuItemToOrderDto item = menuItems.get(i);
+                Item menuItem = itemService.getItemsByID(item.getMenuItemId());
+
+                if (FoodCategory.fromString(menuItem.getCategory()) == category) {
+                    int removed = Math.min(item.getHowMany(), toRemove);
+
+                    if (removed == item.getHowMany()) {
+                        menuItems.remove(i);
+                    } else {
+                        item.setHowMany(item.getHowMany() - removed);
+                    }
+
+                    MenuItemToOrderDto extraItem = new MenuItemToOrderDto();
+                    extraItem.setMenuItemId(item.getMenuItemId());
+                    extraItem.setHowMany(removed);
+                    extraItems.add(extraItem);
+
+                    toRemove -= removed;
+                }
+            }
+        }
+
+        return extraItems;
+    }
 
     public List<Map<String, Object>> createAndStartPreparation(ShortOrderDto order) {
         WebClient webClient = webClientBuilder.build();
