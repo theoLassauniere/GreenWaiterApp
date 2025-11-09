@@ -42,7 +42,9 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
       onClick={handleTableClick}
       style={{ cursor: !table.occupied ? 'pointer' : 'default' }}
     >
-      {table.groupNumber !== null && <h3>Groupe {table.groupNumber}</h3>}
+      {table.groupNumber !== undefined && table.groupNumber !== null && (
+        <div className="group-badge">G{table.groupNumber}</div>
+      )}
       <h3>Table {table.tableNumber}</h3>
       <p>
         Capacité :<strong> {table.capacity}</strong>
