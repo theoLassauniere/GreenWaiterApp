@@ -10,4 +10,17 @@ public enum FoodCategory {
     MAIN,
     DESSERT,
     DRINK;
+
+    @JsonCreator
+    public static FoodCategory fromString(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("FoodCategory cannot be null");
+        }
+        try {
+            return FoodCategory.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid FoodCategory: " + value);
+        }
+    }
+
 }

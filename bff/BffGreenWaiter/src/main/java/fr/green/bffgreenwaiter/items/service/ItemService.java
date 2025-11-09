@@ -31,4 +31,8 @@ public class ItemService {
                 .peek(item -> item.setAllergens(allergenService.getAllergensByName(item.getShortName())))
                 .toList();
     }
+
+    public Item getItemsByID(String id) {
+        return menuApiClient.fetchItemById(id);
+    }
 }

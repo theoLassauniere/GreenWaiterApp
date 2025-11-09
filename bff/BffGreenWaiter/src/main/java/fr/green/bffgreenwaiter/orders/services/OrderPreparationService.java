@@ -4,6 +4,7 @@ import fr.green.bffgreenwaiter.items.enums.FoodCategory;
 import fr.green.bffgreenwaiter.items.model.GroupMenu;
 import fr.green.bffgreenwaiter.items.model.Item;
 import fr.green.bffgreenwaiter.items.service.GroupMenuService;
+import fr.green.bffgreenwaiter.items.service.ItemService;
 import fr.green.bffgreenwaiter.orders.dto.MenuItemToOrderDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortGroupOrderDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
@@ -25,6 +26,7 @@ public class OrderPreparationService {
     private final WebClient.Builder webClientBuilder;
     private final OrderQueryService orderQueryService;
     private final GroupMenuService groupMenuService;
+    private final ItemService itemService;
 
     @Value("${tableOrders.service.url}")
     private String tablesUrl;
@@ -38,13 +40,10 @@ public class OrderPreparationService {
         if (menu == null) {
             throw new RuntimeException("Menu not found: " + groupId);
         }
-        // HashMap pour compter les items par catégorie
-        Map<FoodCategory, Integer> itemCountByCategory = countItemsByCategory(groupOrder, menu);
 
-        // Calculer combien de menus complets on peut former
-        int completeMenus = calculateCompleteMenus(menu, itemCountByCategory);
+        int mainItemCount = countMainItem(groupOrder.getGroupMenuItems());
         // Augmenter le menuCount
-        menu.setMenuCount(menu.getMenuCount() + completeMenus);
+        menu.setMenuCount(menu.getMenuCount() + mainItemCount);
 
         ShortOrderDto finalOrder = new ShortOrderDto(
                 groupOrder.getTableNumber(),
@@ -53,43 +52,6 @@ public class OrderPreparationService {
         return createAndStartPreparation(finalOrder);
     }
 
-    // a modifié si y'a plusieurs items par catégorie dans le menu
-    private Map<FoodCategory, Integer> countItemsByCategory(ShortGroupOrderDto groupOrder, GroupMenu menu) {
-        Map<FoodCategory, Integer> itemCountByCategory = new HashMap<>();
-
-        // Vérifier chaque item de la commande
-        for (MenuItemToOrderDto orderItem : groupOrder.getGroupMenuItems()) {
-            // Chercher l'item dans le menu
-            Item foundItem = null;
-            FoodCategory itemCategory = null;
-            for (Map.Entry<FoodCategory, List<Item>> entry : menu.getItemsByCategory().entrySet()) {
-                for (Item menuItem : entry.getValue()) {
-                    if (menuItem.getShortName().equalsIgnoreCase(orderItem.getMenuItemShortName())) {
-                        foundItem = menuItem;
-                        itemCategory = entry.getKey();
-                        break;
-                    }
-                }
-                if (foundItem != null) break;
-            }
-            if (foundItem != null) {
-                // Ajouter le nombre d'items pour cette catégorie
-                itemCountByCategory.merge(itemCategory, orderItem.getHowMany(), Integer::sum);
-            }
-        }
-        return itemCountByCategory;
-    }
-
-    private int calculateCompleteMenus(GroupMenu menu, Map<FoodCategory, Integer> itemCountByCategory) {
-        int minCount = Integer.MAX_VALUE;
-
-        // Pour chaque catégorie du menu, on regarde combien d'items ont été commandés
-        for (FoodCategory category : menu.getItemsByCategory().keySet()) {
-            int count = itemCountByCategory.getOrDefault(category, 0);
-            minCount = Math.min(minCount, count);
-        }
-        return minCount == Integer.MAX_VALUE ? 0 : minCount;
-    }
 
     public List<Map<String, Object>> createAndStartPreparation(ShortOrderDto order) {
         WebClient webClient = webClientBuilder.build();
@@ -129,6 +91,18 @@ public class OrderPreparationService {
 
         return preparations;
     }
+
+    public int countMainItem(List<MenuItemToOrderDto> items) {
+        int count = 0;
+        for (MenuItemToOrderDto item : items) {
+            Item menuItem = itemService.getItemsByID(item.getMenuItemId());
+            if (FoodCategory.fromString(menuItem.getCategory()) == FoodCategory.MAIN) {
+                count += item.getHowMany();
+            }
+        }
+        return count;
+    }
+
 
     public void startPreparedItems(List<Map<String, Object>> preparations) {
         for (Map<String, Object> prep : preparations) {
