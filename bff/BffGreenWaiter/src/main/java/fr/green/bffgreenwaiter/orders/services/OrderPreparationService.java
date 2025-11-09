@@ -49,9 +49,12 @@ public class OrderPreparationService {
 
         menu.setMenuCount(menu.getMenuCount() + Math.min(mainItemCount, menu.getMaxMembers()));
 
+        var extendedItems = new ArrayList<>(groupOrder.getGroupMenuItems());
+        extendedItems.addAll(groupOrder.getGroupMenuExtras());
+
         ShortOrderDto finalOrder = new ShortOrderDto(
                 groupOrder.getTableNumber(),
-                groupOrder.getGroupMenuItems(),
+                extendedItems,
                 groupOrder.getBilled());
         return createAndStartPreparation(finalOrder);
     }
