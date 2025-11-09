@@ -22,9 +22,9 @@ public class GroupMenuService {
     private List<GroupMenu> menusCache;
 
     public GroupMenuService(
+            @Value("${menu.file.name}") String menuFileName,
             MenuApiClient menuApiClient,
-            AllergenService allergenService,
-            @Value("${menu.file.name}") String menuFileName
+            AllergenService allergenService
     ) {
         this.menuApiClient = menuApiClient;
         this.allergenService = allergenService;
@@ -58,7 +58,7 @@ public class GroupMenuService {
 
     public GroupMenu getMenuByGroupId(String groupId) {
         return menusCache.stream()
-                .filter(menu -> menu.get_id().equalsIgnoreCase(groupId))
+                .filter(menu -> menu.getGroupId().equalsIgnoreCase(groupId))
                 .findFirst()
                 .orElse(null);
     }
