@@ -12,6 +12,7 @@ import { PaymentService } from '../services/payment-service.ts';
 import { Category, getCategoryTitle } from '../models/Category.ts';
 import { TableService } from '../services/table-service.ts';
 import { useTablesContext } from '../contexts/use-tables.ts';
+import { MenuService } from '../services/menu-service.ts';
 
 export type PaymentProps = {
   readonly table: TableType;
@@ -29,15 +30,27 @@ export function Payment(props: PaymentProps) {
 
   useEffect(() => {
     const loadOrderItems = async () => {
-      const items = await PaymentService.getOrderItems(props.table.tableNumber);
-      setOrderItems(items);
+      try {
+        const items: OrderItem[] = await PaymentService.getOrderItems(props.table.tableNumber);
+        let menuItemIds: string[] = [];
+        if (props.table.groupId) {
+          const menu = await MenuService.getGroupMenu(props.table.tableNumber);
+          if (menu && menu.itemsByCategory) {
+            menuItemIds = Object.values(menu.itemsByCategory)
+              .flat()
+              .map((item) => item.id);
+          }
+        }
+        const filteredItems = items.filter((item) => !menuItemIds.includes(item.id));
+        setOrderItems(filteredItems);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des composants de la commande:', error);
+        setOrderItems([]);
+      }
     };
 
-    loadOrderItems().catch((error) => {
-      console.error('Erreur lors de la récupération des composants de la commande:', error);
-      setOrderItems([]);
-    });
-  }, [props.table.tableNumber]);
+    void loadOrderItems();
+  }, [props.table.tableNumber, props.table.groupId]);
 
   const [selected, setSelected] = useState<{ [id: string]: boolean }>({});
   const [selectedQuantity, setSelectedQuantity] = useState<{ [id: string]: number }>({});
