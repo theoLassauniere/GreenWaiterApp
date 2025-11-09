@@ -21,6 +21,46 @@ export const MenuService = {
     return items;
   },
 
+  async hasExtrasForTable(tableNumber: number): Promise<boolean> {
+    try {
+      const orderRes = await fetch(`${config.bffApi}dining/tableOrders/items/${tableNumber}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+      if (!orderRes.ok) return false;
+
+      const orderedItems: { id: string; name?: string }[] = await orderRes.json();
+
+      const menu = await this.getGroupMenu(tableNumber);
+      if (!menu || !menu.itemsByCategory) return false;
+
+      const menuItemIds = Object.values(menu.itemsByCategory)
+        .flat()
+        .map((item) => item.id);
+
+      // 🧾 Debug : afficher la comparaison
+      console.log('--- Vérification des extras pour table', tableNumber, '---');
+      console.log('🧩 Items du menu (IDs):', menuItemIds);
+      console.log(
+        '🧾 Items commandés:',
+        orderedItems.map((i) => ({ id: i.id, name: i.name }))
+      );
+
+      const extras = orderedItems.filter((item) => !menuItemIds.includes(item.id));
+
+      if (extras.length > 0) {
+        console.log('⚠️ Extras détectés:', extras);
+      } else {
+        console.log('✅ Aucun extra détecté — uniquement des items du menu');
+      }
+
+      return extras.length > 0;
+    } catch (err) {
+      console.error('Erreur dans hasExtrasForTable:', err);
+      return false;
+    }
+  },
+
   async getMenuItemFromBack(id: string): Promise<RawMenuItem> {
     const url = `${baseUrl}/${id}`;
     const response = await fetch(url);

@@ -4,6 +4,8 @@ import type { PageType } from '../../../models/Pages.ts';
 import { Pages } from '../../../models/Pages.ts';
 import { TableService } from '../../../services/table-service.ts';
 import { OrderService } from '../../../services/order-service.ts';
+import { MenuService } from '../../../services/menu-service.ts';
+import { useEffect, useState } from 'react';
 
 export type TableProps = {
   readonly table: TableType;
@@ -12,6 +14,17 @@ export type TableProps = {
 };
 
 export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProps>) {
+  const [hasExtras, setHasExtras] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function checkExtras() {
+      if (table.orderState !== 'served') return;
+      const extras = await MenuService.hasExtrasForTable(table.tableNumber);
+      setHasExtras(extras);
+    }
+    void checkExtras();
+  }, [table.tableNumber, table.orderState]);
+
   async function handleTableClick() {
     if (table.occupied) return;
 
@@ -65,7 +78,7 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
         )}
       </div>
 
-      {table.orderState === 'served' && (
+      {table.orderState === 'served' && hasExtras && (
         <button onClick={() => onSelectPage(Pages.Paiement, table.tableNumber)} className="pay-btn">
           Paiement
         </button>
