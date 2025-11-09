@@ -64,6 +64,33 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
     }
   };
 
+  function addItem(prevItems: OrderItem[], item: Item) {
+    const existingItem = prevItems.find(
+      (ci) => ci.id === item.id && ci.shortName === item.shortName
+    );
+    if (existingItem) {
+      return prevItems.map((ci) => (ci.id === item.id ? { ...ci, quantity: ci.quantity + 1 } : ci));
+    } else {
+      return [...prevItems, { ...item, quantity: 1 }];
+    }
+  }
+
+  function removeItem(prevItems: OrderItem[], item: Item) {
+    const existingItem = prevItems.find(
+      (ci) => ci.id === item.id && ci.shortName === item.shortName
+    );
+    if (existingItem) {
+      if (existingItem.quantity > 1) {
+        return prevItems.map((ci) =>
+          ci.id === item.id ? { ...ci, quantity: ci.quantity - 1 } : ci
+        );
+      } else {
+        return prevItems.filter((ci) => ci.id !== item.id);
+      }
+    }
+    return prevItems;
+  }
+
   const handleAddItem = (item: Item, extra = false) => {
     setGroupMenu((prevMenu) => {
       if (prevMenu && item.category === 'MAIN') prevMenu.menuCount++;
@@ -71,47 +98,30 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
     });
     if (!extra) {
       setOrderGroupMenuItems((prevItems) => {
-        const existingItem = prevItems.find((ci) => ci.id === item.id);
-        if (existingItem) {
-          return prevItems.map((ci) =>
-            ci.id === item.id ? { ...ci, quantity: ci.quantity + 1 } : ci
-          );
-        } else {
-          return [...prevItems, { ...item, quantity: 1 }];
-        }
+        return addItem(prevItems, item);
       });
     } else {
       setOrderGroupMenuExtras((prevItems) => {
-        const existingItem = prevItems.find((ci) => ci.id === item.id);
-        if (existingItem) {
-          return prevItems.map((ci) =>
-            ci.id === item.id ? { ...ci, quantity: ci.quantity + 1 } : ci
-          );
-        } else {
-          return [...prevItems, { ...item, quantity: 1 }];
-        }
+        if (!item.shortName.includes('_extra')) item.shortName = item.shortName + '_extra';
+        return addItem(prevItems, item);
       });
     }
   };
 
-  const handleRemoveItem = (item: Item) => {
+  const handleRemoveItem = (item: Item, extra = false) => {
     setGroupMenu((prevMenu) => {
       if (prevMenu && item.category === 'MAIN') prevMenu.menuCount--;
       return prevMenu;
     });
-    setOrderGroupMenuItems((prevItems) => {
-      const existingItem = prevItems.find((ci) => ci.id === item.id);
-      if (existingItem) {
-        if (existingItem.quantity > 1) {
-          return prevItems.map((ci) =>
-            ci.id === item.id ? { ...ci, quantity: ci.quantity - 1 } : ci
-          );
-        } else {
-          return prevItems.filter((ci) => ci.id !== item.id);
-        }
-      }
-      return prevItems;
-    });
+    if (!extra) {
+      setOrderGroupMenuItems((prevItems) => {
+        return removeItem(prevItems, item);
+      });
+    } else {
+      setOrderGroupMenuExtras((prevItems) => {
+        return removeItem(prevItems, item);
+      });
+    }
   };
 
   const handleReturn = () => {
@@ -141,7 +151,7 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
               listItems={listItems}
               table={props.table?.tableNumber}
               listSelectedItems={orderGroupMenuExtras}
-              onRemoveItem={handleRemoveItem}
+              onRemoveItem={(item) => handleRemoveItem(item, true)}
               onSend={handleSendOrder}
               onReturn={handleReturn}
               loading={loading}
@@ -158,7 +168,10 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
             items={[...orderGroupMenuItems, ...orderGroupMenuExtras]}
             onSend={handleSendOrder}
             onClick={handleAddItem}
-            onRemoveItem={handleRemoveItem}
+            onRemoveItem={(item) => {
+              if (item.shortName.includes('_extra')) handleRemoveItem(item, true);
+              else handleRemoveItem(item);
+            }}
           />
         </div>
       )}
