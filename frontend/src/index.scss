@@ -1,5 +1,5 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Inter, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -12,16 +12,17 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --palette-green-light: #c8d6a2;
-  --palette-green-medium: #b7ce66;
+  --palette-light-grey: #dcdfda;
+  --palette-grey-green: #c8d6a2;
+  --palette-light-green: #b7ce66;
   --palette-green: #8fb43a;
-  --palette-green-dark: #4b5943;
-  --palette-gray-dark: #535353;
-  --palette-gray: #787878;
-  --palette-gray-light: #f0f0f0;
-  --palette-green-valid: #1b6826;
-  --palette-green-send: #13ac00;
-  --palette-darkblue: #213871;
+  --palette-dark-green: #34581f;
+  --palette-dark-brown: #a4572e;
+  --palette-brown: #bc8c68;
+  --palette-light-brown: #dfa77c;
+  --palette-grey-brown: #ebd2b4;
+  --palette-light-grey-brown: #f8ecdd;
+  --palette-dark-grey: #91968e;
 }
 
 a {
@@ -35,8 +36,7 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -46,6 +46,13 @@ body {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 h1 {

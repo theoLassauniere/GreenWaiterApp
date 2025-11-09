@@ -21,7 +21,7 @@ export default function AllergenPopup(props: AllergenPopupProps) {
             </li>
           ))
         ) : (
-          <li>Aucun allergène trouvé</li>
+          <li>Aucun allergène trouvé.</li>
         )}
       </ul>
     </PopUp>

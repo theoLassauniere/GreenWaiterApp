@@ -2,7 +2,7 @@ import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import './payment.scss';
 import SelectItemsCheckbox from '../components/common/select-items-checkbox/select-items-checkbox.tsx';
 import { ItemDetail } from '../components/payment/item-detail/item-detail.tsx';
-import type { CommandItem } from '../models/CommandItem.ts';
+import type { OrderItem } from '../models/OrderItem.ts';
 import { SplitPaymentSummary } from '../components/payment/payment-summary/split-payment-summary.tsx';
 import { NormalPaymentSummary } from '../components/payment/payment-summary/normal-payment-summary.tsx';
 import { Pages, type PageType } from '../models/Pages.ts';
@@ -11,6 +11,7 @@ import type { TableType } from '../models/Table.ts';
 import { PaymentService } from '../services/payment-service.ts';
 import { Category, getCategoryTitle } from '../models/Category.ts';
 import { TableService } from '../services/table-service.ts';
+import { useTablesContext } from '../contexts/use-tables.ts';
 
 export type PaymentProps = {
   readonly table: TableType;
@@ -23,17 +24,18 @@ export type PaymentProps = {
 };
 
 export function Payment(props: PaymentProps) {
-  const [commandItems, setCommandItems] = useState<CommandItem[]>([]);
+  const { updateTable } = useTablesContext();
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
   useEffect(() => {
-    const loadCommandItems = async () => {
-      const items = await PaymentService.getCommandItems(props.table.tableNumber);
-      setCommandItems(items);
+    const loadOrderItems = async () => {
+      const items = await PaymentService.getOrderItems(props.table.tableNumber);
+      setOrderItems(items);
     };
 
-    loadCommandItems().catch((error) => {
+    loadOrderItems().catch((error) => {
       console.error('Erreur lors de la récupération des composants de la commande:', error);
-      setCommandItems([]);
+      setOrderItems([]);
     });
   }, [props.table.tableNumber]);
 
@@ -47,13 +49,13 @@ export function Payment(props: PaymentProps) {
 
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
 
-  const baseTotal = commandItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const baseTotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const amountPerPerson = initialPeopleCount > 0 ? totalToSplit / initialPeopleCount : 0;
 
   const total = isSplitEquallyMode ? remainingPeople * amountPerPerson : baseTotal;
   const toPay = isSplitEquallyMode
     ? amountPerPerson
-    : commandItems.reduce((sum, item) => sum + item.price * (selectedQuantity[item.id] ?? 0), 0);
+    : orderItems.reduce((sum, item) => sum + item.price * (selectedQuantity[item.id] ?? 0), 0);
 
   function handlePay() {
     if (isSplitEquallyMode) {
@@ -61,7 +63,7 @@ export function Payment(props: PaymentProps) {
       setRemainingPeople(newRemainingPeople);
 
       if (newRemainingPeople === 0) {
-        setCommandItems([]);
+        setOrderItems([]);
         setIsSplitEquallyMode(false);
         setRemainingPeople(0);
         setTotalToSplit(0);
@@ -69,25 +71,25 @@ export function Payment(props: PaymentProps) {
         setShowPaymentSuccess(true);
       }
     } else {
-      const newCommandItems = commandItems
+      const newOrderItems = orderItems
         .map((item) => {
           const paidQty = selectedQuantity[item.id] || 0;
           if (paidQty >= item.quantity) return null;
           if (paidQty > 0) return { ...item, quantity: item.quantity - paidQty };
           return item;
         })
-        .filter((item): item is CommandItem => item !== null);
-      setCommandItems(newCommandItems);
-      setSelected(Object.fromEntries(commandItems.map((item) => [item.id, false])));
-      setSelectedQuantity(Object.fromEntries(commandItems.map((item) => [item.id, 0])));
-      if (newCommandItems.length === 0) {
+        .filter((item): item is OrderItem => item !== null);
+      setOrderItems(newOrderItems);
+      setSelected(Object.fromEntries(orderItems.map((item) => [item.id, false])));
+      setSelectedQuantity(Object.fromEntries(orderItems.map((item) => [item.id, 0])));
+      if (newOrderItems.length === 0) {
         setShowPaymentSuccess(true);
       }
     }
   }
 
   function handleSplit(divider: number) {
-    const currentTotal = commandItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const currentTotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     setTotalToSplit(currentTotal);
     setInitialPeopleCount(divider);
     setIsSplitEquallyMode(true);
@@ -96,13 +98,13 @@ export function Payment(props: PaymentProps) {
   }
 
   function handleSplitItem(itemId: string, divider: number) {
-    const newCommandItems = commandItems.map((item) => {
+    const newOrderItems = orderItems.map((item) => {
       if (item.id === itemId) {
         return { ...item, divider };
       }
       return item;
     });
-    setCommandItems(newCommandItems);
+    setOrderItems(newOrderItems);
 
     const fractionalQuantity = 1 / divider;
     setSelectedQuantity((prev) => ({
@@ -116,9 +118,9 @@ export function Payment(props: PaymentProps) {
   }
 
   function handleSelectAll(checked: boolean) {
-    const newSelected = Object.fromEntries(commandItems.map((item) => [item.id, checked]));
+    const newSelected = Object.fromEntries(orderItems.map((item) => [item.id, checked]));
     const newSelectedQuantity = Object.fromEntries(
-      commandItems.map((item) => [item.id, checked ? item.quantity : 0])
+      orderItems.map((item) => [item.id, checked ? item.quantity : 0])
     );
     setSelected(newSelected);
     setSelectedQuantity(newSelectedQuantity);
@@ -127,6 +129,13 @@ export function Payment(props: PaymentProps) {
   async function handlePopUpClose() {
     setShowPaymentSuccess(false);
     await TableService.billTable(props.table.tableNumber);
+    updateTable(props.table.tableNumber, {
+      groupNumber: undefined,
+      occupied: false,
+      orderState: undefined,
+      orderId: undefined,
+      orderPreparationPlace: undefined,
+    });
     await props.onSelectPage(Pages.Tables, undefined, undefined, true);
   }
 
@@ -138,30 +147,30 @@ export function Payment(props: PaymentProps) {
         <SelectItemsCheckbox
           label="Sélectionner tout"
           disabled={isSplitEquallyMode}
-          checked={commandItems.every((item) => selectedQuantity[item.id] === item.quantity)}
+          checked={orderItems.every((item) => selectedQuantity[item.id] === item.quantity)}
           onChange={handleSelectAll}
         />
       </div>
       <div className="items-container">
         {Object.values(Category)
-          .filter((category) => commandItems.some((item) => item.category === category))
+          .filter((category) => orderItems.some((item) => item.category === category))
           .map((category) => (
             <div key={category}>
               <h2>{getCategoryTitle(category)}</h2>
               <div className="items-category-container">
-                {commandItems
+                {orderItems
                   .filter((item) => item.category === category)
-                  .map((item) => (
+                  .map((item, idx) => (
                     <ItemDetail
-                      key={item.id}
+                      key={`${item.id}-${item.name}-${item.quantity}-${idx}`}
                       name={item.shortName || item.name}
                       disabled={isSplitEquallyMode}
                       quantity={item.quantity}
                       divider={item.divider}
                       tableCapacity={props.table.capacity}
                       onSplitItem={(divider) => handleSplitItem(item.id, divider)}
-                      selected={selected[item.id]}
-                      selectedQuantity={selectedQuantity[item.id]}
+                      selected={selected[item.id] ?? false}
+                      selectedQuantity={selectedQuantity[item.id] ?? 0}
                       onSelectChange={(checked) =>
                         handleItemSelectChange(
                           checked,
@@ -169,7 +178,7 @@ export function Payment(props: PaymentProps) {
                           selected,
                           setSelected,
                           setSelectedQuantity,
-                          commandItems
+                          orderItems
                         )
                       }
                       onQuantityChange={(value) =>
@@ -217,16 +226,15 @@ function handleItemSelectChange(
   selected: { [id: string]: boolean },
   setSelected: Dispatch<SetStateAction<{ [id: string]: boolean }>>,
   setSelectedQuantity: Dispatch<SetStateAction<{ [id: string]: number }>>,
-  commandItems: CommandItem[]
+  orderItems: OrderItem[]
 ) {
   setSelected({ ...selected, [itemId]: checked });
   if (checked) {
-    const item = commandItems.find((item) => item.id === itemId);
+    const item = orderItems.find((item) => item.id === itemId);
     if (item) {
-      const quantityToSelect = Math.min(item.quantity, 1);
       setSelectedQuantity((prev: { [id: string]: number }) => ({
         ...prev,
-        [itemId]: quantityToSelect,
+        [itemId]: item.quantity,
       }));
     }
   } else {

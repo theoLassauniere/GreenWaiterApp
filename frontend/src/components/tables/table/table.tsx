@@ -3,20 +3,15 @@ import type { TableType } from '../../../models/Table.ts';
 import type { PageType } from '../../../models/Pages.ts';
 import { Pages } from '../../../models/Pages.ts';
 import { TableService } from '../../../services/table-service.ts';
+import { OrderService } from '../../../services/order-service.ts';
 
 export type TableProps = {
   readonly table: TableType;
   readonly onSelectPage: (page: PageType, tableNumber: number) => void;
-  serviceFunction?: () => void;
   onUpdateTable?: (tableNumber: number, updates: Partial<TableType>) => void;
 };
 
-export function Table({
-  table,
-  onSelectPage,
-  serviceFunction,
-  onUpdateTable,
-}: Readonly<TableProps>) {
+export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProps>) {
   async function handleTableClick() {
     if (table.occupied) return;
 
@@ -52,33 +47,34 @@ export function Table({
       onClick={handleTableClick}
       style={{ cursor: !table.occupied ? 'pointer' : 'default' }}
     >
-      {table.groupNumber !== null && <h3>Groupe {table.groupNumber}</h3>}
+      {table.groupNumber !== undefined && table.groupNumber !== null && (
+        <div className="group-badge">G{table.groupNumber}</div>
+      )}
       <h3>Table {table.tableNumber}</h3>
-      <p>
-        Capacité :<strong> {table.capacity}</strong>
-      </p>
-      <p>
-        <strong>{table.occupied ? 'Occupé' : 'Libre'}</strong>
-      </p>
+      <p>Capacité : {table.capacity}</p>
+      <p>{table.occupied ? 'Occupé' : 'Libre'}</p>
 
       <div className="command-actions">
-        {table.occupied && <button onClick={() => handleNewOrderClick()}>Nouvelle commande</button>}
-        {table.commandState === 'awaiting-service' && (
-          <button onClick={serviceFunction}>Servi</button>
+        {table.occupied && (
+          <button className="new-order" onClick={handleNewOrderClick}>
+            Nouvelle commande
+          </button>
+        )}
+        {table.orderState === 'awaiting-service' && (
+          <button className="served-btn" onClick={async () => OrderService.serveTable(table)}>
+            Servie
+          </button>
         )}
       </div>
 
-      {table.commandState === 'served' && (
+      {table.orderState === 'served' && (
         <button onClick={() => onSelectPage(Pages.Paiement, table.tableNumber)} className="pay-btn">
           Paiement
         </button>
       )}
 
-      {table.commandPreparationPlace && (
-        <p>
-          Commande pour :{' '}
-          <strong>{table.commandPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
-        </p>
+      {table.orderPreparationPlace && (
+        <p>Commande pour : {table.orderPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</p>
       )}
     </div>
   );

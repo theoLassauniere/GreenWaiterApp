@@ -134,8 +134,8 @@ async function listAllTablesFromDining(): Promise<TableType[]> {
       tableNumber: t.number,
       capacity: mock?.capacity ?? 2,
       occupied: t.taken,
-      commandState: mock?.commandState ?? undefined,
-      commandPreparationPlace: mock?.commandPreparationPlace ?? undefined,
+      orderState: mock?.orderState ?? undefined,
+      orderPreparationPlace: mock?.orderPreparationPlace ?? undefined,
     };
   });
 }

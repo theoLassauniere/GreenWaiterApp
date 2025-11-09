@@ -11,26 +11,35 @@
 
     select {
       font-size: 1.2rem;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 2.2rem 0.5rem 1rem;
       border-radius: 0.5rem;
-      border: 0.1rem solid #000000;
-      background-color: #b9dcae;
+      background-color: var(--palette-light-grey);
       color: #000000;
       cursor: pointer;
       transition: all 0.2s ease;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+      border: none;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.6rem center;
+      background-size: 1.2rem;
 
       &:hover {
-        filter: brightness(0.95);
+        transform: translateY(-1px);
+        box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
       }
 
-      &:focus {
-        outline: none;
-        border-color: #646cff;
-        box-shadow: 0 0 0.3rem #646cff;
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
       }
 
       option {
         font-size: 1.25rem;
+        background-color: var(--palette-light-grey);
+        color: #000000;
       }
     }
   }

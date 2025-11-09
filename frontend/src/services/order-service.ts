@@ -1,6 +1,7 @@
 import config from '../config.ts';
-import { CommandState } from '../models/CommandState.ts';
-import type { CommandItem } from '../models/CommandItem.ts';
+import { OrderState } from '../models/OrderState.ts';
+import type { TableType } from '../models/Table.ts';
+import type { OrderItem } from '../models/OrderItem.ts';
 
 // L'URL de base est correcte
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/dining') : '/api/dining';
@@ -130,9 +131,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: tableOrderId,
+          orderId: tableOrderId,
           tableNumber: order.tableNumber,
-          state: CommandState.PreparingInKitchen,
+          state: OrderState.PreparingInKitchen,
         },
       })
     );
@@ -140,7 +141,7 @@ export const OrderService = {
     console.log(`Order created successfully for table ${order.tableNumber}`);
     return enrichedPreparations;
   },
-  // CORRIGÉ : Cette fonction calcule maintenant le temps de préparation
+
   async startPreparationAndNotify(preparation: PreparationDto): Promise<void> {
     let allStartedItemsData: { meanCookingTimeInSec?: number }[] = [];
 
@@ -176,11 +177,11 @@ export const OrderService = {
     // 2. Max du temps de cuisson renvoyé par les items
     const maxCookingTimeInSec = allStartedItemsData.reduce((max, currentItem) => {
       const t = currentItem.meanCookingTimeInSec ?? 0;
-      return t > max ? t : max;
+      return Math.max(t, max);
     }, 0);
 
-    // 3. Fallback 20s si rien n'est renvoyé
-    const preparationTimeInSec = maxCookingTimeInSec || 20;
+    // 3. Fallback 10s si rien n'est renvoyé
+    const preparationTimeInSec = maxCookingTimeInSec || 10;
     const targetMs = Date.now() + preparationTimeInSec * 1000;
 
     // 4. Planifier la notification de fin de préparation
@@ -217,9 +218,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: preparation._id,
+          orderId: preparation._id,
           tableNumber: tableLabel,
-          state: CommandState.AwaitingService,
+          state: OrderState.AwaitingService,
         },
       })
     );
@@ -234,33 +235,6 @@ export const OrderService = {
     );
   },
 
-  async serveToTable(preparationId: string): Promise<PreparationDto> {
-    const response = await fetch(
-      `${config.apiUrl}kitchen/preparations/${preparationId}/takenToTable`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-    if (!response.ok) {
-      throw new Error(`Erreur service préparation: ${response.statusText}`);
-    }
-
-    const data: PreparationDto = await response.json();
-
-    window.dispatchEvent(
-      new CustomEvent('updateTable', {
-        detail: {
-          commandId: data._id,
-          tableNumber: data.tableNumber,
-          state: CommandState.Served,
-        },
-      })
-    );
-
-    return data;
-  },
-
   async createNewOrderBFF(order: ShortOrderDto): Promise<PreparationDto[]> {
     const createResponse = await fetch(`${baseUrl}/tableOrders/newOrder`, {
       method: 'POST',
@@ -272,17 +246,15 @@ export const OrderService = {
     }
     const preparations: PreparationDto[] = await createResponse.json();
     console.log(`Commande créée pour la table ${order.tableNumber}. Préparations en cours...`);
-    const defaultCookingTimeSec = 20;
-    const targetMs = new Date(
-      preparations[0]?.shouldBeReadyAt ?? Date.now() + defaultCookingTimeSec * 1000
-    ).getTime();
+    const defaultCookingTimeSec = 5; // Temps de préparation mis à 5s pour la démo
+    const targetMs = new Date(Date.now() + defaultCookingTimeSec * 1000).getTime();
 
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: preparations[0]?._id ?? '',
+          orderId: preparations[0]?._id ?? '',
           tableNumber: order.tableNumber,
-          state: CommandState.PreparingInKitchen,
+          state: OrderState.PreparingInKitchen,
         },
       })
     );
@@ -302,7 +274,7 @@ export const OrderService = {
   async sendGroupMenuOrder(
     tableNumber: number | undefined,
     groupNumber: number | undefined,
-    listItem: CommandItem[]
+    listItem: OrderItem[]
   ): Promise<PreparationDto[]> {
     if (!tableNumber) {
       throw new Error('Numéro de table manquant pour la commande de menu groupé');
@@ -348,7 +320,7 @@ export const OrderService = {
         detail: {
           commandId: preparations[0]?._id ?? '',
           tableNumber,
-          state: CommandState.PreparingInKitchen,
+          state: OrderState.PreparingInKitchen,
         },
       })
     );
@@ -381,9 +353,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: preparations[0]?._id ?? '',
+          orderId: preparations[0]?._id ?? '',
           tableNumber,
-          state: CommandState.AwaitingService,
+          state: OrderState.AwaitingService,
         },
       })
     );
@@ -397,7 +369,47 @@ export const OrderService = {
     );
   },
 
-  async servePreparationBFF(preparationId: string, tableNumber: number): Promise<void> {
+  async serveTable(table: TableType) {
+    if (!table.orderId) throw new Error('Id de commande manquant.');
+    try {
+      if (config.bffFlag) {
+        await OrderService.serveTableFromBff(table.orderId, table.tableNumber);
+      } else {
+        await OrderService.serveTableFromBack(table.orderId);
+      }
+    } catch (err: unknown) {
+      console.error('Error serving table', err);
+    }
+  },
+
+  async serveTableFromBack(preparationId: string): Promise<PreparationDto> {
+    const response = await fetch(
+      `${config.apiUrl}kitchen/preparations/${preparationId}/takenToTable`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Erreur service préparation: ${response.statusText}`);
+    }
+
+    const data: PreparationDto = await response.json();
+
+    window.dispatchEvent(
+      new CustomEvent('updateTable', {
+        detail: {
+          orderId: data._id,
+          tableNumber: data.tableNumber,
+          state: OrderState.Served,
+        },
+      })
+    );
+
+    return data;
+  },
+
+  async serveTableFromBff(preparationId: string, tableNumber: number): Promise<void> {
     const response = await fetch(`${baseUrl}/preparations/${preparationId}/takenToTable`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -410,9 +422,9 @@ export const OrderService = {
     window.dispatchEvent(
       new CustomEvent('updateTable', {
         detail: {
-          commandId: preparationId,
+          orderId: preparationId,
           tableNumber,
-          state: CommandState.Served,
+          state: OrderState.Served,
         },
       })
     );

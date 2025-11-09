@@ -1,39 +1,94 @@
 .table-card {
-  border: 1px solid #000000;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  width: 12rem;
-  height: 13.5rem;
+  padding: 0.5rem 1rem 1rem 1rem;
+  border-radius: 0.625rem;
   transition: background-color 0.3s ease;
+  min-height: 12rem;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  .group-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: var(--palette-light-grey);
+    color: black;
+    font-weight: bold;
+    font-size: 0.9rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
 
   &.occupied {
-    background-color: #b62e2e;
+    background-color: var(--palette-dark-green);
     color: white;
   }
 
   &.free {
-    background-color: #77b559;
+    background-color: var(--palette-green);
     color: white;
   }
 
   &.group-free {
-    background-color: #d5b7ff;
-    color: #000;
+    background-color: var(--palette-brown);
+    color: white;
   }
 
   &.group-occupied {
-    background-color: #6a0dad;
+    background-color: var(--palette-dark-brown);
     color: white;
   }
 
   h3 {
     text-align: center;
-    font-size: 1.3rem;
-    margin-bottom: 0;
-    margin-top: 0.5rem;
+    font-size: 1.5rem;
   }
 
   p {
-    line-height: 0.15rem;
+    font-size: 1.1rem;
+    line-height: 1.1;
+    margin: 0.1rem 0;
+
+    &:first-of-type {
+      margin-top: 0.3rem;
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .command-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: auto 0;
+  }
+
+  .new-order {
+    background-color: var(--palette-light-grey);
+    color: black;
+  }
+
+  .served-btn {
+    background-color: var(--palette-grey-green);
+  }
+
+  .pay-btn {
+    background-color: var(--palette-light-green);
+    margin: 0.5rem 0 0.5rem 0;
   }
 }
