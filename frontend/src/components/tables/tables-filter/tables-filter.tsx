@@ -16,7 +16,7 @@ export default function TableFilter({ tables, minCapacity, onChange }: Readonly<
   return (
     <div className="table-filter">
       <label>
-        Filtrer par capacité :{' '}
+        Filtrer par capacité{' '}
         <select
           value={minCapacity ?? ''}
           onChange={(e) => {

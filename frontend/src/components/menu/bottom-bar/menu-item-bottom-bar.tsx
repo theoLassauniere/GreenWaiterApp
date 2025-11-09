@@ -15,7 +15,7 @@ export default function MenuItemBottomBar(props: MenuItemBottomBarProps) {
 
   return (
     <div className="MenuItemBottomBar">
-      <div className="bottom-bar-table-number">Table : {props.tableNumber}</div>
+      <div className="bottom-bar-table-number">Table {props.tableNumber}</div>
       <div className="menu-items-container">
         {props.items.map((item) => (
           <BottomBarItem

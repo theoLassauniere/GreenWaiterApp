@@ -1,11 +1,73 @@
 .table-card {
-  border: 1px solid #000000;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  width: 12rem;
-  height: 13.5rem;
+  padding: 0.5rem 1rem 0.3rem 1rem;
+  border-radius: 0.625rem;
   transition: background-color 0.3s ease;
-  position: relative;
+  min-height: 12rem;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &.occupied {
+    background-color: var(--palette-dark-green);
+    color: white;
+  }
+
+  &.free {
+    background-color: var(--palette-green);
+    color: white;
+  }
+
+  &.group-free {
+    background-color: var(--palette-brown);
+    color: white;
+  }
+
+  &.group-occupied {
+    background-color: var(--palette-dark-brown);
+    color: white;
+  }
+
+  h3 {
+    text-align: center;
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.1;
+    margin: 0.1rem 0;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .command-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: auto 0;
+  }
+
+  .new-order {
+    background-color: var(--palette-light-grey);
+    color: black;
+  }
+
+  .served-btn {
+    background-color: var(--palette-grey-green);
+  }
+
+  .pay-btn {
+    background-color: var(--palette-light-green);
+    margin: 0.5rem 0 0.5rem 0;
+  }
 
   .group-badge {
     position: absolute;
@@ -23,48 +85,5 @@
     font-size: 0.9rem;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
     z-index: 10;
-  }
-
-  &.occupied {
-    background-color: var(--palette-dark-green);
-    color: white;
-  }
-
-  &.free {
-    background-color: var(--palette-light-green);
-    color: white;
-  }
-
-  &.group-free {
-    background-color: var(--palette-light-brown);
-    color: white;
-  }
-
-  &.group-occupied {
-    background-color: var(--palette-dark-brown);
-    color: white;
-  }
-
-  h3 {
-    text-align: center;
-    font-size: 1.3rem;
-    margin-bottom: 0;
-    margin-top: 0.5rem;
-  }
-
-  p {
-    line-height: 0.15rem;
-  }
-
-  .command-actions {
-    button {
-      background-color: var(--palette-light-grey);
-      color: black;
-    }
-  }
-
-  .pay-btn {
-    background-color: var(--palette-green);
-    color: white;
   }
 }

@@ -46,12 +46,8 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
         <div className="group-badge">G{table.groupNumber}</div>
       )}
       <h3>Table {table.tableNumber}</h3>
-      <p>
-        Capacité :<strong> {table.capacity}</strong>
-      </p>
-      <p>
-        <strong>{table.occupied ? 'Occupé' : 'Libre'}</strong>
-      </p>
+      <p>Capacité : {table.capacity}</p>
+      <p>{table.occupied ? 'Occupé' : 'Libre'}</p>
 
       <div className="command-actions">
         {table.occupied && (
@@ -60,8 +56,8 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
           </button>
         )}
         {table.orderState === 'awaiting-service' && (
-          <button className="served" onClick={async () => OrderService.serveTable(table)}>
-            Servi
+          <button className="served-btn" onClick={async () => OrderService.serveTable(table)}>
+            Servie
           </button>
         )}
       </div>
@@ -73,10 +69,7 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
       )}
 
       {table.orderPreparationPlace && (
-        <p>
-          Commande pour :{' '}
-          <strong>{table.orderPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</strong>
-        </p>
+        <p>Commande pour : {table.orderPreparationPlace === 'bar' ? 'Bar' : 'Cuisine'}</p>
       )}
     </div>
   );

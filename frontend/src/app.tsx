@@ -76,7 +76,7 @@ function App() {
   return (
     <div className="app">
       <div className="sidebar">
-        <Sidebar onSelect={handleSelectPage} />
+        <Sidebar onSelect={handleSelectPage} currentPage={page} />
       </div>
       <main>
         {page === Pages.Tables && (
