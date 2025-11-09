@@ -6,29 +6,21 @@ import lombok.Getter;
 
 @Getter
 public enum FoodCategory {
-    STARTER("Entrées"),
-    MAIN_COURSE("Plats"),
-    DESSERT("Desserts"),
-    DRINK("Boissons");
-
-    private final String label;
-
-    FoodCategory(String label) {
-        this.label = label;
-    }
-
-    @JsonValue
-    public String getLabel() {
-        return label;
-    }
+    STARTER,
+    MAIN,
+    DESSERT,
+    DRINK;
 
     @JsonCreator
-    public static FoodCategory fromLabel(String label) {
-        for (FoodCategory category : values()) {
-            if (category.label.equalsIgnoreCase(label)) {
-                return category;
-            }
+    public static FoodCategory fromString(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("FoodCategory cannot be null");
         }
-        throw new IllegalArgumentException("Unknown label: " + label);
+        try {
+            return FoodCategory.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid FoodCategory: " + value);
+        }
     }
+
 }

@@ -1,6 +1,7 @@
 package fr.green.bffgreenwaiter.orders.controller;
 
 import fr.green.bffgreenwaiter.orders.dto.OrderItemDto;
+import fr.green.bffgreenwaiter.orders.dto.ShortGroupOrderDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
 import fr.green.bffgreenwaiter.orders.dto.SimpleOrderDto;
 import fr.green.bffgreenwaiter.orders.services.OrderServiceFacade;
@@ -35,6 +36,12 @@ public class OrderController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @PostMapping("/tableOrders/newOrder/{groupOrderId}")
+    public ResponseEntity<?> createNewOrder(@RequestBody ShortGroupOrderDto groupOrder, @PathVariable int groupOrderId) {
+        var preparations = orderServiceFacade.createAndStartPreparationOrder(groupOrder, groupOrderId);
+        return ResponseEntity.ok(preparations);
     }
 
     @PostMapping("/finishPreparation")

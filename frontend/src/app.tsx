@@ -3,6 +3,7 @@ import Sidebar from './components/sidebar/sidebar.tsx';
 import { useEffect, useRef, useState } from 'react';
 import { Payment } from './pages/payment.tsx';
 import Tables from './pages/tables.tsx';
+import { GroupMenu } from './pages/group-menu.tsx';
 import { OrdersList } from './pages/orders-list.tsx';
 import ReadyNotification from './components/common/ready-notification/ready-notification.tsx';
 import { Menu, type MenuHandle } from './pages/menu.tsx';
@@ -61,7 +62,7 @@ function App() {
     };
   }, [tables, updateTable]);
 
-  async function handleSelectPage(newPage: PageType, tableNumber?: number) {
+  async function handleSelectPage(newPage: PageType, tableNumber?: number, preparationId?: string) {
     if (newPage === Pages.Menu) {
       if (page === Pages.Menu) {
         menuRef.current?.onReturn();
@@ -69,6 +70,9 @@ function App() {
     }
     if (tableNumber) {
       setCurrentTable(tableNumber);
+    }
+    if (tableNumber && preparationId) {
+      updateTable(tableNumber, { orderId: preparationId });
     }
     setPage(newPage);
   }
@@ -98,6 +102,9 @@ function App() {
         )}
         {page === Pages.Paiement && currentTable && (
           <Payment table={getTable(currentTable)} onSelectPage={handleSelectPage} />
+        )}
+        {page === Pages.MenuGroupe && currentTable && (
+          <GroupMenu table={getTable(currentTable)} onSelectPage={handleSelectPage} />
         )}
       </main>
       {readyNotification && (

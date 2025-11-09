@@ -20,7 +20,7 @@ public class TableMapper {
 
     public static TableDto fromMock(TableDto mock, TableWithOrderDto tableBack) {
         TableDto dto = toTableDto(tableBack);
-        dto.setGroupNumber(mock.getGroupNumber());
+        dto.setGroupId(mock.getGroupId());
         dto.setCapacity(mock.getCapacity());
         dto.setCommandState(mock.getCommandState());
         dto.setCommandPreparationPlace(mock.getCommandPreparationPlace());

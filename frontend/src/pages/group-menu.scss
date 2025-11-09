@@ -1,0 +1,12 @@
+.GroupMenu {
+  .item-selection {
+    overflow-y: auto;
+  }
+}
+
+.bottom-bar {
+  position: fixed;
+  z-index: 5;
+  width: 80%;
+  bottom: 0;
+}

@@ -1,6 +1,7 @@
 import config from '../config.ts';
 import { OrderState } from '../models/OrderState.ts';
 import type { TableType } from '../models/Table.ts';
+import type { OrderItem } from '../models/OrderItem.ts';
 
 // L'URL de base est correcte
 const baseUrl = config.bffFlag ? config.bffApi.replace(/\/$/, '/dining') : '/api/dining';
@@ -36,6 +37,12 @@ export type MenuItemToOrderDto = {
 export type ShortOrderDto = {
   tableNumber: number;
   menuItems: MenuItemToOrderDto[];
+};
+
+export type ShortGroupOrderDto = {
+  tableNumber: number;
+  groupMenuItems: MenuItemToOrderDto[];
+  groupMenuExtras: MenuItemToOrderDto[];
 };
 
 export type SimplifiedOrder = {
@@ -264,6 +271,84 @@ export const OrderService = {
         console.log(`Préparations terminées pour la table ${order.tableNumber}`);
       } catch (err) {
         console.error('Erreur lors de la finalisation via BFF :', err);
+      }
+    });
+
+    return preparations;
+  },
+
+  async sendGroupMenuOrder(
+    tableNumber: number | undefined,
+    groupId: number | undefined,
+    listItem: {
+      items: OrderItem[];
+      extras: OrderItem[];
+    }
+  ): Promise<PreparationDto[]> {
+    if (!tableNumber) {
+      throw new Error('Numéro de table manquant pour la commande de menu groupé');
+    }
+
+    // Convertir les CommandItem en MenuItemToOrderDto
+    const groupMenuItems: MenuItemToOrderDto[] = [
+      ...listItem.items.map((item) => ({
+        menuItemId: item.id,
+        menuItemShortName: item.shortName,
+        howMany: item.quantity,
+      })),
+    ];
+
+    const groupMenuExtras: MenuItemToOrderDto[] = [
+      ...listItem.extras.map((item) => ({
+        menuItemId: item.id,
+        menuItemShortName: item.shortName.replace('_extra', ''),
+        howMany: item.quantity,
+      })),
+    ];
+
+    // Créer l'objet ShortGroupOrderDto
+    const order: ShortGroupOrderDto = {
+      tableNumber,
+      groupMenuItems: groupMenuItems,
+      groupMenuExtras: groupMenuExtras,
+    };
+
+    const createResponse = await fetch(`${baseUrl}/tableOrders/newOrder/${groupId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order),
+    });
+
+    if (!createResponse.ok) {
+      throw new Error(`Erreur création commande menu groupé: ${createResponse.statusText}`);
+    }
+
+    const preparations: PreparationDto[] = await createResponse.json();
+    console.log(
+      `Commande menu groupé créée pour la table ${tableNumber}. Préparations en cours...`
+    );
+
+    const defaultCookingTimeSec = 20;
+    const targetMs = new Date(
+      preparations[0]?.shouldBeReadyAt ?? Date.now() + defaultCookingTimeSec * 1000
+    ).getTime();
+
+    window.dispatchEvent(
+      new CustomEvent('updateTable', {
+        detail: {
+          commandId: preparations[0]?._id ?? '',
+          tableNumber,
+          state: OrderState.PreparingInKitchen,
+        },
+      })
+    );
+
+    scheduleAt(targetMs, async () => {
+      try {
+        await OrderService.finishPreparationBFF(preparations);
+        console.log(`Préparations menu groupé terminées pour la table ${tableNumber}`);
+      } catch (err) {
+        console.error('Erreur lors de la finalisation du menu groupé via BFF :', err);
       }
     });
 

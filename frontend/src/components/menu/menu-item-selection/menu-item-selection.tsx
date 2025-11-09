@@ -17,6 +17,7 @@ type MenuItemSelectionProps = {
   onAddItem: (item: Item) => void;
   onRemoveItem: (item: OrderItem) => void;
   onSend: () => void;
+  disabled?: boolean;
 };
 
 export default function MenuItemSelection({
@@ -28,6 +29,7 @@ export default function MenuItemSelection({
   onAddItem,
   onRemoveItem,
   onSend,
+  disabled,
 }: MenuItemSelectionProps) {
   const [value, setValue] = useState('');
 
@@ -67,7 +69,7 @@ export default function MenuItemSelection({
           ))
         )}
       </div>
-      {typeof table === 'number' && (
+      {!disabled && typeof table === 'number' && (
         <div className="menu-item-selection__footer">
           <MenuItemBottomBar
             tableNumber={table}

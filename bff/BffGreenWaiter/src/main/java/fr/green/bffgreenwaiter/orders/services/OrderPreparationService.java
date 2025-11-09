@@ -1,6 +1,12 @@
 package fr.green.bffgreenwaiter.orders.services;
 
+import fr.green.bffgreenwaiter.items.enums.FoodCategory;
+import fr.green.bffgreenwaiter.items.model.GroupMenu;
+import fr.green.bffgreenwaiter.items.model.Item;
+import fr.green.bffgreenwaiter.items.service.GroupMenuService;
+import fr.green.bffgreenwaiter.items.service.ItemService;
 import fr.green.bffgreenwaiter.orders.dto.MenuItemToOrderDto;
+import fr.green.bffgreenwaiter.orders.dto.ShortGroupOrderDto;
 import fr.green.bffgreenwaiter.orders.dto.ShortOrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +14,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +24,77 @@ public class OrderPreparationService {
 
     private final WebClient.Builder webClientBuilder;
     private final OrderQueryService orderQueryService;
+    private final GroupMenuService groupMenuService;
+    private final ItemService itemService;
 
     @Value("${tableOrders.service.url}")
     private String tablesUrl;
 
     @Value("${kitchen.service.url}")
     private String kitchenBaseUrl;
+
+    public List<Map<String, Object>> createAndStartPreparationOrder(ShortGroupOrderDto groupOrder, int groupId) {
+        GroupMenu menu = groupMenuService.getMenuByGroupId(groupId);
+        if (menu == null) {
+            throw new RuntimeException("Menu not found: " + groupId);
+        }
+
+        int mainItemCount = menu.getMenuCount() + countMainItem(groupOrder.getGroupMenuItems());
+
+        if (mainItemCount > menu.getMaxMembers()) {
+            int leftOver = mainItemCount - menu.getMaxMembers();
+            List<MenuItemToOrderDto> extraItems = redistributeExcessItems(groupOrder, menu, leftOver);
+            groupOrder.getGroupMenuExtras().addAll(extraItems);
+        }
+
+        menu.setMenuCount(menu.getMenuCount() + Math.min(mainItemCount, menu.getMaxMembers()));
+
+        var extendedItems = new ArrayList<>(groupOrder.getGroupMenuItems());
+        extendedItems.addAll(groupOrder.getGroupMenuExtras());
+
+        ShortOrderDto finalOrder = new ShortOrderDto(
+                groupOrder.getTableNumber(),
+                extendedItems,
+                groupOrder.getBilled());
+        return createAndStartPreparation(finalOrder);
+    }
+
+    private List<MenuItemToOrderDto> redistributeExcessItems(ShortGroupOrderDto groupOrder, GroupMenu menu, int leftOver) {
+        List<MenuItemToOrderDto> menuItems = groupOrder.getGroupMenuItems();
+        List<MenuItemToOrderDto> extraItems = new ArrayList<>();
+
+        // Récupère les catégories du menu
+        Map<FoodCategory, List<Item>> itemsByCategory = menu.getItemsByCategory();
+
+        for (FoodCategory category : itemsByCategory.keySet()) {
+            int toRemove = leftOver;
+
+            // Parcourt les items en ordre inverse
+            for (int i = menuItems.size() - 1; i >= 0 && toRemove > 0; i--) {
+                MenuItemToOrderDto item = menuItems.get(i);
+                Item menuItem = itemService.getItemsByID(item.getMenuItemId());
+
+                if (FoodCategory.fromString(menuItem.getCategory()) == category) {
+                    int removed = Math.min(item.getHowMany(), toRemove);
+
+                    if (removed == item.getHowMany()) {
+                        menuItems.remove(i);
+                    } else {
+                        item.setHowMany(item.getHowMany() - removed);
+                    }
+
+                    MenuItemToOrderDto extraItem = new MenuItemToOrderDto();
+                    extraItem.setMenuItemId(item.getMenuItemId());
+                    extraItem.setHowMany(removed);
+                    extraItems.add(extraItem);
+
+                    toRemove -= removed;
+                }
+            }
+        }
+
+        return extraItems;
+    }
 
     public List<Map<String, Object>> createAndStartPreparation(ShortOrderDto order) {
         WebClient webClient = webClientBuilder.build();
@@ -59,9 +131,20 @@ public class OrderPreparationService {
 
         // Démarrage de chaque item
         startPreparedItems(preparations);
-
         return preparations;
     }
+
+    public int countMainItem(List<MenuItemToOrderDto> items) {
+        int count = 0;
+        for (MenuItemToOrderDto item : items) {
+            Item menuItem = itemService.getItemsByID(item.getMenuItemId());
+            if (FoodCategory.fromString(menuItem.getCategory()) == FoodCategory.MAIN) {
+                count += item.getHowMany();
+            }
+        }
+        return count;
+    }
+
 
     public void startPreparedItems(List<Map<String, Object>> preparations) {
         for (Map<String, Object> prep : preparations) {
@@ -97,7 +180,8 @@ public class OrderPreparationService {
                         .block();
             }
         }
-
         return preparations;
     }
+
+
 }

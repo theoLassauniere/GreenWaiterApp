@@ -1,0 +1,67 @@
+[
+  {
+    "groupId": "1",
+    "name": "Menu1",
+    "price": 25.0,
+    "maxMembers": 20,
+    "itemsByCategory": {
+      "STARTER": [
+        {
+          "shortName": "foie gras"
+        },
+        {
+          "shortName": "burrata"
+        }
+      ],
+      "MAIN": [
+        {
+          "shortName": "pizza"
+        },
+        {
+          "shortName": "half cooked tuna"
+        }
+      ],
+      "DESSERT": [
+        {
+          "shortName": "tiramisu"
+        },
+        {
+          "shortName": "brownie"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "2",
+    "name": "Menu2",
+    "price": 30.0,
+    "maxMembers": 15,
+    "itemsByCategory": {
+      "STARTER": [
+        {
+          "shortName": "crab maki"
+        },
+        {
+          "shortName": "goat cheese"
+        }
+      ],
+      "MAIN": [
+        {
+          "shortName": "lasagna"
+        },
+        {
+          "shortName": "beef burger"
+        }
+      ],
+      "DESSERT": [
+        {
+          "shortName": "rasp and peaches"
+        },
+        {
+          "shortName": "seasonal fruit"
+        }
+      ]
+    }
+  }
+]
+
