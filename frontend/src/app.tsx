@@ -59,7 +59,7 @@ function App() {
       globalThis.removeEventListener('order:notify', onNotify as EventListener);
       globalThis.removeEventListener('updateTable', onUpdateTable as EventListener);
     };
-  }, [tables]);
+  }, [tables, updateTable]);
 
   async function handleSelectPage(newPage: PageType, tableNumber?: number) {
     if (newPage === Pages.Menu) {
