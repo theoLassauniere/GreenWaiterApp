@@ -12,6 +12,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +42,8 @@ public class OrderPreparationService {
 
         // Calculer combien de menus complets on peut former
         int completeMenus = calculateCompleteMenus(menu, itemCountByCategory);
-
         // Augmenter le menuCount
         menu.setMenuCount(menu.getMenuCount() + completeMenus);
-
         return createAndStartPreparation(order);
     }
 
@@ -69,7 +68,6 @@ public class OrderPreparationService {
                 }
                 if (foundItem != null) break;
             }
-
             if (foundItem != null) {
                 // Ajouter le nombre d'items pour cette catégorie
                 itemCountByCategory.merge(itemCategory, orderItem.getHowMany(), Integer::sum);
@@ -87,7 +85,6 @@ public class OrderPreparationService {
             int count = itemCountByCategory.getOrDefault(category, 0);
             minCount = Math.min(minCount, count);
         }
-
         return minCount == Integer.MAX_VALUE ? 0 : minCount;
     }
 
@@ -164,7 +161,11 @@ public class OrderPreparationService {
                         .block();
             }
         }
-
         return preparations;
+    }
+
+    public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order) {
+        // TODO : implement method
+        return new ArrayList<>();
     }
 }

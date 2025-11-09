@@ -32,11 +32,11 @@ public class OrderServiceFacade {
     }
 
     public List<Map<String, Object>> createAndStartPreparation(ShortOrderDto order) {
-        preparationService.createAndStartPreparation(order);
+        return preparationService.createAndStartPreparation(order);
     }
 
     public List<Map<String, Object>> createAndStartPreparationOrder(ShortOrderDto order) {
-        preparationService.createAndStartPreparationOrder(order);
+        return preparationService.createAndStartPreparationOrder(order);
     }
 
     public List<Map<String, Object>> finishPreparation(List<Map<String, Object>> preparations) {

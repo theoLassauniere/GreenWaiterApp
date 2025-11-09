@@ -3,7 +3,7 @@
     "groupId": "1",
     "name": "Menu1",
     "price": 25.0,
-    "maxMembers": 15,
+    "maxMembers": 20,
     "itemsByCategory": {
       "STARTER": [
         {
