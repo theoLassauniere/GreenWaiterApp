@@ -39,6 +39,7 @@ export default function CategoryItem({
           ))}
         </div>
         <div onClick={() => clickExtra(category)} className={'category-open-extra'}>
+          <span className="material-icons">add_circle_outline</span>
           Extra
         </div>
       </div>

@@ -104,7 +104,11 @@ function App() {
           <Payment table={getTable(currentTable)} onSelectPage={handleSelectPage} />
         )}
         {page === Pages.MenuGroupe && currentTable && (
-          <GroupMenu table={getTable(currentTable)} onSelectPage={handleSelectPage} />
+          <GroupMenu
+            table={getTable(currentTable)}
+            onSelectPage={handleSelectPage}
+            onReturn={() => handleSelectPage(Pages.Tables)}
+          />
         )}
       </main>
       {readyNotification && (

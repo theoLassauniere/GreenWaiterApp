@@ -1,12 +1,30 @@
 .GroupMenu {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  height: 100%;
+
+
   .item-selection {
     overflow-y: auto;
+    margin-left: 15px;
+
+    p:first-child {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 10px 0 5px 10px;
+    }
   }
 }
 
 .bottom-bar {
-  position: fixed;
-  z-index: 5;
-  width: 80%;
-  bottom: 0;
+  margin-top: auto;
+
+  .item-quantity {
+    color: white;
+  }
+
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
 }
