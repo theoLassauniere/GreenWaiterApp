@@ -91,14 +91,14 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
 
   const groupsServed = Object.entries(
     tables.reduce<Record<number, TableType[]>>((acc, table) => {
-      if (!table.groupNumber) return acc;
-      acc[table.groupNumber] = acc[table.groupNumber] || [];
-      acc[table.groupNumber].push(table);
+      if (!table.groupId) return acc;
+      acc[table.groupId] = acc[table.groupId] || [];
+      acc[table.groupId].push(table);
       return acc;
     }, {})
   )
     .filter(([, groupTables]) => groupTables.every((t) => t.orderState === 'served'))
-    .map(([groupNumber]) => Number(groupNumber));
+    .map(([groupId]) => Number(groupId));
 
   const filteredTables = tables.filter((t: TableType) => {
     const capacityOk = minCapacity ? t.capacity >= minCapacity : true;
@@ -126,14 +126,14 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
           ))}
         </div>
 
-        {groupsServed.map((groupNumber) => {
-          const groupTables = filteredTables.filter((t) => t.groupNumber === groupNumber);
+        {groupsServed.map((groupId) => {
+          const groupTables = filteredTables.filter((t) => t.groupId === groupId);
           if (groupTables.length === 0) return null;
 
           const firstTable = groupTables[0];
           return (
             <div
-              key={groupNumber}
+              key={groupId}
               className="group-pay-button"
               style={{
                 gridColumn: '1 / -1',
@@ -143,7 +143,7 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
                 className="pay-btn"
                 onClick={() => onSelectPage(Pages.Paiement, firstTable.tableNumber)}
               >
-                Paiement du groupe G{groupNumber}
+                Paiement du groupe G{groupId}
               </button>
             </div>
           );
