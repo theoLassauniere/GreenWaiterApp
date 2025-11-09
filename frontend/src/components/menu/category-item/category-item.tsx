@@ -19,23 +19,25 @@ export default function CategoryItem({
   return (
     <div className="category-item">
       <h2 className="category-title">{getCategoryTitle(category)}</h2>
-      <span onClick={() => clickExtra(category)} className={'category-open-extra'}>
-        Extra
-      </span>
-      <div className="items-container">
-        {items.map((item) => (
-          <MenuItem
-            key={item.id}
-            item={item}
-            onClick={
-              onClickItem
-                ? () => onClickItem(item)
-                : () => {
-                    console.error('erreur methode onClickItem non défini');
-                  }
-            }
-          />
-        ))}
+      <div className="items-buttons">
+        <div className="items-container">
+          {items.map((item) => (
+            <MenuItem
+              key={item.id}
+              item={item}
+              onClick={
+                onClickItem
+                  ? () => onClickItem(item)
+                  : () => {
+                      console.error('erreur methode onClickItem non défini');
+                    }
+              }
+            />
+          ))}
+        </div>
+        <span onClick={() => clickExtra(category)} className={'category-open-extra'}>
+          Extra
+        </span>
       </div>
     </div>
   );

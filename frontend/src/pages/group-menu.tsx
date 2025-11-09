@@ -26,6 +26,7 @@ export default function GroupMenu(props: GroupMenuProps) {
 
   useEffect(() => {
     const loadGroupMenu = async () => {
+      console.log(props.table);
       try {
         const menu = await MenuService.getGroupMenu(props.table?.tableNumber);
         setGroupMenu(menu);
