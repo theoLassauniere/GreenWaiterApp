@@ -59,7 +59,7 @@ function App() {
       globalThis.removeEventListener('order:notify', onNotify as EventListener);
       globalThis.removeEventListener('updateTable', onUpdateTable as EventListener);
     };
-  }, [tables]);
+  }, [tables, updateTable]);
 
   async function handleSelectPage(newPage: PageType, tableNumber?: number) {
     if (newPage === Pages.Menu) {
@@ -76,7 +76,7 @@ function App() {
   return (
     <div className="app">
       <div className="sidebar">
-        <Sidebar onSelect={handleSelectPage} />
+        <Sidebar onSelect={handleSelectPage} currentPage={page} />
       </div>
       <main>
         {page === Pages.Tables && (

@@ -16,13 +16,13 @@ export default function SelectItemsCheckbox({
   return (
     <div className="select-items-checkbox">
       <label>
+        {label}
         <input
           type="checkbox"
           checked={checked}
           disabled={disabled}
           onChange={(e) => onChange(e.target.checked)}
         />
-        {label}
       </label>
     </div>
   );

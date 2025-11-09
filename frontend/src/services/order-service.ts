@@ -140,7 +140,7 @@ export const OrderService = {
     console.log(`Order created successfully for table ${order.tableNumber}`);
     return enrichedPreparations;
   },
-  // CORRIGÉ : Cette fonction calcule maintenant le temps de préparation
+
   async startPreparationAndNotify(preparation: PreparationDto): Promise<void> {
     let allStartedItemsData: { meanCookingTimeInSec?: number }[] = [];
 
@@ -176,11 +176,11 @@ export const OrderService = {
     // 2. Max du temps de cuisson renvoyé par les items
     const maxCookingTimeInSec = allStartedItemsData.reduce((max, currentItem) => {
       const t = currentItem.meanCookingTimeInSec ?? 0;
-      return t > max ? t : max;
+      return Math.max(t, max);
     }, 0);
 
-    // 3. Fallback 20s si rien n'est renvoyé
-    const preparationTimeInSec = maxCookingTimeInSec || 20;
+    // 3. Fallback 10s si rien n'est renvoyé
+    const preparationTimeInSec = maxCookingTimeInSec || 10;
     const targetMs = Date.now() + preparationTimeInSec * 1000;
 
     // 4. Planifier la notification de fin de préparation
@@ -245,10 +245,8 @@ export const OrderService = {
     }
     const preparations: PreparationDto[] = await createResponse.json();
     console.log(`Commande créée pour la table ${order.tableNumber}. Préparations en cours...`);
-    const defaultCookingTimeSec = 20;
-    const targetMs = new Date(
-      preparations[0]?.shouldBeReadyAt ?? Date.now() + defaultCookingTimeSec * 1000
-    ).getTime();
+    const defaultCookingTimeSec = 5; // Temps de préparation mis à 5s pour la démo
+    const targetMs = new Date(Date.now() + defaultCookingTimeSec * 1000).getTime();
 
     window.dispatchEvent(
       new CustomEvent('updateTable', {

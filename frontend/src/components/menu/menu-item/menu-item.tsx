@@ -1,7 +1,6 @@
 import type { Item } from '../../../models/Item.ts';
 import React, { useState } from 'react';
 import './menu-item.scss';
-import IconButton from '../../common/icon-button/icon-button.tsx';
 import AllergenPopup from '../allergen-popup/allergen-popup.tsx';
 
 type MenuItemProps = {
@@ -23,7 +22,9 @@ export default function MenuItem({ item, onClick, className }: Readonly<MenuItem
   return (
     <>
       <div className={`menu-item ${className ?? ''}`} onClick={onClick}>
-        <IconButton className="icon-button-menu-item" icon="info" onClick={open} />
+        <div className="info-button" onClick={open}>
+          <span>i</span>
+        </div>
         <div className="item-img-container">
           <img className="item-img" src={imageUrl ?? ''} alt={name} />
         </div>
@@ -37,7 +38,7 @@ export default function MenuItem({ item, onClick, className }: Readonly<MenuItem
         isOpen={isOpen}
         onClose={close}
         allergens={item.allergens}
-        title={`Liste d'allergènes pour : ${
+        title={`Liste d'allergènes pour ${
           name.length > 20
             ? item.shortName && item.shortName.trim() !== ''
               ? item.shortName
