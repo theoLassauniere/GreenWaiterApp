@@ -49,9 +49,16 @@ public class GroupMenuService {
         return new ArrayList<>(menusCache);
     }
 
-    public GroupMenu  getMenuByName(String  name) {
+    public GroupMenu getMenuByName(String name) {
         return menusCache.stream()
                 .filter(menu -> menu.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public GroupMenu getMenuByGroupId(String groupId) {
+        return menusCache.stream()
+                .filter(menu -> menu.get_id().equalsIgnoreCase(groupId))
                 .findFirst()
                 .orElse(null);
     }

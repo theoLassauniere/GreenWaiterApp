@@ -1,5 +1,6 @@
 [
   {
+    "groupId": "1",
     "name": "Menu1",
     "price": 25.0,
     "maxMembers": 15,
@@ -31,6 +32,7 @@
     }
   },
   {
+    "groupId": "2",
     "name": "Menu2",
     "price": 30.0,
     "maxMembers": 15,
