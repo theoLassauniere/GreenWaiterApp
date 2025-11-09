@@ -10,3 +10,40 @@
     padding: 1rem 0;
   }
 }
+
+.tables-grid-container {
+  position: relative;
+}
+
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.table-wrapper {
+  position: relative;
+}
+
+.group-pay-button {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -1rem;
+  pointer-events: none;
+}
+
+.group-pay-button .pay-btn {
+  background-color: var(--palette-green);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  pointer-events: auto;
+  margin-top: 1rem;
+}
