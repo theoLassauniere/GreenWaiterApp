@@ -10,6 +10,7 @@ export type ItemDetailProps = {
   selectedQuantity: number;
   divider?: number;
   tableCapacity: number;
+  hideSplitButton?: boolean;
   onSelectChange: (checked: boolean) => void;
   onQuantityChange: (value: number) => void;
   onSplitItem: (divider: number) => void;
@@ -69,14 +70,16 @@ export function ItemDetail(props: Readonly<ItemDetailProps>) {
           </select>
           <span>/ {props.quantity.toFixed(2)}</span>
         </div>
-        <button
-          className="share-btn"
-          disabled={props.disabled}
-          onClick={() => setShowSplitPopup(true)}
-          title="Partager l'item"
-        >
-          ÷
-        </button>
+        {!props.hideSplitButton && (
+          <button
+            className="share-btn"
+            disabled={props.disabled}
+            onClick={() => setShowSplitPopup(true)}
+            title="Partager l'item"
+          >
+            ÷
+          </button>
+        )}
       </div>
       {showSplitPopup && (
         <SplitPopup

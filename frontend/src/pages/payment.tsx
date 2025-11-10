@@ -15,42 +15,62 @@ import { useTablesContext } from '../contexts/use-tables.ts';
 import { MenuService } from '../services/menu-service.ts';
 
 export type PaymentProps = {
-  readonly table: TableType;
+  readonly table?: TableType;
   readonly onSelectPage: (
     newPage: PageType,
     tableNumber?: number,
     preparationId?: string,
-    refresh?: boolean
+    groupId?: number
   ) => Promise<void>;
+  groupId?: number;
+  setGroupId?: Dispatch<SetStateAction<number | undefined>>;
 };
 
-export function Payment(props: PaymentProps) {
+export function Payment(props: Readonly<PaymentProps>) {
   const { updateTable } = useTablesContext();
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const { tables } = useTablesContext();
 
   useEffect(() => {
     const loadOrderItems = async () => {
-      try {
-        const items: OrderItem[] = await PaymentService.getOrderItems(props.table.tableNumber);
-        let menuItemIds: string[] = [];
-        if (props.table.groupId) {
-          const menu = await MenuService.getGroupMenu(props.table.tableNumber);
-          if (menu && menu.itemsByCategory) {
-            menuItemIds = Object.values(menu.itemsByCategory)
-              .flat()
-              .map((item) => item.id);
+      if (props.groupId && !props.table) {
+        const groupMenu = await MenuService.getMenuByGroupId(props.groupId);
+        const menuItem: OrderItem = {
+          id: `group-menu-${props.groupId}`,
+          name: groupMenu.name,
+          shortName: groupMenu.name,
+          price: groupMenu.price,
+          quantity: groupMenu.menuCount ?? 0,
+          category: Category.MENU,
+          divider: 1,
+        };
+        setOrderItems([menuItem]);
+      } else if (props.table) {
+        try {
+          const items: OrderItem[] = await PaymentService.getOrderItems(props.table.tableNumber);
+          let menuItemIds: string[] = [];
+          if (props.table.groupId) {
+            const menu = await MenuService.getGroupMenu(props.table.groupId);
+            if (menu && menu.itemsByCategory) {
+              menuItemIds = Object.values(menu.itemsByCategory)
+                .flat()
+                .map((item) => item.id);
+            }
           }
+          const filteredItems = items.filter((item) => !menuItemIds.includes(item.id));
+          setOrderItems(filteredItems);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des composants de la commande:', error);
+          setOrderItems([]);
         }
-        const filteredItems = items.filter((item) => !menuItemIds.includes(item.id));
-        setOrderItems(filteredItems);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des composants de la commande:', error);
-        setOrderItems([]);
       }
     };
 
-    void loadOrderItems();
-  }, [props.table.tableNumber, props.table.groupId]);
+    loadOrderItems().catch((error) => {
+      console.error('Erreur lors de la récupération des composants de la commande:', error);
+      setOrderItems([]);
+    });
+  }, [props.table?.tableNumber, props.groupId, props.table]);
 
   const [selected, setSelected] = useState<{ [id: string]: boolean }>({});
   const [selectedQuantity, setSelectedQuantity] = useState<{ [id: string]: number }>({});
@@ -141,21 +161,48 @@ export function Payment(props: PaymentProps) {
 
   async function handlePopUpClose() {
     setShowPaymentSuccess(false);
-    await TableService.billTable(props.table.tableNumber);
-    updateTable(props.table.tableNumber, {
-      groupId: undefined,
-      occupied: false,
-      orderState: undefined,
-      orderId: undefined,
-      orderPreparationPlace: undefined,
-    });
-    await props.onSelectPage(Pages.Tables, undefined, undefined, true);
+    if (props.table) {
+      await TableService.billTable(props.table.tableNumber);
+      updateTable(props.table.tableNumber, {
+        groupId: undefined,
+        occupied: false,
+        orderState: undefined,
+        orderId: undefined,
+        orderPreparationPlace: undefined,
+      });
+    } else {
+      const groupTables = tables.filter((t) => t.groupId == props.groupId);
+      for (const t of groupTables) {
+        await TableService.billTable(t.tableNumber);
+        updateTable(t.tableNumber, {
+          groupId: undefined,
+          occupied: false,
+          orderState: undefined,
+          orderId: undefined,
+          orderPreparationPlace: undefined,
+        });
+      }
+      if (props.setGroupId) {
+        props.setGroupId(undefined);
+      }
+    }
+    await props.onSelectPage(Pages.Tables);
+  }
+
+  function getPaymentTitle(): string {
+    if (props.groupId) {
+      if (props.table) {
+        return `Groupe ${props.groupId} - Table ${props.table.tableNumber}`;
+      }
+      return `Groupe ${props.groupId} - Menus`;
+    }
+    return `Table ${props.table?.tableNumber ?? ''}`;
   }
 
   return (
     <div className="payment-container">
       <div className="header">
-        <h1>Table {props.table.tableNumber}</h1>
+        <h1>{getPaymentTitle()}</h1>
         <hr className="payment-table-separator" />
         <SelectItemsCheckbox
           label="Sélectionner tout"
@@ -180,7 +227,8 @@ export function Payment(props: PaymentProps) {
                       disabled={isSplitEquallyMode}
                       quantity={item.quantity}
                       divider={item.divider}
-                      tableCapacity={props.table.capacity}
+                      tableCapacity={props.table?.capacity ?? 1}
+                      hideSplitButton={props.groupId !== undefined && !props.table}
                       onSplitItem={(divider) => handleSplitItem(item.id, divider)}
                       selected={selected[item.id] ?? false}
                       selectedQuantity={selectedQuantity[item.id] ?? 0}
@@ -216,7 +264,8 @@ export function Payment(props: PaymentProps) {
           <NormalPaymentSummary
             total={total}
             toPay={toPay}
-            tableCapacity={props.table.capacity}
+            groupId={props.groupId}
+            tableCapacity={props.table?.capacity ?? 1}
             onSplit={handleSplit}
             onPay={handlePay}
           />
@@ -227,7 +276,11 @@ export function Payment(props: PaymentProps) {
         onClose={async () => handlePopUpClose()}
         title={'Paiement terminé !'}
       >
-        <p>Le paiement de la table {props.table.tableNumber} a été effectué avec succès.</p>
+        <p>
+          {props.table
+            ? `Le paiement de la table ${props.table.tableNumber} a été effectué avec succès.`
+            : `Le paiement du groupe ${props.groupId} a été effectué avec succès.`}
+        </p>
       </PopUp>
     </div>
   );

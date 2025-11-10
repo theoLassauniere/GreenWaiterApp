@@ -39,15 +39,16 @@ public class OrderPreparationService {
             throw new RuntimeException("Menu not found: " + groupId);
         }
 
-        int mainItemCount = menu.getMenuCount() + countMainItem(groupOrder.getGroupMenuItems());
+        int newMainItemCount = countMainItem(groupOrder.getGroupMenuItems());
+        int totalMainItemCount = menu.getMenuCount() + newMainItemCount;
 
-        if (mainItemCount > menu.getMaxMembers()) {
-            int leftOver = mainItemCount - menu.getMaxMembers();
+        if (totalMainItemCount > menu.getMaxMembers()) {
+            int leftOver = totalMainItemCount - menu.getMaxMembers();
             List<MenuItemToOrderDto> extraItems = redistributeExcessItems(groupOrder, menu, leftOver);
             groupOrder.getGroupMenuExtras().addAll(extraItems);
         }
 
-        menu.setMenuCount(menu.getMenuCount() + Math.min(mainItemCount, menu.getMaxMembers()));
+        menu.setMenuCount(menu.getMenuCount() + Math.min(newMainItemCount, menu.getMaxMembers() - menu.getMenuCount()));
 
         var extendedItems = new ArrayList<>(groupOrder.getGroupMenuItems());
         extendedItems.addAll(groupOrder.getGroupMenuExtras());

@@ -4,7 +4,7 @@
   justify-content: center;
   padding: 8px;
   margin: 4px 0;
-  background-color: var(--palette-gray);
+  background-color: var(--palette-light-grey);
   border-radius: 25px;
 
   .item-quantity {
@@ -15,11 +15,11 @@
     height: 24px;
     min-width: 24px;
     margin-right: 12px;
-    background-color: #333;
     border-radius: 50%;
     font-size: 12px;
     font-weight: bold;
     cursor: pointer;
+    background-color: var(--palette-dark-grey);
   }
 
   .item-name {

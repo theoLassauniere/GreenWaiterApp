@@ -18,8 +18,8 @@ export function Table({ table, onSelectPage, onUpdateTable }: Readonly<TableProp
 
   useEffect(() => {
     async function checkExtras() {
-      if (table.orderState !== 'served') return;
-      const extras = await MenuService.hasExtrasForTable(table.tableNumber);
+      if (table.orderState !== 'served' && !table.groupId) return;
+      const extras = await MenuService.hasExtrasForTable(table);
       setHasExtras(extras);
     }
     void checkExtras();

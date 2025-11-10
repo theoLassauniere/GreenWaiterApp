@@ -17,12 +17,11 @@ export function TablesContextProvider({ children }: Readonly<{ children: ReactNo
     [tables]
   );
 
-  const updateTable = useCallback(
-    (tableNumber: number, updates: Partial<TableType>) => {
-      setTables(tables.map((t) => (t.tableNumber === tableNumber ? { ...t, ...updates } : t)));
-    },
-    [tables]
-  );
+  const updateTable = useCallback((tableNumber: number, updates: Partial<TableType>) => {
+    setTables((prevTables) =>
+      prevTables.map((t) => (t.tableNumber === tableNumber ? { ...t, ...updates } : t))
+    );
+  }, []);
 
   const contextValue = useMemo(
     () => ({ tables, setTables, getTable, updateTable }),

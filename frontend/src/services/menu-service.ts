@@ -5,6 +5,7 @@ import { ItemBuilder } from '../models/item-builder.ts';
 import getAllergens from './service-allergen.ts';
 import type { GroupMenu } from '../models/group-menu.ts';
 import type { RawMenuItem } from '../models/RawMenuItem.ts';
+import type { TableType } from '../models/Table.ts';
 
 const baseUrl = config.bffFlag ? `${config.bffApi}/menus` : `${config.apiUrl}menu/menus`;
 const cacheMap = new Map<Category, Item[]>();
@@ -21,17 +22,23 @@ export const MenuService = {
     return items;
   },
 
-  async hasExtrasForTable(tableNumber: number): Promise<boolean> {
+  async hasExtrasForTable(table: TableType): Promise<boolean> {
+    if (!table.groupId || !table.orderId) {
+      return true;
+    }
     try {
-      const orderRes = await fetch(`${config.bffApi}dining/tableOrders/items/${tableNumber}`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
+      const orderRes = await fetch(
+        `${config.bffApi}dining/tableOrders/items/${table.tableNumber}`,
+        {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        }
+      );
       if (!orderRes.ok) return false;
 
       const orderedItems: { id: string }[] = await orderRes.json();
 
-      const menu = await this.getGroupMenu(tableNumber);
+      const menu = await this.getGroupMenu(table.groupId);
       if (!menu || !menu.itemsByCategory) return false;
 
       const menuItemIds = Object.values(menu.itemsByCategory)
@@ -94,6 +101,24 @@ export const MenuService = {
         groupId
       );
       return undefined;
+    }
+  },
+
+  async getMenuByGroupId(groupId: number): Promise<GroupMenu> {
+    try {
+      const res = await fetch(`${config.bffApi}item/getMenu/${groupId}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) {
+        console.error(
+          `Erreur HTTP lors de la récupération du menu du groupe ${groupId}: ${res.status}`
+        );
+      }
+      return await res.json();
+    } catch (e) {
+      console.error(`Erreur réseau lors de la récupération du menu du groupe ${groupId}`, e);
+      throw e;
     }
   },
 

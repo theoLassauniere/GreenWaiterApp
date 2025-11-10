@@ -1,7 +1,7 @@
 [
   {
     "groupId": "1",
-    "name": "Menu1",
+    "name": "Menu groupe 1",
     "price": 25.0,
     "maxMembers": 20,
     "itemsByCategory": {
@@ -33,7 +33,7 @@
   },
   {
     "groupId": "2",
-    "name": "Menu2",
+    "name": "Menu groupe 2",
     "price": 30.0,
     "maxMembers": 15,
     "itemsByCategory": {
