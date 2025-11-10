@@ -57,14 +57,14 @@ export const mockTables: readonly TableType[] = [
     id: '',
     groupId: 2,
     tableNumber: 9,
-    capacity: 2,
+    capacity: 6,
     occupied: false,
   },
   {
     id: '',
     groupId: 2,
     tableNumber: 10,
-    capacity: 4,
+    capacity: 8,
     occupied: false,
   },
   {
