@@ -24,21 +24,18 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
   const [listItems, setListItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [maxMenuStatic, setMaxMenuStatic] = useState<number>(0);
   const [groupMenu, setGroupMenu] = useState<GroupMenu | undefined>(undefined);
   const fullState = useMemo<Record<Category, boolean>>(() => {
     if (!groupMenu) return {} as Record<Category, boolean>;
 
     const state = {} as Record<Category, boolean>;
-    const maxMenuCount = Math.min(
-      groupMenu.maxMembers - groupMenu.menuCount,
-      props.table?.capacity || 0
-    );
     for (const category in groupMenu.itemsByCategory) {
       const commandedInCategory = orderGroupMenuItems
         .filter((ci) => ci.category === (category as Category))
         .reduce((sum, ci) => sum + ci.quantity, 0);
 
-      state[category as Category] = commandedInCategory >= maxMenuCount;
+      state[category as Category] = commandedInCategory >= maxMenuStatic;
     }
 
     return state;
@@ -48,6 +45,11 @@ export function GroupMenu(props: Readonly<GroupMenuProps>) {
       try {
         const menu = await MenuService.getGroupMenu(props.table?.groupId);
         setGroupMenu(menu);
+
+        // Initialiser maxMenuStatic une seule fois après le chargement
+        if (menu && props.table) {
+          setMaxMenuStatic(Math.min(menu.maxMembers - menu.menuCount, props.table.capacity || 0));
+        }
       } catch (error) {
         console.error('Erreur lors du chargement du menu groupé', error);
       }
