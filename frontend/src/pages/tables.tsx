@@ -12,7 +12,12 @@ import { useTablesContext } from '../contexts/use-tables.ts';
 import { Pages } from '../models/Pages.ts';
 
 type TablesProps = {
-  onSelectPage: (page: PageType, tableNumber?: number) => void;
+  onSelectPage: (
+    page: PageType,
+    tableNumber?: number,
+    preparationId?: string,
+    groupId?: number
+  ) => void;
   readonly handleUpdateTable: (tableNumber: number, updates: Partial<TableType>) => void;
 };
 
@@ -130,7 +135,6 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
           const groupTables = filteredTables.filter((t) => t.groupId === groupId);
           if (groupTables.length === 0) return null;
 
-          const firstTable = groupTables[0];
           return (
             <div
               key={groupId}
@@ -141,9 +145,9 @@ export default function Tables({ onSelectPage, handleUpdateTable }: Readonly<Tab
             >
               <button
                 className="pay-btn"
-                onClick={() => onSelectPage(Pages.Paiement, firstTable.tableNumber)}
+                onClick={() => onSelectPage(Pages.Paiement, undefined, undefined, groupId)}
               >
-                Paiement du groupe G{groupId}
+                Paiement du groupe {groupId}
               </button>
             </div>
           );

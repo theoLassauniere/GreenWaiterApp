@@ -37,13 +37,31 @@
 }
 
 .group-pay-button .pay-btn {
-  background-color: var(--palette-green);
+  background-color: var(--palette-dark-green);
   color: white;
-  padding: 0.6rem 1.2rem;
-  font-weight: bold;
+  padding: 0.75rem 1.25rem;
+  font-size: 1.4rem;
+  font-weight: 500;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
   pointer-events: auto;
   margin-top: 1rem;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  }
 }

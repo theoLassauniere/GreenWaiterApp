@@ -27,16 +27,18 @@ export default function GroupMenuSelection({
           <Loader />
         </div>
       ) : (
-        Object.values(Category).map((category) => (
-          <CategoryItem
-            key={category}
-            category={category}
-            items={groupMenu.itemsByCategory[category] || []}
-            clickExtra={() => clickExtra(category)}
-            onClickItem={onClickItem}
-            isCategoryFull={fullState[category] || false}
-          />
-        ))
+        Object.values(Category)
+          .filter((category) => category !== Category.MENU)
+          .map((category) => (
+            <CategoryItem
+              key={category}
+              category={category}
+              items={groupMenu.itemsByCategory[category] || []}
+              clickExtra={() => clickExtra(category)}
+              onClickItem={onClickItem}
+              isCategoryFull={fullState[category] || false}
+            />
+          ))
       )}
     </div>
   );

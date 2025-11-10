@@ -3,6 +3,7 @@ export const Category = {
   STARTER: 'STARTER',
   MAIN: 'MAIN',
   DESSERT: 'DESSERT',
+  MENU: 'MENU',
 } as const;
 
 export type Category = (typeof Category)[keyof typeof Category];
@@ -13,6 +14,7 @@ export function getCategoryTitle(category: Category): string {
     [Category.STARTER]: 'Entrées',
     [Category.MAIN]: 'Plats',
     [Category.DESSERT]: 'Desserts',
+    [Category.MENU]: 'Menus',
   };
   return categoryTitles[category];
 }

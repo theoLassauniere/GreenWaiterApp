@@ -5,6 +5,7 @@ import { useState } from 'react';
 export type PaymentBarProps = {
   readonly total: number;
   readonly toPay: number;
+  readonly groupId: number | undefined;
   readonly tableCapacity: number;
   readonly onSplit: (divider: number) => void;
   readonly onPay: () => void;
@@ -20,9 +21,11 @@ export function NormalPaymentSummary(props: Readonly<PaymentBarProps>) {
         <span className="amount">{props.total.toFixed(2)}€</span>
       </div>
       <div className="payment-actions">
-        <button className="btn split" onClick={() => setIsSplitPopupOpen(true)}>
-          Partager équitablement
-        </button>
+        {!props.groupId && (
+          <button className="btn split" onClick={() => setIsSplitPopupOpen(true)}>
+            Partager équitablement
+          </button>
+        )}
         <SplitPopup
           isOpen={isSplitPopupOpen}
           onClose={() => setIsSplitPopupOpen(false)}

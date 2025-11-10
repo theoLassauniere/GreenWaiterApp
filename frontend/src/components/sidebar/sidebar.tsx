@@ -18,7 +18,7 @@ export default function Sidebar({ onSelect, currentPage }: Readonly<SidebarProps
       <AppButton
         label="Menu"
         onClick={() => onSelect('menu')}
-        className={currentPage === 'menu' ? 'selected' : ''}
+        className={currentPage === 'menu' || currentPage === 'group-menu' ? 'selected' : ''}
       />
       <AppButton
         label="Commandes"

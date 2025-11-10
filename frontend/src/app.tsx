@@ -16,6 +16,7 @@ function App() {
   const { tables, getTable, updateTable } = useTablesContext();
   const [page, setPage] = useState<PageType>(Pages.Tables);
   const [currentTable, setCurrentTable] = useState<number | null>(null);
+  const [currentGroupId, setCurrentGroupId] = useState<number | undefined>(undefined);
   const menuRef = useRef<MenuHandle>(null);
   const [readyNotification, setReadyNotification] = useState<{
     message: string;
@@ -62,7 +63,12 @@ function App() {
     };
   }, [tables, updateTable]);
 
-  async function handleSelectPage(newPage: PageType, tableNumber?: number, preparationId?: string) {
+  async function handleSelectPage(
+    newPage: PageType,
+    tableNumber?: number,
+    preparationId?: string,
+    groupId?: number
+  ) {
     if (newPage === Pages.Menu) {
       if (page === Pages.Menu) {
         menuRef.current?.onReturn();
@@ -73,6 +79,9 @@ function App() {
     }
     if (tableNumber && preparationId) {
       updateTable(tableNumber, { orderId: preparationId });
+    }
+    if (groupId) {
+      setCurrentGroupId(groupId);
     }
     setPage(newPage);
   }
@@ -100,9 +109,22 @@ function App() {
             handleUpdateTable={updateTable}
           />
         )}
-        {page === Pages.Paiement && currentTable && (
-          <Payment table={getTable(currentTable)} onSelectPage={handleSelectPage} />
-        )}
+        {page === Pages.Paiement &&
+          (() => {
+            let paymentTable;
+            if (!currentGroupId && currentTable) {
+              paymentTable = getTable(currentTable);
+            }
+
+            return (
+              <Payment
+                table={paymentTable}
+                onSelectPage={handleSelectPage}
+                groupId={currentGroupId}
+                setGroupId={setCurrentGroupId}
+              />
+            );
+          })()}
         {page === Pages.MenuGroupe && currentTable && (
           <GroupMenu
             table={getTable(currentTable)}
